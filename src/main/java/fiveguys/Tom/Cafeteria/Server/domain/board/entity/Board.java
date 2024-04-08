@@ -1,7 +1,6 @@
-package fiveguys.Tom.Cafeteria.Server.entity;
+package fiveguys.Tom.Cafeteria.Server.domain.board.entity;
 
 
-import fiveguys.Tom.Cafeteria.Server.entity.Enum.BoardType;
 import jakarta.persistence.*;
 import lombok.*;
 
