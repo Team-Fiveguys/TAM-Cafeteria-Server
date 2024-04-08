@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class TomCafeteriaServerApplication {
-
+	//ㅎㅇ
 	public static void main(String[] args) {
 		SpringApplication.run(TomCafeteriaServerApplication.class, args);
 	}
