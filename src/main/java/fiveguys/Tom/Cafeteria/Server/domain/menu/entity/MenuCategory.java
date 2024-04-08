@@ -1,4 +1,4 @@
-package fiveguys.Tom.Cafeteria.Server.entity;
+package fiveguys.Tom.Cafeteria.Server.domain.menu.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
