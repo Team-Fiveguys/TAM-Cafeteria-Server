@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/boards")
+@RequestMapping("/board")
 public class BoardController {
 
     @Autowired
@@ -21,7 +21,7 @@ public class BoardController {
     }
 
     // 전체 게시글 조회
-    @GetMapping
+    @GetMapping("/{boardType")
     public List<Board> getAllBoards() {
         return boardService.getAllBoards();
     }
@@ -43,5 +43,11 @@ public class BoardController {
     public void deleteBoard(@PathVariable Long id) {
         boardService.deleteBoard(id);
     }
+    //게시글 좋아요
+    @PostMapping("/{id}/like")
+    public Board toggleLike(@PathVariable Long id) {
+        return boardService.toggleLike(id);
+    }
+
 }
 

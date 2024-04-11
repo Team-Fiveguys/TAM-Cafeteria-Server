@@ -39,9 +39,15 @@ public class BoardService {
     }
 
     public void deleteBoard(Long id) {
-        Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid board Id:" + id));
+        Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid board Id:" + id));
         boardRepository.delete(board);
     }
+    //게시글 좋아요
+    public Board toggleLike(Long boardId) {
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다. id=" + boardId));
+        board.setLikeCount(board.getLikeCount() + 1);
+        return boardRepository.save(board);
+    }
+
 }
 
