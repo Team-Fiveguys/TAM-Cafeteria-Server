@@ -22,6 +22,5 @@ public class DietController {
     public ApiResponse<Menu> getDiet(@PathVariable(name = "day") DayOfWeek dayOfWeek){
         Diet diet = dietQueryService.getDiet(dayOfWeek);
         List<MenuDiet> menuDietList = diet.getMenuDietList();
-        return null;
     }
 }
