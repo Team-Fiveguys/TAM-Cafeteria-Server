@@ -1,0 +1,30 @@
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            logger-level: FULL
+  profiles:
+    active: dev
+  jwt:
+    secret: ${JWT_SECRET}
+logging:
+  level:
+    com.onnoff.onnoff.auth.feignClient: DEBUG
+apple:
+  redirect-uri: ${APPLE_REDIRECT_URI}
+  iss: https://appleid.apple.com
+  client-id: ${APPLE_CLIENT_ID} # = App ID
+  team-id: ${APPLE_TEAM_ID} # =  ID prefix
+  key:
+    id: ${APPLE_KEY_ID}
+    path: /var/app/current/src/main/resources/AuthKey_${APPLE_KEY_ID}.p8 # ??? src/main/resources/apple/? ? ?? ??
+kakao:
+  redirect-uri: ${KAKAO_REDIRECT_URI}
+  iss: https://kauth.kakao.com
+  client-id: ${KAKAO_CLIENT_ID}
+  admin-key: ${KAKAO_ADMIN_KEY}
+fcm:
+  firebase-sdk-path : /var/app/current/src/main/resources/${FIREBASE_SDK_PATH}
+  project-id : ${FIREBASE_PROJECT_ID}
