@@ -21,7 +21,7 @@ public class BoardController {
     }
 
     // 전체 게시글 조회
-    @GetMapping("/{boardType")
+    @GetMapping("/{boardType}")
     public List<Board> getAllBoards() {
         return boardService.getAllBoards();
     }
