@@ -4,6 +4,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.diet.controller;
 import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.converter.DietConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietCreateDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietCreateResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.service.DietCommandService;
@@ -21,9 +22,9 @@ public class AdminDietController {
 
     private final DietCommandService dietCommandService;
     @PostMapping("/")
-    public ApiResponse<DietResponseDTO> getDiet(@RequestBody DietCreateDTO dietCreateDTO){
+    public ApiResponse<DietCreateResponseDTO> getDiet(@RequestBody DietCreateDTO dietCreateDTO){
         List<Long> menuList = dietCreateDTO.getMenuIdList();
         Diet diet = dietCommandService.createDiet(DietConverter.toDiet(dietCreateDTO), menuList);
-        return ApiResponse.onSuccess(DietConverter.toDietResponseDTO(diet));
+        return ApiResponse.onSuccess(DietConverter.toDietCreateResponseDTO(diet));
     }
 }
