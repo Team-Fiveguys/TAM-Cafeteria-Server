@@ -14,6 +14,7 @@ import lombok.*;
 public class MenuDiet {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JoinColumn(name = "menu_id")

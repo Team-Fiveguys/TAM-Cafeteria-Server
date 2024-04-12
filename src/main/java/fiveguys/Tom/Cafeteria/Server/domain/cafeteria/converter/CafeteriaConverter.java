@@ -14,6 +14,7 @@ public class CafeteriaConverter {
     }
     public static CafeteriaCreateResponseDTO toCafeteriaResponse(Cafeteria cafeteria){
         return CafeteriaCreateResponseDTO.builder()
+                .cafeteriaId(cafeteria.getId())
                 .build();
 
     }

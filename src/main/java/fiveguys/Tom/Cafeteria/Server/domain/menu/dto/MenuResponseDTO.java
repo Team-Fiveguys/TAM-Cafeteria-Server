@@ -1,4 +1,4 @@
-package fiveguys.Tom.Cafeteria.Server.domain.cafeteria.dto.response;
+package fiveguys.Tom.Cafeteria.Server.domain.menu.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class CafeteriaCreateResponseDTO {
-    private Long cafeteriaId;
+public class MenuResponseDTO {
+    private String name;
 }

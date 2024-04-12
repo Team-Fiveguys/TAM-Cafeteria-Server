@@ -12,6 +12,6 @@ public class CafeteriaCommandServiceImpl implements CafeteriaCommandService {
 
     @Override
     public Cafeteria enroll(Cafeteria cafeteria) {
-        return null;
+        return cafeteriaRepository.save(cafeteria);
     }
 }
