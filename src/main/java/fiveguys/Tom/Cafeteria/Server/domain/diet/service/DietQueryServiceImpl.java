@@ -19,8 +19,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DietQueryServiceImpl implements DietQueryService{
     private final DietRepository dietRepository;
+
     @Override
-    public Diet getDiet(DayOfWeek dayOfWeek) {
+    public Diet getDiet(Long dietId) {
+        return dietRepository.findById(dietId).orElseThrow(()-> new GeneralException(ErrorStatus.DIET_NOT_FOUND));
+    }
+
+    @Override
+    public Diet getDietByDay(DayOfWeek dayOfWeek) {
         Diet diet = dietRepository.findByDayOfWeek(dayOfWeek)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.DIET_NOT_FOUND));
         return diet;
@@ -34,8 +40,8 @@ public class DietQueryServiceImpl implements DietQueryService{
     }
 
     @Override
-    public List<Diet> getDietListOfWeek() {
-        List<Diet> dietList = dietRepository.findAll();
+    public List<Diet> getDietListOfWeek(Cafeteria cafeteria, Meals meals) {
+        List<Diet> dietList = dietRepository.findAllByCafeteriaAndMeals(cafeteria, meals);
         dietList.stream()
                 .sorted(Comparator.comparing(Diet::getDayOfWeek))
                 .collect(Collectors.toList());

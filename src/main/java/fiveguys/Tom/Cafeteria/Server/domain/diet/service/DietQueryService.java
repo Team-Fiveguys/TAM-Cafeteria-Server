@@ -9,8 +9,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface DietQueryService {
-    public Diet getDiet(DayOfWeek dayOfWeek);
+
+    public Diet getDiet(Long dietId);
+    public Diet getDietByDay(DayOfWeek dayOfWeek);
 
     public Diet getDiet(Cafeteria cafeteria, DayOfWeek dayOfWeek, Meals meals);
-    public List<Diet> getDietListOfWeek();
+    public List<Diet> getDietListOfWeek(Cafeteria cafeteria, Meals meals);
+
 }
