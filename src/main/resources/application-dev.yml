@@ -23,10 +23,10 @@ cloud:
     s3:
       bucket: ${S3_BUCKET}
       path:
-        feed-image: feedImages
+        diet-photo: diet-photo
     credentials:
-      access-key: ${S3_ACCESS_KEY}
-      secret-key: ${S3_SECRET_KEY}
+      access-key: ${S3_ROLE_ACCESS_KEY}
+      secret-key: ${S3_ROLE_SECRET_KEY}
     region:
       static: ap-northeast-2
     stack:
