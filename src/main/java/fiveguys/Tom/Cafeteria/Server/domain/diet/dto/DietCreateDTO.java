@@ -4,11 +4,13 @@ package fiveguys.Tom.Cafeteria.Server.domain.diet.dto;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.DayOfWeek;
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class DietCreateDTO {
     private List<Long> menuIdList;

@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface DietRepository extends JpaRepository<Diet, Long> {
     public Optional<Diet> findByDayOfWeek(DayOfWeek dayOfWeek);
     Optional<Diet> findByDayOfWeekAndCafeteriaAndMeals(DayOfWeek dayOfWeek, Cafeteria cafeteria, Meals meals);
+    List<Diet> findAllByCafeteriaAndMeals(Cafeteria cafeteria, Meals meals);
 }

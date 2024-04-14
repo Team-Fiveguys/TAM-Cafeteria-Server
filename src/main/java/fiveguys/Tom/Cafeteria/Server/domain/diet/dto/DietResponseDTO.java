@@ -6,6 +6,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseListDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.DayOfWeek;
@@ -14,10 +15,14 @@ import java.time.DayOfWeek;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class DietResponseDTO {
     private Long id;
-    private String imageUri; //이미지 테이블 만들어야 함
+    private DayOfWeek dayOfWeek;
+    private String photoURI;
     private MenuResponseListDTO menuResponseListDTO;
-//
-//    private Cafeteria cafeteria;
+
+    public void setPhotoURI(String photoURI) {
+        this.photoURI = photoURI;
+    }
 }
