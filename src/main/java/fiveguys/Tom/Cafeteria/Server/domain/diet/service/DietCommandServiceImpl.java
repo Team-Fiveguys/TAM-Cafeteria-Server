@@ -1,5 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.domain.diet.service;
 
+import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.MenuDiet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.repository.DietRepository;
@@ -18,7 +19,8 @@ public class DietCommandServiceImpl implements DietCommandService{
     private final MenuQueryService menuQueryService;
 
     @Override
-    public Diet createDiet(Diet diet, List<Long> menuIdList) {
+    public Diet createDiet(Cafeteria cafeteria, Diet diet, List<Long> menuIdList) {
+        diet.setCafeteria(cafeteria);
         Diet savedDiet = dietRepository.save(diet);
         menuIdList.stream()
                 .forEach( id -> {
