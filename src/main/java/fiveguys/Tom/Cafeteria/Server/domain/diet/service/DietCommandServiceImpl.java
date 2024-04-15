@@ -28,4 +28,16 @@ public class DietCommandServiceImpl implements DietCommandService{
                 });
         return savedDiet;
     }
+
+    @Override
+    public Diet addMenu(Diet diet, Menu menu) {
+        diet.addMenu(menu);
+        return diet;
+    }
+
+    @Override
+    public Diet removeMenu(Diet diet, Menu menu) {
+        diet.removeMenu(menu);
+        return diet;
+    }
 }

@@ -8,4 +8,8 @@ import java.util.List;
 
 public interface DietCommandService {
     public Diet createDiet(Cafeteria cafeteria, Diet diet, List<Long> menuIdList);
+
+    public Diet addMenu(Diet diet, Menu menu);
+
+    public Diet removeMenu(Diet diet, Menu menu);
 }

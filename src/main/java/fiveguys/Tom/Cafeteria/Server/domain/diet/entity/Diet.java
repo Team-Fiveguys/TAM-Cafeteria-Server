@@ -2,6 +2,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.diet.entity;
 
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.entity.DietPhoto;
+import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,5 +39,12 @@ public class Diet {
 
     public void setCafeteria(Cafeteria cafeteria) {
         this.cafeteria = cafeteria;
+    }
+    public void addMenu(Menu menu){
+        MenuDiet menuDiet = MenuDiet.createMenuDiet(menu, this);
+        this.menuDietList.add(menuDiet);
+    }
+    public void removeMenu(Menu menu){
+        this.menuDietList.remove(menu);
     }
 }
