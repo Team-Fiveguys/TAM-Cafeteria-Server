@@ -13,6 +13,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.MenuDiet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.service.DietCommandService;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.service.DietQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.converter.MenuConverter;
+import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.service.MenuQueryService;
 import lombok.RequiredArgsConstructor;
@@ -40,29 +41,31 @@ public class AdminDietController {
         return ApiResponse.onSuccess(DietConverter.toDietCreateResponseDTO(diet));
     }
 
-    @PutMapping("/{dietId]/{menuId}")
+    @PutMapping("/{dietId}/{menuId}")
     public ApiResponse<DietResponseDTO> addMenu(@PathVariable(name = "dietId") Long dietId, @PathVariable (name = "menuId")Long menuId){
         Diet diet = dietQueryService.getDiet(dietId);
         Menu menu = menuQueryService.findById(menuId);
         Diet addedDiet = dietCommandService.addMenu(diet, menu);
 
         List<MenuDiet> menuDietList = diet.getMenuDietList();
-        List<Menu> menuList = menuDietList.stream()
+        List<MenuResponseDTO.MenuQueryDTO> menuList = menuDietList.stream()
                 .map(MenuDiet::getMenu)
+                .map(MenuConverter::toMenuQueryDTO)
                 .collect(Collectors.toList());
         DietResponseDTO dietResponseDTO = DietConverter.toDietResponseDTO(addedDiet, MenuConverter.toMenuResponseListDTO(menuList));
         return ApiResponse.onSuccess(dietResponseDTO);
     }
 
-    @DeleteMapping("/{dietId]/{menuId}")
+    @DeleteMapping("/{dietId}/{menuId}")
     public ApiResponse<DietResponseDTO> removeMenu(@PathVariable(name = "dietId") Long dietId, @PathVariable (name = "menuId")Long menuId){
         Diet diet = dietQueryService.getDiet(dietId);
         Menu menu = menuQueryService.findById(menuId);
         Diet removedDiet = dietCommandService.removeMenu(diet, menu);
 
         List<MenuDiet> menuDietList = diet.getMenuDietList();
-        List<Menu> menuList = menuDietList.stream()
+        List<MenuResponseDTO.MenuQueryDTO> menuList = menuDietList.stream()
                 .map(MenuDiet::getMenu)
+                .map(MenuConverter::toMenuQueryDTO)
                 .collect(Collectors.toList());
         DietResponseDTO dietResponseDTO = DietConverter.toDietResponseDTO(removedDiet, MenuConverter.toMenuResponseListDTO(menuList));
         return ApiResponse.onSuccess(dietResponseDTO);

@@ -6,6 +6,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietCreateResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.WeekDietsResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
+import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseListDTO;
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +23,7 @@ public class DietConverter {
         return diet;
     }
 
-    public static DietResponseDTO toDietResponseDTO(Diet diet, MenuResponseListDTO menuResponseListDTO){
+    public static DietResponseDTO toDietResponseDTO(Diet diet, MenuResponseDTO.MenuResponseListDTO menuResponseListDTO){
         return DietResponseDTO.builder()
                 .menuResponseListDTO(menuResponseListDTO)
                 .photoURI(diet.getDietPhoto() != null ? dietPhotoURI + diet.getDietPhoto().getImageKey() : "사진이 등록되어있지 않습니다.")
