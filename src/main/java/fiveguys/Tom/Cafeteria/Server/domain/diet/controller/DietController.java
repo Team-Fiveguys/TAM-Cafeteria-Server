@@ -12,7 +12,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.MenuDiet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.service.DietQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.converter.MenuConverter;
-import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
+import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +37,9 @@ public class DietController {
         Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
         Diet diet = dietQueryService.getDiet(cafeteria, dayOfWeek, meals);
         List<MenuDiet> menuDietList = diet.getMenuDietList();
-        List<Menu> menuList = menuDietList.stream()
+        List<MenuResponseDTO.MenuQueryDTO> menuList = menuDietList.stream()
                 .map(MenuDiet::getMenu)
+                .map(MenuConverter::toMenuQueryDTO)
                 .collect(Collectors.toList());
         DietResponseDTO dietResponseDTO = DietConverter.toDietResponseDTO(diet, MenuConverter.toMenuResponseListDTO(menuList));
         return ApiResponse.onSuccess(dietResponseDTO);
@@ -52,8 +53,9 @@ public class DietController {
         List<DietResponseDTO> dietResponseDTOs = dietListOfWeek.stream()
                 .map(diet -> {
                     List<MenuDiet> menuDietList = diet.getMenuDietList();
-                    List<Menu> menuList = menuDietList.stream()
+                    List<MenuResponseDTO.MenuQueryDTO> menuList = menuDietList.stream()
                             .map(MenuDiet::getMenu)
+                            .map(MenuConverter::toMenuQueryDTO)
                             .collect(Collectors.toList());
                     return DietConverter.toDietResponseDTO(diet, MenuConverter.toMenuResponseListDTO(menuList));
                 })
