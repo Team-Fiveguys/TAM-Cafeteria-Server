@@ -1,7 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.domain.diet.converter;
 
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietCreateDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietCreateResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
@@ -9,7 +8,6 @@ import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.WeekDietsResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseListDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
