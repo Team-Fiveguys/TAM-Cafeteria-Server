@@ -1,5 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.domain.menu.entity;
 
+import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +21,10 @@ public class Menu {
 
     private int likeCount;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "cafeteria_id")
+
+    private Cafeteria cafeteria;
     @JoinColumn(name = "menu_category_id")
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private MenuCategory menuCategory;

@@ -1,15 +1,35 @@
 package fiveguys.Tom.Cafeteria.Server.domain.menu.dto;
 
 
+import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
+import java.util.List;
+
+
 public class MenuResponseDTO {
-    private String name;
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class MenuEnrollDTO{
+        private Long menuId;
+    }
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class MenuQueryDTO{
+        private String name;
+    }
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class MenuResponseListDTO {
+        private List<MenuQueryDTO> menuQueryDTOList;
+    }
 }
