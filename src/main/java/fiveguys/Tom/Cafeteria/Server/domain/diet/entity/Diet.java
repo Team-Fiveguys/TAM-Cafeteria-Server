@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -44,7 +43,8 @@ public class Diet {
         MenuDiet menuDiet = MenuDiet.createMenuDiet(menu, this);
         this.menuDietList.add(menuDiet);
     }
-    public void removeMenu(Menu menu){
-        this.menuDietList.remove(menu);
+    public void remove(MenuDiet menuDiet){
+        this.menuDietList.remove(menuDiet);
+        menuDiet.setDiet(null);
     }
 }
