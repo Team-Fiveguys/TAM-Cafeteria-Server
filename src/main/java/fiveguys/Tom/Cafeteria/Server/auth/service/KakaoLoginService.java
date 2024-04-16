@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class KakoLoginService implements LoginService {
+public class KakaoLoginService implements LoginService {
     private final KakaoApiClient kakaoApiClient;
     private final KakaoAuthClient kakaoAuthClient;
 
