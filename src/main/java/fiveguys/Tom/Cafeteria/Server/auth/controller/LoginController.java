@@ -1,16 +1,16 @@
 package fiveguys.Tom.Cafeteria.Server.auth.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
 import fiveguys.Tom.Cafeteria.Server.auth.converter.LoginConverter;
 import fiveguys.Tom.Cafeteria.Server.auth.dto.LoginRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.auth.dto.LoginResponseDTO;
+import fiveguys.Tom.Cafeteria.Server.auth.feignClient.TokenResponse;
 import fiveguys.Tom.Cafeteria.Server.auth.feignClient.kakao.dto.KakaoResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.JwtToken;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.JwtUtil;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.TokenProvider;
-import fiveguys.Tom.Cafeteria.Server.auth.service.KakoLoginService;
+import fiveguys.Tom.Cafeteria.Server.auth.service.KakaoLoginService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.UserConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserCommandService;
@@ -20,6 +20,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -28,7 +29,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Controller
 @RequiredArgsConstructor
 public class LoginController {
-    private final KakoLoginService kakoLoginService;
+    private final KakaoLoginService kakaoLoginService;
     private final UserQueryService userQueryService;
     private final UserCommandService userCommandService;
     private final TokenProvider tokenProvider;
@@ -61,7 +62,7 @@ public class LoginController {
         // kakaoLoginService.validate(requestDTO.getIdentityToken());
         // ok -> 유저 정보 가져오기
         KakaoResponseDTO.UserInfoResponseDTO userInfo;
-        userInfo = kakoLoginService.getUserInfo(requestDTO.getAccessToken());
+        userInfo = kakaoLoginService.getUserInfo(requestDTO.getAccessToken());
         // 유저 정보에 DB 조회하고 정보 있으면 응답만, 없으면 저장까지, 추가정보 입력 여부에 따라서 응답 다르게
         String socialId = userInfo.getSocialId();
         User user;
@@ -79,10 +80,11 @@ public class LoginController {
     /*
     테스트용 API
      */
-//    @GetMapping("/oauth2/login/kakao")
-//    public ResponseEntity<String> getAccessToken(@RequestParam(name = "code") String code){
-//        TokenResponse tokenResponse = kakaoLoginService.getAccessTokenByCode(code);
-//        return ResponseEntity.ok("accessToken="+ tokenResponse.getAccessToken() +
-//                "\n\nidToken=" + tokenResponse.getIdToken());
-//    }
+    @GetMapping("/oauth2/login/kakao")
+    @ResponseBody
+    public ResponseEntity<String> getAccessToken(@RequestParam(name = "code") String code){
+        TokenResponse tokenResponse = kakaoLoginService.getAccessTokenByCode(code);
+        return ResponseEntity.ok("accessToken="+ tokenResponse.getAccessToken() +
+                "\n\nidToken=" + tokenResponse.getIdToken());
+    }
 }
