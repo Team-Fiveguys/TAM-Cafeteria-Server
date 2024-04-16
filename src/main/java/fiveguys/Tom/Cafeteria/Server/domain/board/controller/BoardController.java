@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/board")
+@RequestMapping("/boards")
 public class BoardController {
 
     @Autowired
@@ -22,18 +22,18 @@ public class BoardController {
     }
 
     // 전체 게시글 조회
-    @GetMapping("/{boardType}")
+    @GetMapping("/boards")
     public List<Board> getAllBoards() {
         return boardService.getAllBoards();
     }
 
     // 특정 게시판의 특정 게시글 조회
-    @GetMapping("/view/type/{boardType}")
+    @GetMapping("/{boardType}/boards")
     public List<Board> getAllBoardsByType(@PathVariable("boardType") BoardType boardType) {
         return boardService.getAllBoardsByType(boardType);
     }
 
-    @GetMapping("/view/id/{id}")
+    @GetMapping("/{id}")
     public Board getBoardById(@PathVariable Long id) {
         return boardService.getBoardById(id);
     }
@@ -52,8 +52,8 @@ public class BoardController {
 
     //게시글 좋아요
     @PostMapping("/{id}/like")
-    public Board toggleLike(@PathVariable Long id) {
-        return boardService.toggleLike(id);
+    public Board toggleLike(@PathVariable Long boardId, @RequestParam Long userId) {
+        return boardService.toggleLike(boardId, userId);
     }
 
 }

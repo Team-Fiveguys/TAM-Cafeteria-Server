@@ -1,8 +1,10 @@
 package fiveguys.Tom.Cafeteria.Server.domain.board.service;
 
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Board;
+import fiveguys.Tom.Cafeteria.Server.domain.board.entity.BoardLike;
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.BoardType;
 import fiveguys.Tom.Cafeteria.Server.domain.board.repository.BoardRepository;
+import fiveguys.Tom.Cafeteria.Server.domain.board.repository.BoardLikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,10 @@ public class BoardService {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private BoardLikeRepository boardLikeRepository;
+
 
     public Board createBoard(Board board) {
         return boardRepository.save(board);
@@ -51,9 +57,23 @@ public class BoardService {
     }
 
     //게시글 좋아요
-    public Board toggleLike(Long boardId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다. id=" + boardId));
-        board.setLikeCount(board.getLikeCount() + 1);
+    public Board toggleLike(Long boardId, Long userId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다. id=" + boardId));
+
+        if (boardLikeRepository.existsByUserIdAndBoardId(userId, boardId)) {
+            // 이미 좋아요를 한 경우, 좋아요 취소 처리
+            boardLikeRepository.deleteByUserIdAndBoardId(userId, boardId);
+            board.setLikeCount(board.getLikeCount() - 1);
+        } else {
+            // 좋아요를 하지 않은 경우, 좋아요 처리
+            BoardLike boardLike = new BoardLike();
+            boardLike.setUserId(userId);
+            boardLike.setBoardId(boardId);
+            boardLikeRepository.save(boardLike);
+            board.setLikeCount(board.getLikeCount() + 1);
+        }
+
         return boardRepository.save(board);
     }
 
