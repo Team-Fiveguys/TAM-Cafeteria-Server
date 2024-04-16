@@ -28,15 +28,15 @@ public class BoardController {
     }
 
     // 특정 게시판의 특정 게시글 조회
-    @GetMapping("/type/{boardType}")
-    public List<Board> getAllBoardsByType(@PathVariable BoardType boardType) {
+    @GetMapping("/view/type/{boardType}")
+    public List<Board> getAllBoardsByType(@PathVariable("boardType") BoardType boardType) {
         return boardService.getAllBoardsByType(boardType);
     }
 
-//    @GetMapping("/{id}")
-//    public Board getBoardById(@PathVariable Long id) {
-//        return boardService.getBoardById(id);
-//    }
+    @GetMapping("/view/id/{id}")
+    public Board getBoardById(@PathVariable Long id) {
+        return boardService.getBoardById(id);
+    }
 
     // 게시글 수정
     @PutMapping("/{id}")
