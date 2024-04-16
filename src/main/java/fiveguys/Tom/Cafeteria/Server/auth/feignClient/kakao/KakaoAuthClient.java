@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "kakao-auth-client", url = "https://kapi.kakao.com", configuration = FeignConfig.class)
+@FeignClient(name = "kakao-auth-client", url = "https://kauth.kakao.com", configuration = FeignConfig.class)
 public interface KakaoAuthClient {
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @PostMapping("/oauth/token")
