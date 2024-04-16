@@ -11,7 +11,7 @@ spring:
     secret: ${JWT_SECRET}
 logging:
   level:
-    com.onnoff.onnoff.auth.feignClient: DEBUG
+    fiveguys.Tom.Cafeteria.Server.auth.feignClient : DEBUG
 apple:
   redirect-uri: ${APPLE_REDIRECT_URI}
   iss: https://appleid.apple.com
