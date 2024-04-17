@@ -29,12 +29,13 @@ public class BoardController {
         return boardService.getAllBoards();
     }
 
-    // 특정 게시판의 특정 게시글 조회
+    // 특정 게시판의 전체 게시글 조회
     @GetMapping("/{boardType}/boards")
     public List<Board> getAllBoardsByType(@PathVariable("boardType") BoardType boardType) {
         return boardService.getAllBoardsByType(boardType);
     }
 
+    //특정 게시글 조회
     @GetMapping("/{id}")
     public Board getBoardById(@PathVariable Long id) {
         return boardService.getBoardById(id);

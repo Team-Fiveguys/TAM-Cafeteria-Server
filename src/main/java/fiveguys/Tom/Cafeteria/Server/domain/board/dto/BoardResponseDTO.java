@@ -10,9 +10,11 @@ import lombok.*;
 @AllArgsConstructor
 public class BoardResponseDTO {
     private Long id;
+    private BoardType boardType;
+    private Long userId;
     private String title;
     private String content;
-    private BoardType boardType;
-    // 기타 필요한 필드
+    private int likeCount;
+    private boolean isAdminPick;
 
 }
