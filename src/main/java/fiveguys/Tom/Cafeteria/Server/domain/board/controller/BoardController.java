@@ -1,5 +1,7 @@
 package fiveguys.Tom.Cafeteria.Server.domain.board.controller;
 
+import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
+import fiveguys.Tom.Cafeteria.Server.domain.board.dto.BoardResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Board;
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.BoardType;
 import fiveguys.Tom.Cafeteria.Server.domain.board.service.BoardService;
@@ -17,8 +19,8 @@ public class BoardController {
 
     // 게시글 생성
     @PostMapping
-    public Board createBoard(@RequestBody Board board) {
-        return boardService.createBoard(board);
+    public ApiResponse<BoardResponseDTO> createBoard(@RequestBody Board board) {
+        return boardService.createBoard(ApiResponse.onSuccess());
     }
 
     // 전체 게시글 조회
