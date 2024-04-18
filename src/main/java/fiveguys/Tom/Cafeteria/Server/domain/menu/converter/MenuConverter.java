@@ -14,11 +14,6 @@ public class MenuConverter {
                 .cafeteria(cafeteria)
                 .build();
     }
-    public static MenuResponseDTO.MenuQueryDTO toMenuResponseDTO(Menu menu){
-        return MenuResponseDTO.MenuQueryDTO.builder()
-                .name(menu.getName())
-                .build();
-    }
     public static MenuResponseDTO.MenuResponseListDTO toMenuResponseListDTO(List<MenuResponseDTO.MenuQueryDTO> menuQueryDTOList){
         return MenuResponseDTO.MenuResponseListDTO.builder()
                 .menuQueryDTOList(menuQueryDTOList)
@@ -31,6 +26,7 @@ public class MenuConverter {
     }
     public static MenuResponseDTO.MenuQueryDTO toMenuQueryDTO(Menu menu){
         return MenuResponseDTO.MenuQueryDTO.builder()
+                .menuId(menu.getId())
                 .name(menu.getName())
                 .build();
     }
