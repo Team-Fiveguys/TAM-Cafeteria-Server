@@ -50,7 +50,6 @@ public class Diet {
     private DietPhoto dietPhoto;
 
     public void setCafeteria(Cafeteria cafeteria) {
-
         this.cafeteria = cafeteria;
     }
 
@@ -70,19 +69,26 @@ public class Diet {
     public void setDateInfo(){
         this.year = localDate.getYear();
         this.month = localDate.getMonthValue();
-        // 시스템의 기본 Locale을 사용하여 WeekFields를 가져옵니다.
-        // 여기서는 대한민국 기준으로 월요일이 한 주의 시작이라고 가정합니다.
-        // 다른 Locale이 필요한 경우 Locale을 변경하세요.
-        LocalDate thursday = localDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.THURSDAY));
+        // 주의 시작을 월요일로 설정
         WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 1);
 
         // 월의 주차 정보를 가져오기 위한 TemporalField
         TemporalField weekOfMonth = weekFields.weekOfMonth();
 
-        // 월의 주차 계산
-        int weekNumber = thursday.get(weekOfMonth);
+        // 현재 주의 월요일 날짜를 구함
+        LocalDate monday = localDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        // 현재 주의 목요일 날짜를 구함
+        LocalDate thursday = localDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.THURSDAY));
 
-        this.week = weekNumber;
-        System.out.println(localDate + "는 " + thursday.getMonthValue() + "월의 " + weekNumber + "주차 입니다.");
+        // 월요일과 목요일이 같은 달에 속하지 않는 경우, 주차 계산을 위해 목요일을 사용
+        if (monday.getMonth() != thursday.getMonth()) {
+            // 목요일이 다음 달에 속하면, 그 주는 다음 달의 첫째 주로 간주
+            // 목요일의 주차 정보를 이용
+            this.week = thursday.get(weekOfMonth);
+        } else {
+            // 그렇지 않으면, 원래 날짜의 주차 정보를 이용
+            this.week = localDate.get(weekOfMonth);
+        }
+        System.out.println(localDate + "는 " + thursday.getMonthValue() + "월의 " + this.week+ "주차 입니다.");
     }
 }
