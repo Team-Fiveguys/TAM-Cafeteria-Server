@@ -11,9 +11,7 @@ import java.util.List;
 public interface DietQueryService {
 
     public Diet getDiet(Long dietId);
-    public Diet getDietByDay(DayOfWeek dayOfWeek);
-
-    public Diet getDiet(Cafeteria cafeteria, DayOfWeek dayOfWeek, Meals meals);
-    public List<Diet> getDietListOfWeek(Cafeteria cafeteria, Meals meals);
+    public Diet getDiet(Cafeteria cafeteria, LocalDate localDate, Meals meals);
+    public List<Diet> getDietListOfWeek(Cafeteria cafeteria, int year, int month, int weekNum, Meals meals);
 
 }

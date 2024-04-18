@@ -5,8 +5,6 @@ import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.converter.DietConverter;
-import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietCreateDTO;
-import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietCreateResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.MenuDiet;
@@ -19,13 +17,12 @@ import fiveguys.Tom.Cafeteria.Server.domain.menu.service.MenuQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.DayOfWeek;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin/diet")
+@RequestMapping("/admin/diets")
 public class AdminDietController {
 
     private final DietCommandService dietCommandService;
@@ -33,8 +30,11 @@ public class AdminDietController {
     private final MenuQueryService menuQueryService;
     private final CafeteriaQueryService cafeteriaQueryService;
     @PostMapping("/")
-    public ApiResponse<DietCreateResponseDTO> getDiet(@RequestBody DietCreateDTO dietCreateDTO){
-        List<Long> menuList = dietCreateDTO.getMenuIdList();
+    public ApiResponse<DietResponseDTO.DietCreateDTO> createDiet(@RequestBody DietResponseDTO.DietCreateDTO dietCreateDTO){
+        List<Long> menuIdList = dietCreateDTO.getMenuIdList();
+        List<Menu> menuList = menuIdList.stream()
+                .map(menuId -> menuQueryService.findById(menuId))
+                .collect(Collectors.toList());
         Long cafeteriaId = dietCreateDTO.getCafeteriaId();
         Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
         Diet diet = dietCommandService.createDiet(cafeteria, DietConverter.toDiet(dietCreateDTO), menuList);
@@ -42,7 +42,7 @@ public class AdminDietController {
     }
 
     @PutMapping("/{dietId}/{menuId}")
-    public ApiResponse<DietResponseDTO> addMenu(@PathVariable(name = "dietId") Long dietId, @PathVariable (name = "menuId")Long menuId){
+    public ApiResponse<DietResponseDTO.DietQueryDTO> addMenu(@PathVariable(name = "dietId") Long dietId, @PathVariable (name = "menuId")Long menuId){
         Diet diet = dietQueryService.getDiet(dietId);
         Menu menu = menuQueryService.findById(menuId);
         Diet addedDiet = dietCommandService.addMenu(diet, menu);
@@ -52,12 +52,12 @@ public class AdminDietController {
                 .map(MenuDiet::getMenu)
                 .map(MenuConverter::toMenuQueryDTO)
                 .collect(Collectors.toList());
-        DietResponseDTO dietResponseDTO = DietConverter.toDietResponseDTO(addedDiet, MenuConverter.toMenuResponseListDTO(menuList));
-        return ApiResponse.onSuccess(dietResponseDTO);
+        DietResponseDTO.DietQueryDTO dietQueryDTO = DietConverter.toDietResponseDTO(addedDiet, MenuConverter.toMenuResponseListDTO(menuList));
+        return ApiResponse.onSuccess(dietQueryDTO);
     }
 
     @DeleteMapping("/{dietId}/{menuId}")
-    public ApiResponse<DietResponseDTO> removeMenu(@PathVariable(name = "dietId") Long dietId, @PathVariable (name = "menuId")Long menuId){
+    public ApiResponse<DietResponseDTO.DietQueryDTO> removeMenu(@PathVariable(name = "dietId") Long dietId, @PathVariable (name = "menuId")Long menuId){
         Diet diet = dietQueryService.getDiet(dietId);
         Menu menu = menuQueryService.findById(menuId);
         Diet removedDiet = dietCommandService.removeMenu(diet, menu);
@@ -67,7 +67,13 @@ public class AdminDietController {
                 .map(MenuDiet::getMenu)
                 .map(MenuConverter::toMenuQueryDTO)
                 .collect(Collectors.toList());
-        DietResponseDTO dietResponseDTO = DietConverter.toDietResponseDTO(removedDiet, MenuConverter.toMenuResponseListDTO(menuList));
-        return ApiResponse.onSuccess(dietResponseDTO);
+        DietResponseDTO.DietQueryDTO dietQueryDTO = DietConverter.toDietResponseDTO(removedDiet, MenuConverter.toMenuResponseListDTO(menuList));
+        return ApiResponse.onSuccess(dietQueryDTO);
+    }
+    @PatchMapping("/{dietId}/soldOut")
+    public ApiResponse<DietResponseDTO.SwitchSoldOutResponseDTO> checkSoldOut(@PathVariable(name = "dietId") Long dietId){
+        Diet diet = dietQueryService.getDiet(dietId);
+        dietCommandService.switchSoldOut(diet);
+        return ApiResponse.onSuccess(DietConverter.toSwitchSoldOutResponseDTOO(diet.isSoldOut()));
     }
 }
