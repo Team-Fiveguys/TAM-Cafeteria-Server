@@ -50,4 +50,10 @@ public class DietCommandServiceImpl implements DietCommandService{
         diet.switchSoldOut();
         return diet;
     }
+
+    @Override
+    public Diet switchDayOff(Diet diet) {
+        diet.switchDayOff();
+        return diet;
+    }
 }
