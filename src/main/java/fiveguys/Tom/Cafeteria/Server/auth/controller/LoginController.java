@@ -59,7 +59,7 @@ public class LoginController {
     @PostMapping("/oauth2/kakao/token/validate")
     public ApiResponse<LoginResponseDTO.LoginDTO> validateKakoToken(@RequestBody @Valid LoginRequestDTO.KakaoTokenValidateDTO requestDTO)  {
         // identity 토큰 검증
-        // kakaoLoginService.validate(requestDTO.getIdentityToken());
+         kakaoLoginService.validate(requestDTO.getIdentityToken());
         // ok -> 유저 정보 가져오기
         KakaoResponseDTO.UserInfoResponseDTO userInfo;
         userInfo = kakaoLoginService.getUserInfo(requestDTO.getAccessToken());

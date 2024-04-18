@@ -10,6 +10,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.user.entity.SocialType;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SocialTokenValidatorImpl implements SocialTokenValidator{
     private final KakaoAuthClient kakaoAuthClient;
     private final AppleAuthClient appleAuthClient;
@@ -48,6 +50,7 @@ public class SocialTokenValidatorImpl implements SocialTokenValidator{
         PublicKey publicKey = jwkToPublickey(matchingJwk);
         if( socialType.equals(SocialType.KAKAO)){
             verifyToken(token, kakaoIss, kakaoAud, publicKey);
+            log.info("카카오 ID 토큰 인증 성공");
         }
         else {
             verifyToken(token, appleIss, appleAud, publicKey);
