@@ -1,15 +1,18 @@
 package fiveguys.Tom.Cafeteria.Server.domain.board.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import fiveguys.Tom.Cafeteria.Server.domain.board.entity.BoardType;
+import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
-public class BoardPatchDTO {
+@ToString
+public class BoardUpdateDTO {
+    private BoardType boardType;
     private String title;
     private String content;
     private int likeCount;
     private boolean isAdminPick;
+
 }

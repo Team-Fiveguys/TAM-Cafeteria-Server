@@ -5,17 +5,13 @@ import lombok.*;
 
 @Getter
 @Setter
-@Builder
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
-public class BoardResponseDTO {
-    private Long id;
+@NoArgsConstructor
+@ToString
+public class BoardCreateDTO {
     private BoardType boardType;
     private Long userId;
     private String title;
     private String content;
-    private int likeCount;
-    private boolean isAdminPick;
 
 }
