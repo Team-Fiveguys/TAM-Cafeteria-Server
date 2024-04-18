@@ -80,6 +80,13 @@ public class AdminDietController {
     public ApiResponse<DietResponseDTO.SwitchSoldOutResponseDTO> checkSoldOut(@PathVariable(name = "dietId") Long dietId){
         Diet diet = dietQueryService.getDiet(dietId);
         dietCommandService.switchSoldOut(diet);
-        return ApiResponse.onSuccess(DietConverter.toSwitchSoldOutResponseDTOO(diet.isSoldOut()));
+        return ApiResponse.onSuccess(DietConverter.toSwitchSoldOutResponseDTO(diet.isSoldOut()));
+    }
+    @Operation(summary = "해당 식단 날짜의 휴무를 체크하는 API", description = "토글 형식으로 휴무를 표시한다 응답으로 dayOff가 true이면 휴무")
+    @PatchMapping("/{dietId}/dayOff")
+    public ApiResponse<DietResponseDTO.SwitchDayOffResponseDTO> checkDayOff(@PathVariable(name = "dietId") Long dietId){
+        Diet diet = dietQueryService.getDiet(dietId);
+        dietCommandService.switchDayOff(diet);
+        return ApiResponse.onSuccess(DietConverter.toSwitchDayOffResponseDTO(diet.isDayOff()));
     }
 }

@@ -15,4 +15,6 @@ public interface DietCommandService {
 
     public Diet switchSoldOut(Diet diet);
 
+    public Diet switchDayOff(Diet diet);
+
 }

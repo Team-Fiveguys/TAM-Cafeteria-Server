@@ -18,6 +18,7 @@ public class DietConverter {
                 .meals(dietCreateDTO.getMeals())
                 .localDate(dietCreateDTO.getDate())
                 .menuDietList(new ArrayList<>())
+                .dayOff(dietCreateDTO.isDayOff())
                 .build();
         return diet;
     }
@@ -26,7 +27,7 @@ public class DietConverter {
         return DietResponseDTO.DietQueryDTO.builder()
                 .menuResponseListDTO(menuResponseListDTO)
                 .photoURI(diet.getDietPhoto() != null ? dietPhotoURI + diet.getDietPhoto().getImageKey() : "사진이 등록되어있지 않습니다.")
-             //   .date(diet.getDate())
+                .dayOff(diet.isDayOff())
                 .build();
     }
     public static DietResponseDTO.DietCreateDTO toDietCreateResponseDTO(Diet diet){
@@ -42,9 +43,14 @@ public class DietConverter {
                 .dietResponseDTOList(dietResponseDTOList)
                 .build();
     }
-    public static DietResponseDTO.SwitchSoldOutResponseDTO toSwitchSoldOutResponseDTOO(boolean isSoldOut){
+    public static DietResponseDTO.SwitchSoldOutResponseDTO toSwitchSoldOutResponseDTO(boolean isSoldOut){
         return DietResponseDTO.SwitchSoldOutResponseDTO.builder()
                 .isSoldOut(isSoldOut)
+                .build();
+    }
+    public static DietResponseDTO.SwitchDayOffResponseDTO toSwitchDayOffResponseDTO(boolean isDayOff){
+        return DietResponseDTO.SwitchDayOffResponseDTO.builder()
+                .isDayOff(isDayOff)
                 .build();
     }
 }

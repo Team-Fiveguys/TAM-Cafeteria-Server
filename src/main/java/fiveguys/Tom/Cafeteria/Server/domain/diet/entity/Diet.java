@@ -31,6 +31,8 @@ public class Diet {
 
     private boolean soldOut;
 
+    private boolean dayOff;
+
     private LocalDate localDate; // 나중에 과거의 식단까지 볼 수 있도록 확장하면 날짜로 수정할 예정
 
     private int year;
@@ -64,6 +66,10 @@ public class Diet {
 
     public void switchSoldOut(){
         this.soldOut = this.soldOut ? false : true;
+    }
+
+    public void switchDayOff(){
+        this.dayOff = this.dayOff ? false : true;
     }
 
     public void setDateInfo(){
