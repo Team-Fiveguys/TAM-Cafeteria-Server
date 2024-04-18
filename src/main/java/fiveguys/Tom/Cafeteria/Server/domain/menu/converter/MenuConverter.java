@@ -3,7 +3,6 @@ package fiveguys.Tom.Cafeteria.Server.domain.menu.converter;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
-import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseListDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
 
 import java.util.List;

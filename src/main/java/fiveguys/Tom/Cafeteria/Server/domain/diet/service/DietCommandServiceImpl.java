@@ -19,12 +19,14 @@ import java.util.List;
 @Transactional
 public class DietCommandServiceImpl implements DietCommandService{
     private final DietRepository dietRepository;
-    private final MenuQueryService menuQueryService;
     private final MenuDietRepository menuDietRepository;
 
     @Override
-    public Diet createDiet(Cafeteria cafeteria, Diet diet, List<Long> menuIdList) {
+    public Diet createDiet(Cafeteria cafeteria, Diet diet, List<Menu> menuList) {
+        menuList.stream()
+                .forEach( (menu) ->MenuDiet.createMenuDiet(menu, diet));
         diet.setCafeteria(cafeteria);
+        diet.setDateInfo();
         Diet savedDiet = dietRepository.save(diet);
         return savedDiet;
     }
@@ -37,9 +39,15 @@ public class DietCommandServiceImpl implements DietCommandService{
 
     @Override
     public Diet removeMenu(Diet diet, Menu menu) {
-        MenuDiet menuDiet = menuDietRepository.findByDietAndMenu(diet, menu);
+        MenuDiet menuDiet = menuDietRepository.findFirstByDietAndMenu(diet, menu);
         diet.remove(menuDiet);
         menuDietRepository.delete(menuDiet);
+        return diet;
+    }
+
+    @Override
+    public Diet switchSoldOut(Diet diet) {
+        diet.switchSoldOut();
         return diet;
     }
 }

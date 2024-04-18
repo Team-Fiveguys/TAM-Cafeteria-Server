@@ -29,6 +29,7 @@ public class MenuDiet {
         MenuDiet menuDiet = new MenuDiet();
         menuDiet.setDiet(diet);
         menuDiet.setMenu(menu);
+        diet.getMenuDietList().add(menuDiet);
         return menuDiet;
     }
 }
