@@ -7,11 +7,12 @@ import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.repository.DietRepository;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
-import java.util.Comparator;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -26,25 +27,18 @@ public class DietQueryServiceImpl implements DietQueryService{
     }
 
     @Override
-    public Diet getDietByDay(DayOfWeek dayOfWeek) {
-        Diet diet = dietRepository.findByDayOfWeek(dayOfWeek)
+    public Diet getDiet(Cafeteria cafeteria, LocalDate localDate, Meals meals) {
+        Diet diet = dietRepository.findByCafeteriaAndLocalDateAndMeals(cafeteria, localDate, meals)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.DIET_NOT_FOUND));
         return diet;
     }
 
     @Override
-    public Diet getDiet(Cafeteria cafeteria, DayOfWeek dayOfWeek, Meals meals) {
-        Diet diet = dietRepository.findByDayOfWeekAndCafeteriaAndMeals(dayOfWeek, cafeteria, meals)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.DIET_NOT_FOUND));
-        return diet;
-    }
-
-    @Override
-    public List<Diet> getDietListOfWeek(Cafeteria cafeteria, Meals meals) {
-        List<Diet> dietList = dietRepository.findAllByCafeteriaAndMeals(cafeteria, meals);
+    public List<Diet> getDietListOfWeek(Cafeteria cafeteria, int year, int month, int weekNum, Meals meals) {
+        List<Diet> dietList = dietRepository
+                .findAllByCafeteriaAndYearAndMonthAndWeekAndMeals(cafeteria, year, month, weekNum, meals);
         dietList.stream()
-                .sorted(Comparator.comparing(Diet::getDayOfWeek))
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparing(Diet::getLocalDate));
         return dietList;
     }
 }

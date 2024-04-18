@@ -6,11 +6,11 @@ import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface DietRepository extends JpaRepository<Diet, Long> {
-    public Optional<Diet> findByDayOfWeek(DayOfWeek dayOfWeek);
-    Optional<Diet> findByDayOfWeekAndCafeteriaAndMeals(DayOfWeek dayOfWeek, Cafeteria cafeteria, Meals meals);
-    List<Diet> findAllByCafeteriaAndMeals(Cafeteria cafeteria, Meals meals);
+    Optional<Diet> findByCafeteriaAndLocalDateAndMeals(Cafeteria cafeteria, LocalDate date, Meals meals);
+    List<Diet> findAllByCafeteriaAndYearAndMonthAndWeekAndMeals(Cafeteria cafeteria, int year, int month, int week, Meals meals);
 }

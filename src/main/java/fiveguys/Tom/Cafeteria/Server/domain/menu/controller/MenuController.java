@@ -7,18 +7,21 @@ import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryServ
 import fiveguys.Tom.Cafeteria.Server.domain.menu.converter.MenuConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.service.MenuCommandService;
+import fiveguys.Tom.Cafeteria.Server.domain.menu.service.MenuQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/menu")
+@RequestMapping("/menus")
 public class MenuController {
+    private final MenuQueryService menuQueryService;
     private final MenuCommandService menuCommandService;
     private final CafeteriaQueryService cafeteriaQueryService;
 
@@ -29,5 +32,16 @@ public class MenuController {
         Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
         Long enrolledId = menuCommandService.enroll(MenuConverter.toMenu(menuEnrollDTO, cafeteria));
         return ApiResponse.onSuccess(MenuConverter.toEnrollResponseDTO(enrolledId));
+    }
+
+    @Operation(summary = "식당의 전 메뉴를 조회하는 API", description = "식당의 ID를 받아서 전체 메뉴명을 응답")
+    @GetMapping("")
+    public ApiResponse<MenuResponseDTO.MenuResponseListDTO> getAllMenu(@RequestParam(name = "cafeteriaId") Long cafeteriaId){
+        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
+        List<Menu> menuList = menuQueryService.getAllMenu(cafeteria);
+        List<MenuResponseDTO.MenuQueryDTO> menuQueryDTOList = menuList.stream()
+                .map(menu -> MenuConverter.toMenuQueryDTO(menu))
+                .collect(Collectors.toList());
+        return ApiResponse.onSuccess(MenuConverter.toMenuResponseListDTO(menuQueryDTOList));
     }
 }
