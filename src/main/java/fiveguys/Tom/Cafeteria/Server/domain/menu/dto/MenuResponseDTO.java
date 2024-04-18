@@ -24,6 +24,7 @@ public class MenuResponseDTO {
     @NoArgsConstructor
     @Getter
     public static class MenuQueryDTO{
+        private Long menuId;
         private String name;
     }
     @Builder
