@@ -13,7 +13,6 @@ public class DietRequestDTO {
     @NoArgsConstructor
     @Getter
     public static class DietQueryDTO{
-
         private Long cafeteriaId;
         private Meals meals;
         private LocalDate localDate;
@@ -28,6 +27,5 @@ public class DietRequestDTO {
         private int month;
         private int weekNum;
         private Meals meals;
-        private LocalDate localDate;
     }
 }
