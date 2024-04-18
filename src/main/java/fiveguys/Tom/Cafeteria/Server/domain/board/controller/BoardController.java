@@ -1,7 +1,7 @@
 package fiveguys.Tom.Cafeteria.Server.domain.board.controller;
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
-import fiveguys.Tom.Cafeteria.Server.domain.board.dto.BoardResponseDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.board.dto.*;
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Board;
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.BoardType;
 import fiveguys.Tom.Cafeteria.Server.domain.board.service.BoardService;
@@ -19,14 +19,9 @@ public class BoardController {
 
     // 게시글 생성
     @PostMapping
-    public ApiResponse<BoardResponseDTO> createBoard(@RequestBody Board board) {
-        return boardService.createBoard(ApiResponse.onSuccess());
-    }
-
-    // 전체 게시글 조회
-    @GetMapping("/boards")
-    public List<Board> getAllBoards() {
-        return boardService.getAllBoards();
+    public ApiResponse<Board> createBoard(@RequestBody BoardCreateDTO boardCreateDTO) {
+        Board board = boardService.createBoard(boardCreateDTO);
+        return ApiResponse.onSuccess(board);
     }
 
     // 특정 게시판의 전체 게시글 조회
@@ -37,14 +32,16 @@ public class BoardController {
 
     //특정 게시글 조회
     @GetMapping("/{id}")
-    public Board getBoardById(@PathVariable Long id) {
-        return boardService.getBoardById(id);
+    public ApiResponse<BoardResponseDTO> getBoardById(@PathVariable Long id) {
+        BoardResponseDTO boardResponseDTO = boardService.getBoardById(id);
+        return ApiResponse.onSuccess(boardResponseDTO);
     }
 
     // 게시글 수정
     @PutMapping("/{id}")
-    public Board updateBoard(@PathVariable Long id, @RequestBody Board board) {
-        return boardService.updateBoard(id, board);
+    public ApiResponse<BoardResponseDTO> updateBoard(@PathVariable Long id, @RequestBody BoardUpdateDTO boardUpdateDTO) {
+        BoardResponseDTO updatedBoard = boardService.updateBoard(id, boardUpdateDTO);
+        return ApiResponse.onSuccess(updatedBoard);
     }
 
     // 게시글 삭제
@@ -55,8 +52,9 @@ public class BoardController {
 
     //게시글 좋아요
     @PostMapping("/{id}/like")
-    public Board toggleLike(@PathVariable Long boardId, @RequestParam Long userId) {
-        return boardService.toggleLike(boardId, userId);
+    public ApiResponse<BoardResponseDTO> toggleLike(@PathVariable Long id, @RequestParam Long userId) {
+        BoardResponseDTO boardResponseDTO = boardService.toggleLike(id, userId);
+        return ApiResponse.onSuccess(boardResponseDTO);
     }
 
 }
