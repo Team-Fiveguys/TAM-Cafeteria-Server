@@ -12,6 +12,7 @@ import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.JwtUtil;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.TokenProvider;
 import fiveguys.Tom.Cafeteria.Server.auth.service.KakaoLoginService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.UserConverter;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserCommandService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
@@ -74,7 +75,7 @@ public class LoginController {
             user = userCommandService.create(user);
         }
         // 응답본문에 토큰 추가
-        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()));
+        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()), Role.MEMBER);
         return ApiResponse.onSuccess(LoginConverter.toLoginDTO(token.getAccessToken(), token.getRefreshToken()));
     }
     /*

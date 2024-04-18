@@ -8,6 +8,7 @@ package fiveguys.Tom.Cafeteria.Server.filter;
 import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.JwtUtil;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.TokenProvider;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -49,6 +50,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try{
             // 얻은 아이디로 유저 조회하기
             Long userId = Long.valueOf(jwtUtil.getUserId(accessToken));
+            if( currentPath.startsWith("/admin")) {
+                // admin role이 필요한 요청
+                String requesterRole = jwtUtil.getRole(accessToken);
+                log.info("requesterRole = {} ", requesterRole);
+                if(!requesterRole.equals(Role.ADMIN.toString())){
+                    // 요청자가 admin Role이 아니면 인가하지 않음
+                    response.sendError(401, "Unauthorized");
+                }
+            }
             // 조회한 유저id ThreadLocal에 저장하기
             UserContext.setUserId(userId);
             filterChain.doFilter(request, response);
