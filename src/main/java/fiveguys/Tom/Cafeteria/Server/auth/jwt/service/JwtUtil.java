@@ -36,7 +36,7 @@ public class JwtUtil {
     public JwtToken generateToken(String id, Role role) {
         // refreshToken과 accessToken을 생성한다.
         String refreshToken = generateRefreshToken(id, role);
-        String accessToken = generateAccessToken(id);
+        String accessToken = generateAccessToken(id, role);
         log.info("accessToken = {}", accessToken);
         return new JwtToken(accessToken, refreshToken);
     }
@@ -67,7 +67,7 @@ public class JwtUtil {
     }
 
 
-    public String generateAccessToken(String id) {
+    public String generateAccessToken(String id, Role role) {
 
         long tokenPeriod = 24 * 1000L * 60L * 60L; // 60분 * 24
         Claims claims = Jwts.claims()
