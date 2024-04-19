@@ -30,5 +30,10 @@ public class User{
 
     private String email;
 
-
+    public static void setRoleAdmin(User user) {
+        user.role = Role.ADMIN;
+    }
+    public static void setRoleMember(User user) {
+        user.role = Role.MEMBER;
+    }
 }
