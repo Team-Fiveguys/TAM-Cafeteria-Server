@@ -1,6 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.auth.feignClient.apple;
 
-import fiveguys.Tom.Cafeteria.Server.auth.feignClient.JwkResponse;
+import fiveguys.Tom.Cafeteria.Server.auth.feignClient.dto.JwkResponse;
 import fiveguys.Tom.Cafeteria.Server.auth.feignClient.TokenResponse;
 import fiveguys.Tom.Cafeteria.Server.auth.feignClient.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;

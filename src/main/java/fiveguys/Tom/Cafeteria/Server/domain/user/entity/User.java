@@ -30,10 +30,20 @@ public class User{
 
     private String email;
 
+    private String appleRefreshToken;
+
     public static void setRoleAdmin(User user) {
         user.role = Role.ADMIN;
     }
     public static void setRoleMember(User user) {
         user.role = Role.MEMBER;
+    }
+
+    public static void setAppleRefreshToken(User user, String appleRefreshToken){
+        user.setAppleRefreshToken(appleRefreshToken);
+    }
+
+    private void setAppleRefreshToken(String appleRefreshToken) {
+        this.appleRefreshToken = appleRefreshToken;
     }
 }
