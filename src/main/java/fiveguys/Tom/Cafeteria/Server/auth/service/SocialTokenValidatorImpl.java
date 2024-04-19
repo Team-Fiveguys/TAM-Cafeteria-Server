@@ -3,7 +3,7 @@ package fiveguys.Tom.Cafeteria.Server.auth.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
-import fiveguys.Tom.Cafeteria.Server.auth.feignClient.JwkResponse;
+import fiveguys.Tom.Cafeteria.Server.auth.feignClient.dto.JwkResponse;
 import fiveguys.Tom.Cafeteria.Server.auth.feignClient.apple.AppleAuthClient;
 import fiveguys.Tom.Cafeteria.Server.auth.feignClient.kakao.KakaoAuthClient;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.SocialType;

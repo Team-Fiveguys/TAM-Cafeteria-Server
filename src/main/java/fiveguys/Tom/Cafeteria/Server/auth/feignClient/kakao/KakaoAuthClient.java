@@ -2,7 +2,7 @@ package fiveguys.Tom.Cafeteria.Server.auth.feignClient.kakao;
 
 
 import feign.Headers;
-import fiveguys.Tom.Cafeteria.Server.auth.feignClient.JwkResponse;
+import fiveguys.Tom.Cafeteria.Server.auth.feignClient.dto.JwkResponse;
 import fiveguys.Tom.Cafeteria.Server.auth.feignClient.TokenResponse;
 import fiveguys.Tom.Cafeteria.Server.auth.feignClient.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;

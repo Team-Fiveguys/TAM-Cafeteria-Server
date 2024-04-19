@@ -1,4 +1,4 @@
-package fiveguys.Tom.Cafeteria.Server.auth.feignClient;
+package fiveguys.Tom.Cafeteria.Server.auth.feignClient.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
