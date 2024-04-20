@@ -36,7 +36,19 @@ public enum ErrorStatus implements BaseCode {
     CAFETERIA_NOT_FOUND(HttpStatus.NOT_FOUND, "CAFETERIA4001", "해당 식당 id가 존재하지 않습니다."),
     CAFETERIA_IS_EMPTY(HttpStatus.BAD_REQUEST, "CAFETERIA4002", "식당은 null일 수 없습니다."),
     CAFETERIA_IS_BLANK(HttpStatus.BAD_REQUEST, "CAFETERIA4003", "식당은 공백일 수 없습니다."),
-    CAFETERIA_TOO_LONG(HttpStatus.BAD_REQUEST, "CAFETERIA4004", "해당 식당의 길이가 100을 넘어갑니다.");
+    CAFETERIA_TOO_LONG(HttpStatus.BAD_REQUEST, "CAFETERIA4004", "해당 식당의 길이가 100을 넘어갑니다."),
+
+    // 로그인 관련 에러
+    INVALID_TOKEN_ERROR(HttpStatus.UNAUTHORIZED, "LOGIN4001", "토큰값이 잘못되었거나 유효하지 않습니다."),
+    INVALID_ARGUMENT_ERROR(HttpStatus.BAD_REQUEST, "LOGIN4002", "필수인자가 포함되지 않거나 인자값의 데이터 타입 또는 범위가 적절하지 않습니다."),
+    INVALID_ENUM_VALUE(HttpStatus.BAD_REQUEST, "LOGIN4003", "추가로 입력한 업무분야나 연차의 형식이 올바르지 않습니다."),
+    EMAIL_DUPLICATED_ERROR(HttpStatus.BAD_REQUEST, "LOGIN4004","입력한 이메일로 가입한 아이디가 있습니다."),
+    AUTHCODE_NOT_MATCH(HttpStatus.BAD_REQUEST, "LOGIN4005", "입력한 검증코드가 올바르지 않습니다."),
+    TEMPORARY_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR , "LOGIN5000", "카카오 플랫폼 서비스의 일시적 내부 장애입니다. 잠시후에 다시 시도해주세요"),
+    EMAIL_SENDER_IS_NULL(HttpStatus.INTERNAL_SERVER_ERROR, "LOGIN5001", "서버내의 이메일 sender가 정해지지 않았습니다.");
+
+
+
 
 
     private final HttpStatus httpStatus;

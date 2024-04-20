@@ -13,6 +13,13 @@ public class UserQueryServiceImpl implements UserQueryService{
     private final UserRepository userRepository;
 
     @Override
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND)
+                );
+    }
+
+    @Override
     public User getUserBySocialId(String socialId) {
         return userRepository.findBySocialId(socialId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND)
@@ -22,5 +29,10 @@ public class UserQueryServiceImpl implements UserQueryService{
     @Override
     public boolean isExistBySocialId(String socialId) {
         return userRepository.existsBySocialId(socialId);
+    }
+
+    @Override
+    public boolean isExistByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 }

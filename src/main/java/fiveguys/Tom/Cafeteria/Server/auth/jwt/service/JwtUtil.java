@@ -2,6 +2,7 @@ package fiveguys.Tom.Cafeteria.Server.auth.jwt.service;
 
 
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.JwtToken;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -32,21 +33,22 @@ public class JwtUtil {
     }
 
 
-    public JwtToken generateToken(String id) {
+    public JwtToken generateToken(String id, Role role) {
         // refreshToken과 accessToken을 생성한다.
-        String refreshToken = generateRefreshToken(id);
-        String accessToken = generateAccessToken(id);
+        String refreshToken = generateRefreshToken(id, role);
+        String accessToken = generateAccessToken(id, role);
         log.info("accessToken = {}", accessToken);
         return new JwtToken(accessToken, refreshToken);
     }
 
-    public String generateRefreshToken(String id) {
+    public String generateRefreshToken(String id, Role role) {
         // 토큰의 유효 기간을 밀리초 단위로 설정.
         long refreshPeriod = 1000L * 60L * 60L * 24L * 14; // 2주
 
         // 새로운 클레임 객체를 생성하고, 아이디를 셋
         Claims claims = Jwts.claims()
                 .subject(id)
+                .add("role", role)
                 .build();
         // 현재 시간과 날짜를 가져온다.
         Date now = new Date();
@@ -65,11 +67,12 @@ public class JwtUtil {
     }
 
 
-    public String generateAccessToken(String id) {
+    public String generateAccessToken(String id, Role role) {
 
-        long tokenPeriod = 1000L * 60L * 60L; // 60분
+        long tokenPeriod = 24 * 1000L * 60L * 60L; // 60분 * 24
         Claims claims = Jwts.claims()
                 .subject(id)
+                .add("role", role)
                 .build();
 
         Date now = new Date();
@@ -94,5 +97,15 @@ public class JwtUtil {
                 .parseSignedClaims(token)// 주어진 토큰을 파싱하여 Claims 객체를 얻는다.
                 .getPayload()
                 .getSubject();
+    }
+
+    // 토큰에서 ROLE(권한)만 추출한다.
+    public String getRole(String token) {
+        return Jwts.parser()
+                .verifyWith(secretkey)
+                .build() // 비밀키를 설정하여 파서를 빌드.
+                .parseSignedClaims(token)// 주어진 토큰을 파싱하여 Claims 객체를 얻는다.
+                .getPayload()
+                .get("role", String.class);
     }
 }

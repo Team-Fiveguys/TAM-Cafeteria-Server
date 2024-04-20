@@ -5,6 +5,7 @@ import fiveguys.Tom.Cafeteria.Server.auth.feignClient.TokenResponse;
 import fiveguys.Tom.Cafeteria.Server.auth.feignClient.kakao.KakaoApiClient;
 import fiveguys.Tom.Cafeteria.Server.auth.feignClient.kakao.KakaoAuthClient;
 import fiveguys.Tom.Cafeteria.Server.auth.feignClient.kakao.dto.KakaoResponseDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.SocialType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class KakaoLoginService implements LoginService {
     private final KakaoApiClient kakaoApiClient;
     private final KakaoAuthClient kakaoAuthClient;
+    private final SocialTokenValidator validator;
 
     @Value("${kakao.client-id}")
     private String clientId;
@@ -38,7 +40,8 @@ public class KakaoLoginService implements LoginService {
     }
 
     @Override
-    public void validate(String accessToken) {
-
+    public void validate(String idToken) {
+        String cleanedAccessToken = cleanToken(idToken);
+        validator.validate(cleanedAccessToken, SocialType.KAKAO);
     }
 }
