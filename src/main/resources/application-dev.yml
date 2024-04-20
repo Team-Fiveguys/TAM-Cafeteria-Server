@@ -18,6 +18,10 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+  data:
+    redis:
+      host: 10.0.0.224
+      port: 6379
 cloud:
   aws:
     s3:
