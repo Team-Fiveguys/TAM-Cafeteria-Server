@@ -30,4 +30,9 @@ public class UserQueryServiceImpl implements UserQueryService{
     public boolean isExistBySocialId(String socialId) {
         return userRepository.existsBySocialId(socialId);
     }
+
+    @Override
+    public boolean isExistByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
 }
