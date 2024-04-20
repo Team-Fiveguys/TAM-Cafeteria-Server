@@ -2,6 +2,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.user.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 @Getter
@@ -28,8 +29,9 @@ public class User{
 
     private String name;
 
+    @Email
     private String email;
-
+    private String password;
     private String appleRefreshToken;
 
     public static void setRoleAdmin(User user) {
