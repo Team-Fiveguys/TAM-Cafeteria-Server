@@ -32,7 +32,14 @@ public class LoginRequestDTO {
     public static class SendAuthCodeDTO{
         @Email
         private String email;
-        private String name;
-        private Sex sex;
+//        private String name;
+//        private String password;
+//        private Sex sex;
+    }
+    @Getter
+    public static class VerifyAuthCodeDTO{
+        @Email
+        private String email;
+        private String authCode;
     }
 }

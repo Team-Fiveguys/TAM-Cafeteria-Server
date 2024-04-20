@@ -113,8 +113,15 @@ public class LoginController {
     @PostMapping("/auth/email")
     @ResponseBody
     public ApiResponse<String> sendAuthCode(@RequestBody @Valid LoginRequestDTO.SendAuthCodeDTO requestDTO)  {
-        emailLoginService.sendAuthCode(requestDTO.getEmail());
+        emailLoginService.sendAuthCode(requestDTO);
         return ApiResponse.onSuccess("이메일 발송에 성공하였습니다.");
+    }
+    @Operation(summary = "이메일 인증 코드 검증 API",description = "이메일 주소와 코드를 받아 해당 코드가 발송된 코드가 맞는지를 검증합니다.")
+    @PostMapping("/auth/email/verification")
+    @ResponseBody
+    public ApiResponse<String> verifyAuthCode(@RequestBody @Valid LoginRequestDTO.VerifyAuthCodeDTO requestDTO)  {
+        emailLoginService.verifyAuthCode(requestDTO);
+        return ApiResponse.onSuccess("인증코드 검증에 성공하였습니다.");
     }
     /*
     테스트용 API
