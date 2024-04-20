@@ -48,6 +48,8 @@ dependencies {
 	implementation 'org.bouncycastle:bcprov-jdk18on:1.77'
 	//FCM
 	implementation 'com.google.firebase:firebase-admin:9.2.0'
+	// Bcrypt 사용하기 위해 시큐리티 의존성 추가
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 }
 
