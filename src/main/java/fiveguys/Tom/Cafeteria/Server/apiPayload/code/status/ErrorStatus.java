@@ -42,7 +42,8 @@ public enum ErrorStatus implements BaseCode {
     INVALID_TOKEN_ERROR(HttpStatus.UNAUTHORIZED, "LOGIN4001", "토큰값이 잘못되었거나 유효하지 않습니다."),
     INVALID_ARGUMENT_ERROR(HttpStatus.BAD_REQUEST, "LOGIN4002", "필수인자가 포함되지 않거나 인자값의 데이터 타입 또는 범위가 적절하지 않습니다."),
     INVALID_ENUM_VALUE(HttpStatus.BAD_REQUEST, "LOGIN4003", "추가로 입력한 업무분야나 연차의 형식이 올바르지 않습니다."),
-    TEMPORARY_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR , "LOGIN5000", "카카오 플랫폼 서비스의 일시적 내부 장애입니다. 잠시후에 다시 시도해주세요");
+    TEMPORARY_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR , "LOGIN5000", "카카오 플랫폼 서비스의 일시적 내부 장애입니다. 잠시후에 다시 시도해주세요"),
+    EMAIL_SENDER_IS_NULL(HttpStatus.INTERNAL_SERVER_ERROR, "LOGIN5001", "서버내의 이메일 sender가 정해지지 않았습니다.");
 
 
 

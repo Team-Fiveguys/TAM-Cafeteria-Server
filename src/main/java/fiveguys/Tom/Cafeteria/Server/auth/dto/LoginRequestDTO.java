@@ -2,6 +2,7 @@ package fiveguys.Tom.Cafeteria.Server.auth.dto;
 
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 
 public class LoginRequestDTO {
@@ -24,5 +25,11 @@ public class LoginRequestDTO {
         private String authorizationCode;
 //        @Valid
 //        private AdditionalInfo additionalInfo;
+    }
+
+    @Getter
+    public static class SendAuthCodeDTO{
+        @Email
+        private String email;
     }
 }

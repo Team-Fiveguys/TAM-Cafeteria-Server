@@ -11,6 +11,7 @@ import fiveguys.Tom.Cafeteria.Server.auth.jwt.JwtToken;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.JwtUtil;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.TokenProvider;
 import fiveguys.Tom.Cafeteria.Server.auth.service.AppleLoginService;
+import fiveguys.Tom.Cafeteria.Server.auth.service.EmailLoginService;
 import fiveguys.Tom.Cafeteria.Server.auth.service.KakaoLoginService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.UserConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
@@ -35,6 +36,7 @@ public class LoginController {
     private final AppleLoginService appleLoginService;
     private final UserQueryService userQueryService;
     private final UserCommandService userCommandService;
+    private final EmailLoginService emailLoginService;
     private final TokenProvider tokenProvider;
     private final JwtUtil jwtUtil;
     @Value("${kakao.redirect-uri}")
@@ -105,6 +107,14 @@ public class LoginController {
         // 응답본문에 토큰 추가
         JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()), Role.MEMBER);
         return ApiResponse.onSuccess(LoginConverter.toLoginDTO(token.getAccessToken(), token.getRefreshToken()));
+    }
+
+    @Operation(summary = "이메일 인증 코드 전송 API",description = "이메일 주소를 받아 해당 이메일에 인증코드를 발송합니다.")
+    @PostMapping("/auth/email")
+    @ResponseBody
+    public ApiResponse<String> sendAuthCode(@RequestBody @Valid LoginRequestDTO.SendAuthCodeDTO requestDTO)  {
+        emailLoginService.sendAuthCode(requestDTO.getEmail());
+        return ApiResponse.onSuccess("이메일 발송에 성공하였습니다.");
     }
     /*
     테스트용 API
