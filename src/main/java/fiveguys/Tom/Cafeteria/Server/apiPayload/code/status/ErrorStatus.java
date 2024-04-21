@@ -45,6 +45,7 @@ public enum ErrorStatus implements BaseCode {
     EMAIL_DUPLICATED_ERROR(HttpStatus.BAD_REQUEST, "LOGIN4004","입력한 이메일로 가입한 아이디가 있습니다."),
     AUTHCODE_NOT_MATCH(HttpStatus.BAD_REQUEST, "LOGIN4005", "입력한 검증코드가 올바르지 않습니다."),
     TEMPORARY_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR , "LOGIN5000", "카카오 플랫폼 서비스의 일시적 내부 장애입니다. 잠시후에 다시 시도해주세요"),
+    EMAIL_IS_NOT_SAME(HttpStatus.BAD_REQUEST, "LOGIN4006", "인증을 요청한 이메일과 검증을 요청한 이메일이 다릅니다."),
     EMAIL_SENDER_IS_NULL(HttpStatus.INTERNAL_SERVER_ERROR, "LOGIN5001", "서버내의 이메일 sender가 정해지지 않았습니다.");
 
 

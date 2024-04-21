@@ -65,6 +65,9 @@ public class EmailLoginServiceImpl implements EmailLoginService {
     @Override
     public void verifyAuthCode(LoginRequestDTO.VerifyAuthCodeDTO verifyAuthCodeDTO) {
         String value = redisService.getValue("USER:" + verifyAuthCodeDTO.getEmail() + "authCode:");
+        if(value == null){
+            throw new GeneralException(ErrorStatus.EMAIL_IS_NOT_SAME);
+        }
         if(! (value.equals(verifyAuthCodeDTO.getAuthCode()))){
             throw new GeneralException(ErrorStatus.AUTHCODE_NOT_MATCH);
         }
