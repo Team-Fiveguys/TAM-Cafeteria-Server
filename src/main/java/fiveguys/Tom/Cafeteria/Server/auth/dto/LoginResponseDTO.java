@@ -13,6 +13,5 @@ public class LoginResponseDTO {
     @Getter
     public static class LoginDTO{
         private String accessToken;
-        private String refreshToken;
     }
 }

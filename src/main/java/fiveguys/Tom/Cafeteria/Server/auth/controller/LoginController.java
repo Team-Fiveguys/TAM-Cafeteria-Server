@@ -79,8 +79,9 @@ public class LoginController {
             user = userCommandService.create(user);
         }
         // 응답본문에 토큰 추가
-        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()), user.getRole());
-        return ApiResponse.onSuccess(LoginConverter.toLoginDTO(token.getAccessToken(), token.getRefreshToken()));
+        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()) );
+        // refresh token Redis에 저장
+        return ApiResponse.onSuccess(LoginConverter.toLoginDTO(token.getAccessToken()));
     }
 
     @Operation(summary = "애플 소셜 토큰 검증 API",description = "추가정보와 ID토큰을 받으면 ID토큰을 검증하고 통과 시" +
@@ -105,8 +106,8 @@ public class LoginController {
             user = userCommandService.create(user);
         }
         // 응답본문에 토큰 추가
-        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()), user.getRole());
-        return ApiResponse.onSuccess(LoginConverter.toLoginDTO(token.getAccessToken(), token.getRefreshToken()));
+        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()) );
+        return ApiResponse.onSuccess(LoginConverter.toLoginDTO(token.getAccessToken() ) );
     }
 
     @Operation(summary = "이메일 인증 코드 전송 API",description = "이메일 주소를 받아 해당 이메일에 인증코드를 발송합니다.")

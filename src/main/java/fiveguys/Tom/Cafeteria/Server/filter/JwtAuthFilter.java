@@ -5,14 +5,17 @@ package fiveguys.Tom.Cafeteria.Server.filter;
  유효하지 않으면 예외 발생
  */
 
+import com.google.auth.oauth2.JwtProvider;
+import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
+import fiveguys.Tom.Cafeteria.Server.auth.jwt.JwtToken;
+import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.JwtTokenProvider;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.JwtUtil;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.TokenProvider;
+import fiveguys.Tom.Cafeteria.Server.domain.common.RedisService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
+import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,11 +26,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Date;
 
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
+    private final JwtTokenProvider jwtTokenProvider;
     private final JwtUtil jwtUtil;
+    private final RedisService redisService;
     private final static String[] ignorePrefix = {"/swagger-ui", "/v3/api-docs", "/auth", "/oauth2", "/health", "/token/validate" , "/message", "/enums", "/users/nickname"};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -47,6 +53,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             accessToken = authHeader.substring(7);
         }
+        // 토큰을 검증
+        try{
+            jwtTokenProvider.verifyToken(accessToken);
+        }
+        catch (ExpiredJwtException e){ // 만료 토큰 재발급 로직 거치기
+            String refreshToken = redisService.getValue(accessToken);
+            String userId = redisService.getValue(refreshToken);
+            if(userId.isEmpty()){ //refreshToken 만료
+                redisService.deleteValues(accessToken);
+                throw new GeneralException(ErrorStatus.REFRESH_TOKEN_EXPIRED);
+            }
+            JwtToken newJwtToken = jwtUtil.generateToken(userId); // 액세스 토큰 재발급
+            accessToken = newJwtToken.getAccessToken();
+            response.addHeader("Access-Token", newJwtToken.getAccessToken());
+        }
+
+
         try{
             // 얻은 아이디로 유저 조회하기
             Long userId = Long.valueOf(jwtUtil.getUserId(accessToken));
@@ -62,26 +85,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             // 조회한 유저id ThreadLocal에 저장하기
             UserContext.setUserId(userId);
             filterChain.doFilter(request, response);
-        } catch (ExpiredJwtException e) {
-            // 토큰이 만료된 경우의 처리
-            log.info("토큰이 만료되었습니다.");
-            response.sendError(HttpStatus.UNAUTHORIZED.value());
-        } catch (UnsupportedJwtException e) {
-            // 지원되지 않는 JWT 토큰인 경우의 처리
-            log.info("지원되지 않는 토큰입니다.");
-            response.sendError(HttpStatus.UNAUTHORIZED.value());
-        } catch (MalformedJwtException e) {
-            // 구조적으로 문제가 있는 JWT 토큰인 경우의 처리
-            log.info("잘못된 형태의 토큰입니다.");
-            response.sendError(HttpStatus.UNAUTHORIZED.value());
-        } catch (IllegalArgumentException e) {
-            // 부적절한 인자가 전달된 경우의 처리
-            log.info("부적절한 인자가 전달되었습니다.");
-            response.sendError(HttpStatus.UNAUTHORIZED.value());
-        } catch (JwtException e) {
-            // 그 외 JWT 처리 중 발생한 예외 처리
-            log.info("JWT 처리 중 오류가 발생하였습니다.");
-            response.sendError(HttpStatus.UNAUTHORIZED.value());
         }
         finally {
             UserContext.clearUserId();
