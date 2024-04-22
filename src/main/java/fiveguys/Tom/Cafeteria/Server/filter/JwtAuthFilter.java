@@ -60,11 +60,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         catch (ExpiredJwtException e){ // 만료 토큰 재발급 로직 거치기
             String refreshToken = redisService.getValue(accessToken);
             String userId = redisService.getValue(refreshToken);
+            redisService.deleteValues(accessToken);
             if(userId.isEmpty()){ //refreshToken 만료
-                redisService.deleteValues(accessToken);
                 throw new GeneralException(ErrorStatus.REFRESH_TOKEN_EXPIRED);
             }
-            JwtToken newJwtToken = jwtUtil.generateToken(userId); // 액세스 토큰 재발급
+            JwtToken newJwtToken = jwtUtil.generateToken(userId); // 토큰 재발급
+            redisService.deleteValues(refreshToken);
             accessToken = newJwtToken.getAccessToken();
             response.addHeader("Access-Token", newJwtToken.getAccessToken());
         }
