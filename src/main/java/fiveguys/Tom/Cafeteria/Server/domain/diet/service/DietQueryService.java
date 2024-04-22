@@ -12,6 +12,7 @@ public interface DietQueryService {
 
     public Diet getDiet(Long dietId);
     public Diet getDiet(Cafeteria cafeteria, LocalDate localDate, Meals meals);
+    public List<Diet> getDietsOfDay(Cafeteria cafeteria, LocalDate localDate);
     public List<Diet> getDietListOfWeek(Cafeteria cafeteria, int year, int month, int weekNum, Meals meals);
 
 }

@@ -4,6 +4,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 
@@ -27,5 +28,12 @@ public class DietRequestDTO {
         private int month;
         private int weekNum;
         private Meals meals;
+    }
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class CheckDayOffDTO{
+       private Long cafeteriaId;
+       private LocalDate localDate;
     }
 }

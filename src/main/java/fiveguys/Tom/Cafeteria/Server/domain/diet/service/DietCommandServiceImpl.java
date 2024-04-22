@@ -1,7 +1,12 @@
 package fiveguys.Tom.Cafeteria.Server.domain.diet.service;
 
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
+import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.converter.DietConverter;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietRequestDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.MenuDiet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.repository.MenuDietRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.repository.DietRepository;
@@ -11,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -19,6 +25,8 @@ import java.util.List;
 @Transactional
 public class DietCommandServiceImpl implements DietCommandService{
     private final DietRepository dietRepository;
+    private final CafeteriaQueryService cafeteriaQueryService;
+    private final DietQueryService dietQueryService;
     private final MenuDietRepository menuDietRepository;
 
     @Override
@@ -52,8 +60,20 @@ public class DietCommandServiceImpl implements DietCommandService{
     }
 
     @Override
-    public Diet switchDayOff(Diet diet) {
-        diet.switchDayOff();
-        return diet;
+    public Diet switchDayOff(DietRequestDTO.CheckDayOffDTO checkDayOffDTO) {
+        Cafeteria cafeteria = cafeteriaQueryService.findById(checkDayOffDTO.getCafeteriaId());
+        List<Diet> dietList = dietQueryService.getDietsOfDay(cafeteria, checkDayOffDTO.getLocalDate());
+        if( dietList.isEmpty() ){
+            Diet diet = Diet.builder()
+                    .meals(Meals.BREAKFAST)
+                    .localDate(checkDayOffDTO.getLocalDate())
+                    .cafeteria(cafeteria)
+                    .dayOff(true)
+                    .build();
+            createDiet(cafeteria, diet,new ArrayList<>());
+            return diet;
+        }
+        dietList.forEach(diet ->  diet.switchDayOff());
+        return dietList.get(0);
     }
 }

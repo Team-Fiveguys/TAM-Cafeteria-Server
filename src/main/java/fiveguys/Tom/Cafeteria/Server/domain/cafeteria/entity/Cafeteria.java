@@ -1,6 +1,7 @@
 package fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity;
 
 
+import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @ToString
 @Entity
-public class Cafeteria {
+public class Cafeteria extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

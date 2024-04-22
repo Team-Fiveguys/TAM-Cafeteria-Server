@@ -1,6 +1,8 @@
 package fiveguys.Tom.Cafeteria.Server.domain.diet.service;
 
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietRequestDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
 
@@ -15,6 +17,6 @@ public interface DietCommandService {
 
     public Diet switchSoldOut(Diet diet);
 
-    public Diet switchDayOff(Diet diet);
+    public Diet switchDayOff(DietRequestDTO.CheckDayOffDTO checkDayOffDTO);
 
 }

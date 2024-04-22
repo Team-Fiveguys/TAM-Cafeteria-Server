@@ -34,6 +34,11 @@ public class DietQueryServiceImpl implements DietQueryService{
     }
 
     @Override
+    public List<Diet> getDietsOfDay(Cafeteria cafeteria, LocalDate localDate) {
+        return dietRepository.findByCafeteriaAndLocalDate(cafeteria, localDate);
+    }
+
+    @Override
     public List<Diet> getDietListOfWeek(Cafeteria cafeteria, int year, int month, int weekNum, Meals meals) {
         List<Diet> dietList = dietRepository
                 .findAllByCafeteriaAndYearAndMonthAndWeekAndMeals(cafeteria, year, month, weekNum, meals);
