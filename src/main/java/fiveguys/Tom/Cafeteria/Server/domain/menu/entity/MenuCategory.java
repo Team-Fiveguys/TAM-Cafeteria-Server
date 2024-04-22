@@ -1,5 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.domain.menu.entity;
 
+import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Entity
-public class MenuCategory {
+public class MenuCategory extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
