@@ -2,6 +2,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.user;
 
 import fiveguys.Tom.Cafeteria.Server.auth.dto.LoginRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.auth.feignClient.kakao.dto.KakaoResponseDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 
 public class UserConverter {
@@ -9,11 +10,13 @@ public class UserConverter {
         return User.builder()
                 .socialId(userInfoResponseDTO.getSocialId())
                 .email(userInfoResponseDTO.getEmail())
+                .role(Role.MEMBER)
                 .build();
     }
     public static User toUser(LoginRequestDTO.AppleTokenValidateDTO appleTokenValidateDTO){
         return User.builder()
                 .socialId(appleTokenValidateDTO.getSocialId())
+                .role(Role.MEMBER)
                 .build();
     }
 }
