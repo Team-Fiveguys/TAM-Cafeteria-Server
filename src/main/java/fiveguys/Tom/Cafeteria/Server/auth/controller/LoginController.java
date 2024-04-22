@@ -79,7 +79,7 @@ public class LoginController {
             user = userCommandService.create(user);
         }
         // 응답본문에 토큰 추가
-        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()), Role.MEMBER);
+        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()), user.getRole());
         return ApiResponse.onSuccess(LoginConverter.toLoginDTO(token.getAccessToken(), token.getRefreshToken()));
     }
 
@@ -105,7 +105,7 @@ public class LoginController {
             user = userCommandService.create(user);
         }
         // 응답본문에 토큰 추가
-        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()), Role.MEMBER);
+        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()), user.getRole());
         return ApiResponse.onSuccess(LoginConverter.toLoginDTO(token.getAccessToken(), token.getRefreshToken()));
     }
 
