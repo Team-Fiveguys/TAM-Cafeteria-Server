@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DietRepository extends JpaRepository<Diet, Long> {
+    List<Diet> findByCafeteriaAndLocalDate(Cafeteria cafeteria, LocalDate localDate);
     Optional<Diet> findByCafeteriaAndLocalDateAndMeals(Cafeteria cafeteria, LocalDate date, Meals meals);
     List<Diet> findAllByCafeteriaAndYearAndMonthAndWeekAndMeals(Cafeteria cafeteria, int year, int month, int week, Meals meals);
 }

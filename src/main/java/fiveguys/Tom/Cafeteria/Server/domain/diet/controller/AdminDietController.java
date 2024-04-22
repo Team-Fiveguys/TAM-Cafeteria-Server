@@ -5,6 +5,7 @@ import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.converter.DietConverter;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.MenuDiet;
@@ -82,11 +83,10 @@ public class AdminDietController {
         dietCommandService.switchSoldOut(diet);
         return ApiResponse.onSuccess(DietConverter.toSwitchSoldOutResponseDTO(diet.isSoldOut()));
     }
-    @Operation(summary = "해당 식단 날짜의 휴무를 체크하는 API", description = "토글 형식으로 휴무를 표시한다 응답으로 dayOff가 true이면 휴무")
-    @PatchMapping("/{dietId}/dayOff")
-    public ApiResponse<DietResponseDTO.SwitchDayOffResponseDTO> checkDayOff(@PathVariable(name = "dietId") Long dietId){
-        Diet diet = dietQueryService.getDiet(dietId);
-        dietCommandService.switchDayOff(diet);
-        return ApiResponse.onSuccess(DietConverter.toSwitchDayOffResponseDTO(diet.isDayOff()));
+    @Operation(summary = "해당 식단 날짜의 휴무를 체크하는 API", description = "식당 ID와 날짜를 받아서 토글 형식으로 휴무를 표시한다 응답으로 dayOff가 true이면 휴무")
+    @PatchMapping("/dayOff")
+    public ApiResponse<DietResponseDTO.SwitchDayOffResponseDTO> checkDayOff(@RequestBody DietRequestDTO.CheckDayOffDTO requestDTO){
+        Diet switchedDiet = dietCommandService.switchDayOff(requestDTO);
+        return ApiResponse.onSuccess(DietConverter.toSwitchDayOffResponseDTO(switchedDiet.isDayOff()));
     }
 }
