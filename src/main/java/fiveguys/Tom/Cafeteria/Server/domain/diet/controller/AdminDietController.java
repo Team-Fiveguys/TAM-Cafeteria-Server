@@ -83,7 +83,8 @@ public class AdminDietController {
         dietCommandService.switchSoldOut(diet);
         return ApiResponse.onSuccess(DietConverter.toSwitchSoldOutResponseDTO(diet.isSoldOut()));
     }
-    @Operation(summary = "해당 식단 날짜의 휴무를 체크하는 API", description = "식당 ID와 날짜를 받아서 토글 형식으로 휴무를 표시한다 응답으로 dayOff가 true이면 휴무")
+    @Operation(summary = "해당 식단 날짜의 휴무를 체크하는 API", description = "식당 ID와 날짜를 받아서 토글 형식으로 휴무를 표시한다. 응답으로 dayOff가 true이면 휴무" +
+            "만약 해당 날짜에 식단이 없다면 아침 식단을 만들고 휴무로 등록")
     @PatchMapping("/dayOff")
     public ApiResponse<DietResponseDTO.SwitchDayOffResponseDTO> checkDayOff(@RequestBody DietRequestDTO.CheckDayOffDTO requestDTO){
         Diet switchedDiet = dietCommandService.switchDayOff(requestDTO);
