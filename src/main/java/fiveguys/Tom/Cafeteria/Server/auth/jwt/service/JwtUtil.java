@@ -29,7 +29,7 @@ import java.util.Date;
 public class JwtUtil {
     private final UserQueryService userQueryService;
     private static final Duration refreshTokenExpireDuration = Duration.ofDays(14);
-    private static final Duration accessTokenExpireDuration = Duration.ofDays(1);
+    private static final Duration accessTokenExpireDuration = Duration.ofDays(30); // 나중에 수정
     private final RedisService redisService;
     @Value("${spring.jwt.secret}")
     private String secret;
