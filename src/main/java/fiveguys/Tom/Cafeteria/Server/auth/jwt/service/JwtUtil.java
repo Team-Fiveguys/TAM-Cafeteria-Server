@@ -3,8 +3,6 @@ package fiveguys.Tom.Cafeteria.Server.auth.jwt.service;
 
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.JwtToken;
 import fiveguys.Tom.Cafeteria.Server.domain.common.RedisService;
-import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
-import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Sex;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import io.jsonwebtoken.Claims;
@@ -31,7 +29,7 @@ import java.util.Date;
 public class JwtUtil {
     private final UserQueryService userQueryService;
     private static final Duration refreshTokenExpireDuration = Duration.ofDays(14);
-    private static final Duration accessTokenExpireDuration = Duration.ofSeconds(30);
+    private static final Duration accessTokenExpireDuration = Duration.ofDays(1);
     private final RedisService redisService;
     @Value("${spring.jwt.secret}")
     private String secret;

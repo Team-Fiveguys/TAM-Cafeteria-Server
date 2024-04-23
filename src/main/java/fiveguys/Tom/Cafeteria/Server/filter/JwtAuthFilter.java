@@ -5,13 +5,11 @@ package fiveguys.Tom.Cafeteria.Server.filter;
  유효하지 않으면 예외 발생
  */
 
-import com.google.auth.oauth2.JwtProvider;
 import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.JwtToken;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.JwtTokenProvider;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.JwtUtil;
-import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.TokenProvider;
 import fiveguys.Tom.Cafeteria.Server.domain.common.RedisService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
@@ -26,7 +24,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Date;
 
 @Slf4j
 @RequiredArgsConstructor
