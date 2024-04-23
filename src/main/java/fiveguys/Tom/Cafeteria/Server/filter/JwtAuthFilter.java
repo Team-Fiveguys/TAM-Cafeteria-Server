@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -31,7 +30,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtUtil jwtUtil;
     private final RedisService redisService;
-    private final static String[] ignorePrefix = {"/signUp", "/swagger-ui", "/v3/api-docs", "/auth", "/oauth2", "/health", "/token/validate" , "/message", "/enums", "/users/nickname"};
+    private final static String[] ignorePrefix = {"/sign-up", "/swagger-ui", "/v3/api-docs", "/auth", "/oauth2", "/health", "/token/validate" , "/message", "/enums", "/users/nickname"};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("url ={}", request.getRequestURI());

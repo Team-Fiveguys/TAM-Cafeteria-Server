@@ -1,7 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.auth.jwt.service;
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
-import fiveguys.Tom.Cafeteria.Server.domain.common.RedisService;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

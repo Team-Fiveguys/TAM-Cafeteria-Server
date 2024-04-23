@@ -7,6 +7,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,6 +19,7 @@ import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EmailLoginServiceImpl implements EmailLoginService {
     private final UserQueryService userQueryService;
     @Value("${spring.mail.username}")
@@ -68,10 +70,10 @@ public class EmailLoginServiceImpl implements EmailLoginService {
     @Override
     public User verifyPassword(LoginRequestDTO.PasswordValidateDTO requestDTO) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String enteredPassword = encoder.encode(requestDTO.getPassword());
         User user = userQueryService.getUserByEmail(requestDTO.getEmail());
         String userPassword = user.getPassword();
-        if(!enteredPassword.equals(userPassword)){
+
+        if(!encoder.matches(requestDTO.getPassword(), userPassword)){
             throw new GeneralException(ErrorStatus.PASSWORD_NOT_MATCH);
         }
         return user;
