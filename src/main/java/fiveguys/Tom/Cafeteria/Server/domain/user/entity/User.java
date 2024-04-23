@@ -1,6 +1,7 @@
 package fiveguys.Tom.Cafeteria.Server.domain.user.entity;
 
 
+import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
@@ -11,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Entity
-public class User{
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

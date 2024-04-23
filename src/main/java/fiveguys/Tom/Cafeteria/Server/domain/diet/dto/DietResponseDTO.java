@@ -28,7 +28,7 @@ public class DietResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DietQueryDTO {
-        private Long id;
+        private Long dietId;
         private LocalDate date;
         private String photoURI;
         private MenuResponseDTO.MenuResponseListDTO menuResponseListDTO;

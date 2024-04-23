@@ -27,6 +27,12 @@ public class UserQueryServiceImpl implements UserQueryService{
     }
 
     @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    @Override
     public boolean isExistBySocialId(String socialId) {
         return userRepository.existsBySocialId(socialId);
     }

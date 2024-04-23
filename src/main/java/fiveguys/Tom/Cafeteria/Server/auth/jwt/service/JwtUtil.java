@@ -2,7 +2,9 @@ package fiveguys.Tom.Cafeteria.Server.auth.jwt.service;
 
 
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.JwtToken;
-import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
+import fiveguys.Tom.Cafeteria.Server.domain.common.RedisService;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
+import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.Duration;
 import java.util.Date;
 
 /**
@@ -24,6 +27,10 @@ import java.util.Date;
 @Service
 @RequiredArgsConstructor
 public class JwtUtil {
+    private final UserQueryService userQueryService;
+    private static final Duration refreshTokenExpireDuration = Duration.ofDays(14);
+    private static final Duration accessTokenExpireDuration = Duration.ofDays(30); // 나중에 수정
+    private final RedisService redisService;
     @Value("${spring.jwt.secret}")
     private String secret;
     private SecretKey secretkey;
@@ -33,22 +40,23 @@ public class JwtUtil {
     }
 
 
-    public JwtToken generateToken(String id, Role role) {
+    public JwtToken generateToken(String id) {
         // refreshToken과 accessToken을 생성한다.
-        String refreshToken = generateRefreshToken(id, role);
-        String accessToken = generateAccessToken(id, role);
+        String refreshToken = generateRefreshToken(id);
+        String accessToken = generateAccessToken(id);
+        redisService.setValue(refreshToken, id, refreshTokenExpireDuration);
+        redisService.setValue(accessToken, refreshToken);
         log.info("accessToken = {}", accessToken);
         return new JwtToken(accessToken, refreshToken);
     }
 
-    public String generateRefreshToken(String id, Role role) {
+    public String generateRefreshToken(String id) {
         // 토큰의 유효 기간을 밀리초 단위로 설정.
-        long refreshPeriod = 1000L * 60L * 60L * 24L * 14; // 2주
+        long refreshPeriod = refreshTokenExpireDuration.toMillis(); // 2주
 
         // 새로운 클레임 객체를 생성하고, 아이디를 셋
         Claims claims = Jwts.claims()
                 .subject(id)
-                .add("role", role)
                 .build();
         // 현재 시간과 날짜를 가져온다.
         Date now = new Date();
@@ -67,12 +75,14 @@ public class JwtUtil {
     }
 
 
-    public String generateAccessToken(String id, Role role) {
-
-        long tokenPeriod = 24 * 1000L * 60L * 60L; // 60분 * 24
+    public String generateAccessToken(String id) {
+        User user = userQueryService.getUserById(Long.parseLong(id));
+        long tokenPeriod = accessTokenExpireDuration.toMillis();
         Claims claims = Jwts.claims()
                 .subject(id)
-                .add("role", role)
+                .add("role", user.getRole())
+                .add("name", user.getName())
+                .add("email", user.getEmail())
                 .build();
 
         Date now = new Date();
@@ -107,5 +117,14 @@ public class JwtUtil {
                 .parseSignedClaims(token)// 주어진 토큰을 파싱하여 Claims 객체를 얻는다.
                 .getPayload()
                 .get("role", String.class);
+    }
+    // 토큰에서 ROLE(권한)만 추출한다.
+    public String getEmail(String token) {
+        return Jwts.parser()
+                .verifyWith(secretkey)
+                .build() // 비밀키를 설정하여 파서를 빌드.
+                .parseSignedClaims(token)// 주어진 토큰을 파싱하여 Claims 객체를 얻는다.
+                .getPayload()
+                .get("email", String.class);
     }
 }

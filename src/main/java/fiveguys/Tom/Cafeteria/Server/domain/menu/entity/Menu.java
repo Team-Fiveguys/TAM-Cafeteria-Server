@@ -1,6 +1,7 @@
 package fiveguys.Tom.Cafeteria.Server.domain.menu.entity;
 
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
+import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Entity
-public class Menu {
+public class Menu extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
