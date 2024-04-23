@@ -79,8 +79,9 @@ public class LoginController {
             user = userCommandService.create(user);
         }
         // 응답본문에 토큰 추가
-        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()), user.getRole());
-        return ApiResponse.onSuccess(LoginConverter.toLoginDTO(token.getAccessToken(), token.getRefreshToken()));
+        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()) );
+        // refresh token Redis에 저장
+        return ApiResponse.onSuccess(LoginConverter.toLoginDTO(token.getAccessToken()));
     }
 
     @Operation(summary = "애플 소셜 토큰 검증 API",description = "추가정보와 ID토큰을 받으면 ID토큰을 검증하고 통과 시" +
@@ -105,8 +106,18 @@ public class LoginController {
             user = userCommandService.create(user);
         }
         // 응답본문에 토큰 추가
-        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()), user.getRole());
-        return ApiResponse.onSuccess(LoginConverter.toLoginDTO(token.getAccessToken(), token.getRefreshToken()));
+        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId()) );
+        return ApiResponse.onSuccess(LoginConverter.toLoginDTO(token.getAccessToken() ) );
+    }
+
+    @Operation(summary = "이메일 로그인 API", description = "이메일과 비밀번호를 받아서 이메일과 비밀번호의 해시값 쌍이 같은지를 판단하여" +
+            "로그인 성공 여부를 응답합니다. 성공 시 리프레시 토큰을 저장하고 액세스 토큰을 본문에 담아 보냅니다.")
+    @PostMapping("/auth/email/sign-in")
+    @ResponseBody
+    public ApiResponse<LoginResponseDTO.LoginDTO> validatePassword(@RequestBody @Valid LoginRequestDTO.PasswordValidateDTO passwordValidateDTO){
+        User user = emailLoginService.verifyPassword(passwordValidateDTO);
+        JwtToken token = jwtUtil.generateToken(String.valueOf(user.getId() ) );
+        return ApiResponse.onSuccess(LoginConverter.toLoginDTO(token.getAccessToken() ) );
     }
 
     @Operation(summary = "이메일 인증 코드 전송 API",description = "이메일 주소를 받아 해당 이메일에 인증코드를 발송합니다.")
@@ -122,6 +133,14 @@ public class LoginController {
     public ApiResponse<String> verifyAuthCode(@RequestBody @Valid LoginRequestDTO.VerifyAuthCodeDTO requestDTO)  {
         emailLoginService.verifyAuthCode(requestDTO);
         return ApiResponse.onSuccess("인증코드 검증에 성공하였습니다.");
+    }
+
+    @Operation(summary = "회원가입 API", description = "이름, 이메일, 비밀번호, 성별을 받아 유저 정보를 저장시킨다")
+    @PostMapping("/sign-up")
+    @ResponseBody
+    public ApiResponse<LoginResponseDTO.SignUpDTO> signUp(@RequestBody @Valid LoginRequestDTO.SignUpDTO signUpDTO){
+        User user = userCommandService.create(UserConverter.touser(signUpDTO));
+        return ApiResponse.onSuccess(LoginConverter.toSignUpDTO(user.getId()));
     }
     /*
     테스트용 API

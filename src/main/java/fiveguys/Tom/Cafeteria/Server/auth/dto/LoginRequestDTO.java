@@ -42,4 +42,20 @@ public class LoginRequestDTO {
         private String email;
         private String authCode;
     }
+    @Getter
+    public static class SignUpDTO{
+        private String name;
+        private String password;
+        private Sex sex;
+        @Email
+        private String email;
+        private String authCode;
+    }
+
+    @Getter
+    public static class PasswordValidateDTO{
+        @Email
+        private String email;
+        private String password;
+    }
 }
