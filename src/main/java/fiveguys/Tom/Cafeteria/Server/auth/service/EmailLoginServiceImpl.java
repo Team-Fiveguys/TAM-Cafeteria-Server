@@ -3,6 +3,7 @@ package fiveguys.Tom.Cafeteria.Server.auth.service;
 import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.auth.dto.LoginRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.common.RedisService;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,6 @@ public class EmailLoginServiceImpl implements EmailLoginService {
     private final RedisService redisService;
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final Duration duration = Duration.ofMinutes(3);
-    private BCryptPasswordEncoder passwordEncoder;
 
 
     @Override
@@ -34,11 +34,6 @@ public class EmailLoginServiceImpl implements EmailLoginService {
             throw new GeneralException(ErrorStatus.EMAIL_DUPLICATED_ERROR);
         }
         String authCode = generateAuthCode(8);
-        this.passwordEncoder = new BCryptPasswordEncoder();
-//        String encodedPassword = passwordEncoder.encode(loginFormDTO.getPassword());
-//        redisService.setValue("USER:" + loginFormDTO.getEmail() + "name:", loginFormDTO.getName(), duration );
-//        redisService.setValue("USER:" + loginFormDTO.getEmail() + "sex:", loginFormDTO.getSex().toString(), duration );
-//        redisService.setValue("USER:" + loginFormDTO.getEmail() + "password:", encodedPassword, duration );
         redisService.setValue("USER:" + loginFormDTO.getEmail() + "authCode:", authCode, duration );
         SimpleMailMessage simpleMailMessage = createEmailForm(loginFormDTO.getEmail(), authCode);
         emailSender.send(simpleMailMessage);
@@ -68,6 +63,18 @@ public class EmailLoginServiceImpl implements EmailLoginService {
         if(! (value.equals(verifyAuthCodeDTO.getAuthCode()))){
             throw new GeneralException(ErrorStatus.AUTHCODE_NOT_MATCH);
         }
+    }
+
+    @Override
+    public User verifyPassword(LoginRequestDTO.PasswordValidateDTO requestDTO) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String enteredPassword = encoder.encode(requestDTO.getPassword());
+        User user = userQueryService.getUserByEmail(requestDTO.getEmail());
+        String userPassword = user.getPassword();
+        if(!enteredPassword.equals(userPassword)){
+            throw new GeneralException(ErrorStatus.PASSWORD_NOT_MATCH);
+        }
+        return user;
     }
 
 }

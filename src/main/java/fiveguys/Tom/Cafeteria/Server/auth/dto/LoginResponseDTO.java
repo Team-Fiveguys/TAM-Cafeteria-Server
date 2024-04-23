@@ -14,4 +14,13 @@ public class LoginResponseDTO {
     public static class LoginDTO{
         private String accessToken;
     }
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class SignUpDTO{
+        private Long userId;
+    }
 }
+

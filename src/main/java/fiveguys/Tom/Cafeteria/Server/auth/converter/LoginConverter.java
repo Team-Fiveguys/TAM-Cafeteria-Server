@@ -10,4 +10,10 @@ public class LoginConverter {
                 .build();
 
     }
+
+    public static LoginResponseDTO.SignUpDTO toSignUpDTO(Long userId){
+        return LoginResponseDTO.SignUpDTO.builder()
+                .userId(userId)
+                .build();
+    }
 }

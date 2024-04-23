@@ -46,7 +46,8 @@ public enum ErrorStatus implements BaseCode {
     AUTHCODE_NOT_MATCH(HttpStatus.BAD_REQUEST, "LOGIN4005", "입력한 검증코드가 올바르지 않습니다."),
     TEMPORARY_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR , "LOGIN5000", "카카오 플랫폼 서비스의 일시적 내부 장애입니다. 잠시후에 다시 시도해주세요"),
     EMAIL_SENDER_IS_NULL(HttpStatus.INTERNAL_SERVER_ERROR, "LOGIN5001", "서버내의 이메일 sender가 정해지지 않았습니다."),
-    REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "LOGIN4006", "리프레시 토큰이 만료되었습니다. 재인증이 필요합니다.");
+    PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "LOGIN4006", "입력한 패스워드가 올바르지 않습니다."),
+    REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "LOGIN4007", "리프레시 토큰이 만료되었습니다. 재인증이 필요합니다.");
 
 
 
