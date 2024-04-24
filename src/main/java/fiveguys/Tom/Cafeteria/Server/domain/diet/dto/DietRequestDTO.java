@@ -36,4 +36,11 @@ public class DietRequestDTO {
        private Long cafeteriaId;
        private LocalDate localDate;
     }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class MenuNameDTO{
+        private String menuName;
+    }
 }

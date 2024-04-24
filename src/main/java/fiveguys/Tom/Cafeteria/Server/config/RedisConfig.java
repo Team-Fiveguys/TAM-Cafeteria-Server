@@ -25,7 +25,7 @@ public class RedisConfig {
         config.setHostName(redisHost);
         config.setPort(redisPort);
         config.setPassword(password);
-        config.setUsername(username); // Redis 6 이상에서 사용자 이름 설정
+        //config.setUsername(username); // Redis 6 이상에서 사용자 이름 설정
         return new LettuceConnectionFactory(config);
     }
     @Bean
