@@ -38,6 +38,6 @@ public class MenuQueryServiceImpl implements MenuQueryService{
 
     @Override
     public boolean existByName(String name) {
-        return menuRepository.existByName(name);
+        return menuRepository.existsByName(name);
     }
 }
