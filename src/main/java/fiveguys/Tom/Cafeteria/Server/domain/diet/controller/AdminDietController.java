@@ -15,8 +15,10 @@ import fiveguys.Tom.Cafeteria.Server.domain.menu.converter.MenuConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.service.MenuQueryService;
+import fiveguys.Tom.Cafeteria.Server.exception.validation.annotation.EnrollDietValidation;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/diets")
+@Validated
 public class AdminDietController {
 
     private final DietCommandService dietCommandService;
@@ -33,8 +36,8 @@ public class AdminDietController {
     private final CafeteriaQueryService cafeteriaQueryService;
 
     @Operation(summary = "식단을 등록하는 API", description = "식당id, 날짜, 식때, 메뉴리스트를 받아서 저장")
-    @PostMapping("/")
-    public ApiResponse<DietResponseDTO.DietCreateDTO> createDiet(@RequestBody DietRequestDTO.DietCreateDTO dietCreateDTO){
+    @PostMapping("")
+    public ApiResponse<DietResponseDTO.DietCreateDTO> createDiet(@RequestBody @EnrollDietValidation DietRequestDTO.DietCreateDTO dietCreateDTO){
         List<String> menuNameList = dietCreateDTO.getMenuNameList();
         List<Menu> menuList = menuNameList.stream()
                 .map(menuName -> menuQueryService.findByName(menuName))

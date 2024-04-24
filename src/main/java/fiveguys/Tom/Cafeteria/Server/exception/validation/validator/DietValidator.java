@@ -1,7 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.exception.validation.validator;
 
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietRequestDTO;
-import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.service.DietQueryService;
 import fiveguys.Tom.Cafeteria.Server.exception.validation.annotation.EnrollDietValidation;
 import jakarta.validation.ConstraintValidator;
@@ -23,10 +22,6 @@ public class DietValidator implements ConstraintValidator<EnrollDietValidation, 
 
     @Override
     public boolean isValid(DietRequestDTO.DietCreateDTO value, ConstraintValidatorContext context) {
-        Diet diet = dietQueryService.getDiet(value.getCafeteriaId(), value.getDate(), value.getMeals());
-        if(diet != null){
-            return false;
-        }
-        return true;
+        return !dietQueryService.existsDiet(value.getCafeteriaId(), value.getDate(), value.getMeals() );
     }
 }

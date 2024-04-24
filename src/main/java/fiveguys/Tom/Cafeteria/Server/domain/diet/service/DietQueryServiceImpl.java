@@ -35,6 +35,12 @@ public class DietQueryServiceImpl implements DietQueryService{
     }
 
     @Override
+    public boolean existsDiet(Long cafeteriaId, LocalDate localDate, Meals meals) {
+        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
+        return dietRepository.existsByCafeteriaAndLocalDateAndMeals(cafeteria, localDate, meals);
+    }
+
+    @Override
     public List<Diet> getDietsOfDay(Cafeteria cafeteria, LocalDate localDate) {
         return dietRepository.findByCafeteriaAndLocalDate(cafeteria, localDate);
     }
