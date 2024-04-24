@@ -34,7 +34,7 @@ public class AdminDietController {
 
     @Operation(summary = "식단을 등록하는 API", description = "식당id, 날짜, 식때, 메뉴리스트를 받아서 저장")
     @PostMapping("/")
-    public ApiResponse<DietResponseDTO.DietCreateDTO> createDiet(@RequestBody DietResponseDTO.DietCreateDTO dietCreateDTO){
+    public ApiResponse<DietResponseDTO.DietCreateDTO> createDiet(@RequestBody DietRequestDTO.DietCreateDTO dietCreateDTO){
         List<String> menuNameList = dietCreateDTO.getMenuNameList();
         List<Menu> menuList = menuNameList.stream()
                 .map(menuName -> menuQueryService.findByName(menuName))
