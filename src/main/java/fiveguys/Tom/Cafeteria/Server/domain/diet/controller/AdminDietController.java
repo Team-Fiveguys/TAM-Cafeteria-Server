@@ -61,7 +61,7 @@ public class AdminDietController {
         return ApiResponse.onSuccess(dietQueryDTO);
     }
     @Operation(summary = "식단에 등록된 메뉴를 제거하는 API", description = "식단 id와 메뉴 이름을 받아 식단에 등록된 메뉴를 제거")
-    @DeleteMapping("/{dietId}/{menuId}")
+    @DeleteMapping("/{dietId}")
     public ApiResponse<DietResponseDTO.DietQueryDTO> removeMenu(@PathVariable(name = "dietId") Long dietId, @RequestBody DietRequestDTO.MenuNameDTO menuAddDTO ){
         Diet diet = dietQueryService.getDiet(dietId);
         Menu menu = menuQueryService.findByName(menuAddDTO.getMenuName());
