@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.entity.DietPhoto;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.repository.DietPhotoRepository;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.service.DietQueryService;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
@@ -33,8 +34,8 @@ public class DietPhotoServiceImpl implements DietPhotoService{
     private final DietQueryService dietQueryService;
 
     @Override
-    public DietPhoto uploadDietPhoto(Long dietId, MultipartFile multipartFile) {
-        Diet diet = dietQueryService.getDiet(dietId);
+    public DietPhoto uploadDietPhoto(DietRequestDTO.DietQueryDTO dietQueryDTO, MultipartFile multipartFile) {
+        Diet diet = dietQueryService.getDiet(dietQueryDTO.getCafeteriaId(), dietQueryDTO.getLocalDate(), dietQueryDTO.getMeals());
         DietPhoto dietPhoto = DietPhoto.builder()
                 .diet(diet)
                 .imageKey(uploadImage(multipartFile))
