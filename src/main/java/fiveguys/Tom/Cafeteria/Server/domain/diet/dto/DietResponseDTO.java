@@ -32,6 +32,7 @@ public class DietResponseDTO {
         private LocalDate date;
         private String photoURI;
         private MenuResponseDTO.MenuResponseListDTO menuResponseListDTO;
+        private boolean soldOut;
         private boolean dayOff;
     }
     @Builder
