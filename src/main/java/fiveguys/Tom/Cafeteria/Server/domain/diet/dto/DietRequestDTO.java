@@ -42,7 +42,10 @@ public class DietRequestDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
-    public static class MenuNameDTO{
+    public static class ChangeMenuDTO{
+        private Long cafeteriaId;
+        private LocalDate localDate;
+        private Meals meals;
         private String menuName;
     }
     @Builder

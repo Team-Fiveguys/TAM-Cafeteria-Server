@@ -49,9 +49,9 @@ public class AdminDietController {
     }
 
     @Operation(summary = "식단에 메뉴를 추가하는 API", description = "식단 id와 메뉴 이름을 받아 식단에 메뉴를 추가")
-    @PutMapping("/{dietId}")
-    public ApiResponse<DietResponseDTO.DietQueryDTO> addMenu(@PathVariable(name = "dietId") Long dietId, @RequestBody DietRequestDTO.MenuNameDTO menuAddDTO){
-        Diet diet = dietQueryService.getDiet(dietId);
+    @PutMapping("/menus")
+    public ApiResponse<DietResponseDTO.DietQueryDTO> addMenu(@RequestBody DietRequestDTO.ChangeMenuDTO menuAddDTO){
+        Diet diet = dietQueryService.getDiet(menuAddDTO.getCafeteriaId(), menuAddDTO.getLocalDate(), menuAddDTO.getMeals());
         Menu menu = menuQueryService.findByName(menuAddDTO.getMenuName());
         Diet addedDiet = dietCommandService.addMenu(diet, menu);
 
@@ -64,9 +64,9 @@ public class AdminDietController {
         return ApiResponse.onSuccess(dietQueryDTO);
     }
     @Operation(summary = "식단에 등록된 메뉴를 제거하는 API", description = "식단 id와 메뉴 이름을 받아 식단에 등록된 메뉴를 제거")
-    @DeleteMapping("/{dietId}")
-    public ApiResponse<DietResponseDTO.DietQueryDTO> removeMenu(@PathVariable(name = "dietId") Long dietId, @RequestBody DietRequestDTO.MenuNameDTO menuAddDTO ){
-        Diet diet = dietQueryService.getDiet(dietId);
+    @DeleteMapping("/menus")
+    public ApiResponse<DietResponseDTO.DietQueryDTO> deleteMenu(@RequestBody DietRequestDTO.ChangeMenuDTO menuAddDTO){
+        Diet diet = dietQueryService.getDiet(menuAddDTO.getCafeteriaId(), menuAddDTO.getLocalDate(), menuAddDTO.getMeals());
         Menu menu = menuQueryService.findByName(menuAddDTO.getMenuName());
         Diet removedDiet = dietCommandService.removeMenu(diet, menu);
 
@@ -80,9 +80,9 @@ public class AdminDietController {
     }
 
     @Operation(summary = "식단의 품절 유무를 체크하는 API", description = "토글 형식으로 품절 유무를 표시한다 응답으로 soldOut이 true이면 품절")
-    @PatchMapping("/{dietId}/soldOut")
-    public ApiResponse<DietResponseDTO.SwitchSoldOutResponseDTO> checkSoldOut(@PathVariable(name = "dietId") Long dietId){
-        Diet diet = dietQueryService.getDiet(dietId);
+    @PatchMapping("/sold-out")
+    public ApiResponse<DietResponseDTO.SwitchSoldOutResponseDTO> checkSoldOut(DietRequestDTO.DietQueryDTO dietQueryDTO){
+        Diet diet = dietQueryService.getDiet(dietQueryDTO.getCafeteriaId(), dietQueryDTO.getLocalDate(), dietQueryDTO.getMeals());
         dietCommandService.switchSoldOut(diet);
         return ApiResponse.onSuccess(DietConverter.toSwitchSoldOutResponseDTO(diet.isSoldOut()));
     }
