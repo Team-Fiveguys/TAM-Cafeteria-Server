@@ -85,16 +85,28 @@ public class Diet extends BaseEntity {
         // 현재 주의 월요일 날짜를 구함
         LocalDate monday = localDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         // 현재 주의 목요일 날짜를 구함
-        LocalDate thursday = localDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.THURSDAY));
-
+        LocalDate thursday;
+        if( localDate.getDayOfWeek().getValue() <= DayOfWeek.THURSDAY.getValue()){
+            //월,화,수,목은 다음 목요일 날짜를
+            thursday = localDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.THURSDAY));
+        }
+        else{
+            // 금,토,일은 이전 목요일 날짜를
+            thursday = localDate.with(TemporalAdjusters.previous(DayOfWeek.THURSDAY));
+        }
         // 월요일과 목요일이 같은 달에 속하지 않는 경우, 주차 계산을 위해 목요일을 사용
         if (monday.getMonth() != thursday.getMonth()) {
             // 목요일이 다음 달에 속하면, 그 주는 다음 달의 첫째 주로 간주
             // 목요일의 주차 정보를 이용
             this.week = thursday.get(weekOfMonth);
+            this.month += 1;
+            if( this.month > 12){
+                this.month = 1;
+                this.year += 1;
+            }
         } else {
             // 그렇지 않으면, 원래 날짜의 주차 정보를 이용
-            this.week = localDate.get(weekOfMonth);
+            this.week = monday.get(weekOfMonth);
         }
         System.out.println(localDate + "는 " + thursday.getMonthValue() + "월의 " + this.week+ "주차 입니다.");
     }
