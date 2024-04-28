@@ -40,6 +40,10 @@ public enum ErrorStatus implements BaseCode {
     CAFETERIA_IS_BLANK(HttpStatus.BAD_REQUEST, "CAFETERIA4003", "식당은 공백일 수 없습니다."),
     CAFETERIA_TOO_LONG(HttpStatus.BAD_REQUEST, "CAFETERIA4004", "해당 식당의 길이가 100을 넘어갑니다."),
 
+    // 알림 관련 에러
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION4001", "id에 해당하는 알림이 존재하지 않습니다."),
+    NOTIFICATION_NOT_RELATIONAL(HttpStatus.BAD_REQUEST, "NOTIFICATION4002", "해당 user와 notification은 서로 관계가 없습니다."),
+
     // 로그인 관련 에러
     INVALID_TOKEN_ERROR(HttpStatus.UNAUTHORIZED, "LOGIN4001", "토큰값이 잘못되었거나 유효하지 않습니다."),
     INVALID_ARGUMENT_ERROR(HttpStatus.BAD_REQUEST, "LOGIN4002", "필수인자가 포함되지 않거나 인자값의 데이터 타입 또는 범위가 적절하지 않습니다."),

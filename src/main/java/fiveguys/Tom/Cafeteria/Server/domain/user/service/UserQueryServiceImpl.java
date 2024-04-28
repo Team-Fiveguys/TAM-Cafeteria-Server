@@ -1,11 +1,21 @@
 package fiveguys.Tom.Cafeteria.Server.domain.user.service;
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
+import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.converter.NotificationConverter;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotification;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotification;
+import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepository;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +50,19 @@ public class UserQueryServiceImpl implements UserQueryService{
     @Override
     public boolean isExistByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public UserResponseDTO.QueryNotificationList getNotifications() {
+        Long userId = UserContext.getUserId();
+        User user = getUserById(userId);
+        List<UserAppNotification> userAppNotificationList = user.getUserAppNotificationList();
+        List<UserResponseDTO.QueryNotification> notificationDTOList = userAppNotificationList.stream()
+                .map(userAppNotification -> NotificationConverter.toQueryNotification(userAppNotification))
+                .sorted(Comparator.comparing(UserResponseDTO.QueryNotification::getTransmitDate))
+                .collect(Collectors.toList());
+
+        return NotificationConverter.toQueryNotificationList(notificationDTOList);
+
     }
 }

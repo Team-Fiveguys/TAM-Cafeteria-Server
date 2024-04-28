@@ -2,9 +2,13 @@ package fiveguys.Tom.Cafeteria.Server.domain.user.entity;
 
 
 import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotification;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder
@@ -38,6 +42,9 @@ public class User extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private NotificationSet notificationSet;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<UserAppNotification> userAppNotificationList = new ArrayList<>();
     public static void setRoleAdmin(User user) {
         user.role = Role.ADMIN;
     }
