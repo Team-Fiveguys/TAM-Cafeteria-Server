@@ -2,6 +2,8 @@ package fiveguys.Tom.Cafeteria.Server.domain.user.controller;
 
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.dto.NotificationRequestDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserCommandService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,11 +24,31 @@ public class UserController {
         return ApiResponse.onSuccess("알림이 활성화 되었습니다.");
     }
 
-    @PostMapping("/notification/{notification-id}")
+    @PostMapping("/notifications/{notification-id}")
     @Operation(summary = "알림을 수신 받음을 서버에 알리는 API", description = "PathVariable으로 알림id를 전달하여" +
             "유저가 해당 알림에 대해서 제어할 수 있도록 한다.")
     public ApiResponse<String> receiveNotification(@PathVariable(name = "notification-id") Long id){
         userCommandService.receiveMessage(id);
         return ApiResponse.onSuccess("알림 수신 여부를 서버에 전달하였습니다.");
+    }
+    @GetMapping("/notifications")
+    @Operation(summary = "수신받은 알림을 조회하는 API", description = "토큰에 있는 userId를 통해 유저를 식별하여 유저가" +
+            "수신받은 알림 리스트를 응답한다. 추후에 한달이 지나면 자동으로 삭제하는 API 만들 것임")
+    public ApiResponse<UserResponseDTO.QueryNotificationList> receiveNotification(){
+        return ApiResponse.onSuccess(userQueryService.getNotifications());
+    }
+
+    @PatchMapping("/notifications/{notification-id}/read")
+    @Operation(summary = "알림 하나를 읽음 처리 하는 API", description = "알림 id를 받아 알림을 조회하여 읽음 처리를 한다.")
+    public ApiResponse<String> readNotification(@PathVariable(name = "notification-id") Long id){
+        userCommandService.readNotification(id);
+        return ApiResponse.onSuccess("해당 알림이 읽음 처리 되었습니다.");
+    }
+
+    @PatchMapping("/notifications/read")
+    @Operation(summary = "유저의 모든 알림을 읽음 처리 하는 API", description = "모든 알림을 읽음 처리를 한다.")
+    public ApiResponse<String> readNotifications(){
+        userCommandService.readAllNotification();
+        return ApiResponse.onSuccess("알림 리스트들이 모두 읽음 처리 되었습니다.");
     }
 }

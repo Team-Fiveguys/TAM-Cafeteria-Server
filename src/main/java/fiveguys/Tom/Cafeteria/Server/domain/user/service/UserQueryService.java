@@ -1,5 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.domain.user.service;
 
+import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 
 public interface UserQueryService {
@@ -9,4 +10,6 @@ public interface UserQueryService {
     public boolean isExistBySocialId(String socialId);
 
     public boolean isExistByEmail(String email);
+
+    public UserResponseDTO.QueryNotificationList getNotifications();
 }

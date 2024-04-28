@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface AppNotificationRepository extends JpaRepository<AppNotification, Long> {
     public Optional<AppNotification> findById(Long id);
+
 }
 

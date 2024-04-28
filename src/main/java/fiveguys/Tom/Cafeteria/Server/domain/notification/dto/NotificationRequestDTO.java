@@ -3,6 +3,8 @@ package fiveguys.Tom.Cafeteria.Server.domain.notification.dto;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotificationType;
 import lombok.Getter;
 
+import java.util.List;
+
 public class NotificationRequestDTO {
     @Getter
     public static class SendOneDTO{
@@ -22,5 +24,10 @@ public class NotificationRequestDTO {
         private String content;
         private String cafeteriaName;
         private AppNotificationType notificationType;
+    }
+
+    @Getter
+    public static class ReadNotifications{
+        private List<Long> notificationIdList;
     }
 }

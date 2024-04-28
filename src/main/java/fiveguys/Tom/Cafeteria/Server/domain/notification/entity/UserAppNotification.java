@@ -41,9 +41,16 @@ public class UserAppNotification extends BaseEntity {
         user.getUserAppNotificationList().add(this);
         this.user = user;
     }
-
-    public void setAppNotification(AppNotification appNotification) {
+    public void setAppNotification(AppNotification appNotification){
+        if( appNotification != null){
+            appNotification.getUserAppNotificationList().remove(appNotification);
+        }
+        appNotification.getUserAppNotificationList().add(this);
         this.appNotification = appNotification;
+    }
+
+    public void setRead(){
+        this.read = true;
     }
 }
 

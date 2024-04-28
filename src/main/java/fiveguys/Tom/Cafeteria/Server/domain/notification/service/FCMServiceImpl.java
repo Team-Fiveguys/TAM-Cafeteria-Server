@@ -27,19 +27,40 @@ public class FCMServiceImpl implements FCMService{
     @Override
     public Message createMessage(String title, String content, String cafeteriaName, String type, Long notificationId) {
         String condition = "'" + cafeteriaName + "' in topics && '" + type + "' in topics";
+        AndroidConfig androidConfig = AndroidConfig.builder()
+                .setNotification(
+                        AndroidNotification.builder()
+                                .setColor("#ffffff")
+                                .build())
+                .build();
+//        ApnsConfig.builder()
+//                .setAps(Aps.builder()
+//                        .)
         Notification notification = Notification.builder()
                 .setTitle(title)
                 .setBody(content)
                 .build();
+
+
         return Message.builder()
                 .putData("id", String.valueOf(notificationId))
                 .setCondition(condition)
                 .setNotification(notification)
+                .setAndroidConfig(androidConfig)
                 .build();
     }
 
     @Override
     public Message createGeneralMessage(String title, String content, Long notificationId) {
+        AndroidConfig androidConfig = AndroidConfig.builder()
+                .setNotification(
+                        AndroidNotification.builder()
+                                .setColor("#ffffff")
+                                .build())
+                .build();
+//        ApnsConfig.builder()
+//                .setAps(Aps.builder()
+//                        .)
         Notification notification = Notification.builder()
                 .setTitle(title)
                 .setBody(content)
@@ -49,6 +70,7 @@ public class FCMServiceImpl implements FCMService{
                 .putData("id", String.valueOf(notificationId))
                 .setTopic("general")
                 .setNotification(notification)
+                .setAndroidConfig(androidConfig)
                 .build();
     }
 
