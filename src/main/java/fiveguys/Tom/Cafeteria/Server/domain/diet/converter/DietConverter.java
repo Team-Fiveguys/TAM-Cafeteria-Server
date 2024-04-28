@@ -30,6 +30,7 @@ public class DietConverter {
                 .photoURI(diet.getDietPhoto() != null ? dietPhotoURI + diet.getDietPhoto().getImageKey() : "사진이 등록되어있지 않습니다.")
                 .dayOff(diet.isDayOff())
                 .soldOut(diet.isSoldOut())
+                .date(diet.getLocalDate())
                 .build();
     }
     public static DietResponseDTO.DietCreateDTO toDietCreateResponseDTO(Diet diet){
