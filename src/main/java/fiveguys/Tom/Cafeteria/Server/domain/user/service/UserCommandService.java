@@ -8,4 +8,6 @@ public interface UserCommandService {
     public void grantAdmin(Long userId);
 
     public void depriveAdmin(Long userId);
+
+    public void initNotificationSet(String token);
 }
