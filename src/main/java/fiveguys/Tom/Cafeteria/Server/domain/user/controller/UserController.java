@@ -6,10 +6,8 @@ import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserCommandService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -24,4 +22,11 @@ public class UserController {
         return ApiResponse.onSuccess("알림이 활성화 되었습니다.");
     }
 
+    @PostMapping("/notification/{notification-id}")
+    @Operation(summary = "알림을 수신 받음을 서버에 알리는 API", description = "PathVariable으로 알림id를 전달하여" +
+            "유저가 해당 알림에 대해서 제어할 수 있도록 한다.")
+    public ApiResponse<String> receiveNotification(@PathVariable(name = "notification-id") Long id){
+        userCommandService.receiveMessage(id);
+        return ApiResponse.onSuccess("알림 수신 여부를 서버에 전달하였습니다.");
+    }
 }

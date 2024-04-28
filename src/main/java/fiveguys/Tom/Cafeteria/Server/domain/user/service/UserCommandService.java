@@ -10,4 +10,6 @@ public interface UserCommandService {
     public void depriveAdmin(Long userId);
 
     public void initNotificationSet(String token);
+
+    public void receiveMessage(Long notificationId);
 }

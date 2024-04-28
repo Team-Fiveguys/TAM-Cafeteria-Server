@@ -5,6 +5,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.TopicManagementResponse;
 import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotification;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotification;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.service.NotificationQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepository;
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 @Slf4j
 public class UserCommandServiceImpl implements UserCommandService{
+    private final NotificationQueryService notificationQueryService;
     private final UserQueryService userQueryService;
     private final UserRepository userRepository;
 
@@ -65,5 +69,14 @@ public class UserCommandServiceImpl implements UserCommandService{
         } catch (FirebaseMessagingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    @Transactional
+    public void receiveMessage(Long notificationId) {
+        Long userId = UserContext.getUserId();
+        User user = userQueryService.getUserById(userId);
+        AppNotification notification = notificationQueryService.getNotificationById(notificationId);
+        UserAppNotification userAppNotification = UserAppNotification.createUserAppNotification(user, notification);
     }
 }

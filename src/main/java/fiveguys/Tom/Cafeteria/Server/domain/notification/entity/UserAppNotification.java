@@ -28,5 +28,22 @@ public class UserAppNotification extends BaseEntity {
     @Column(columnDefinition = "boolean DEFAULT false", name = "is_read") //mysql 예약어 피하기
     private boolean read;
 
+    public static UserAppNotification createUserAppNotification(User user, AppNotification notification){
+        UserAppNotification userAppNotification = new UserAppNotification();
+        userAppNotification.setUser(user);
+        userAppNotification.setAppNotification(notification);
+        return userAppNotification;
+    }
+    public void setUser(User user){
+        if( user != null){
+            user.getUserAppNotificationList().remove(user);
+        }
+        user.getUserAppNotificationList().add(this);
+        this.user = user;
+    }
+
+    public void setAppNotification(AppNotification appNotification) {
+        this.appNotification = appNotification;
+    }
 }
 
