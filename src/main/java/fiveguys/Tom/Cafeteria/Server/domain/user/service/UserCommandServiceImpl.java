@@ -10,6 +10,8 @@ import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotification;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotification;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.repository.UserAppNotificationRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.service.NotificationQueryService;
+import fiveguys.Tom.Cafeteria.Server.domain.user.converter.UserConverter;
+import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepository;
@@ -20,8 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -58,9 +58,10 @@ public class UserCommandServiceImpl implements UserCommandService{
         User user = userQueryService.getUserById(id);
         NotificationSet newNotificationSet = NotificationSet.builder()
                 .todayDiet(true)
-                .weekDiet(true)
-                .dietModification(true)
-                .soldOut(true)
+                .weekDietEnroll(true)
+                .dietPhotoEnroll(true)
+                .dietSoldOut(true)
+                .dietChange(true)
                 .registrationToken(token)
                 .build();
         user.setNotificationSet(newNotificationSet);
@@ -75,6 +76,14 @@ public class UserCommandServiceImpl implements UserCommandService{
         } catch (FirebaseMessagingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateNotificationSet(UserRequestDTO.UpdateNotificationSet updateNotificationSet) {
+        Long userId = UserContext.getUserId();
+        User user = userQueryService.getUserById(userId);
+        user.setNotificationSet(UserConverter.toNotificationSet(updateNotificationSet));
     }
 
     @Override
@@ -106,5 +115,28 @@ public class UserCommandServiceImpl implements UserCommandService{
         User user = userQueryService.getUserById(userId);
         user.getUserAppNotificationList().stream()
                 .forEach( userAppNotification -> userAppNotification.setRead());
+    }
+
+    @Override
+    @Transactional
+    public void deleteNotification(Long notificationId) {
+        Long userId = UserContext.getUserId();
+        User user = userQueryService.getUserById(userId);
+        AppNotification notification = notificationQueryService.getNotificationById(notificationId);
+        UserAppNotification userAppNotification = userAppNotificationRepository.findByUserAndAppNotification(user, notification)
+                .orElseThrow(
+                        () -> new GeneralException(ErrorStatus.NOTIFICATION_NOT_RELATIONAL)
+                );
+        userAppNotification.deleteUserAppNotification(user, notification);
+        userAppNotificationRepository.delete(userAppNotification);
+    }
+
+    @Override
+    @Transactional
+    public void deleteNotifications() {
+        Long userId = UserContext.getUserId();
+        User user = userQueryService.getUserById(userId);
+        userAppNotificationRepository.deleteAllByUser(user);
+        user.deleteAllUserAppNotification();
     }
 }

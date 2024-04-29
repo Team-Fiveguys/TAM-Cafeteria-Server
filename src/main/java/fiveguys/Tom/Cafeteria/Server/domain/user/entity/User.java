@@ -67,4 +67,8 @@ public class User extends BaseEntity {
     private void setAppleRefreshToken(String appleRefreshToken) {
         this.appleRefreshToken = appleRefreshToken;
     }
+
+    public void deleteAllUserAppNotification(){
+        this.getUserAppNotificationList().clear();
+    }
 }

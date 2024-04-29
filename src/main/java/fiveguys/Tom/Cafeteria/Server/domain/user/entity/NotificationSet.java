@@ -18,13 +18,18 @@ public class NotificationSet extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String registrationToken;
-
+    @Column(columnDefinition = "boolean default true")
+    private boolean hakGwan;
+    @Column(columnDefinition = "boolean default true")
+    private boolean myeongJin;
     @Column(columnDefinition = "boolean default true")
     private boolean todayDiet;
     @Column(columnDefinition = "boolean default true")
-    private boolean weekDiet;
+    private boolean dietPhotoEnroll;
     @Column(columnDefinition = "boolean default true")
-    private boolean soldOut;
+    private boolean weekDietEnroll;
     @Column(columnDefinition = "boolean default true")
-    private boolean dietModification;
+    private boolean dietSoldOut;
+    @Column(columnDefinition = "boolean default true")
+    private boolean dietChange;
 }
