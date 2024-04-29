@@ -30,4 +30,5 @@ public class NotificationRequestDTO {
     public static class ReadNotifications{
         private List<Long> notificationIdList;
     }
+
 }

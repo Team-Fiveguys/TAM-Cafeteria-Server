@@ -9,4 +9,6 @@ import java.util.Optional;
 
 public interface UserAppNotificationRepository extends JpaRepository<UserAppNotification, Long> {
     public Optional<UserAppNotification> findByUserAndAppNotification(User user, AppNotification appNotification);
+
+    public void deleteAllByUser(User user);
 }

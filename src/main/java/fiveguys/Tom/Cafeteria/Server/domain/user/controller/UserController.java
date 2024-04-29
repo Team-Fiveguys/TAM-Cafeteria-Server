@@ -2,7 +2,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.user.controller;
 
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
-import fiveguys.Tom.Cafeteria.Server.domain.notification.dto.NotificationRequestDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserCommandService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
@@ -22,6 +22,13 @@ public class UserController {
     public ApiResponse<String> allowNotification(@RequestParam(name = "registrationToken") String token){
         userCommandService.initNotificationSet(token);
         return ApiResponse.onSuccess("알림이 활성화 되었습니다.");
+    }
+
+    @PutMapping("/notificationSet")
+    @Operation(summary = "알림 항목을 업데이트 하는 API", description = "알림 항목에 대한 동의 여부를 받아서 저장시킨다. 구독과 항상 같이 이루어져야 한다.")
+    public ApiResponse<String> modifyNotification(@RequestBody UserRequestDTO.UpdateNotificationSet dto){
+        userCommandService.updateNotificationSet(dto);
+        return ApiResponse.onSuccess("알림 항목이 수정 되었습니다.");
     }
 
     @PostMapping("/notifications/{notification-id}")
@@ -49,6 +56,19 @@ public class UserController {
     @Operation(summary = "유저의 모든 알림을 읽음 처리 하는 API", description = "모든 알림을 읽음 처리를 한다.")
     public ApiResponse<String> readNotifications(){
         userCommandService.readAllNotification();
-        return ApiResponse.onSuccess("알림 리스트들이 모두 읽음 처리 되었습니다.");
+        return ApiResponse.onSuccess("모든 알림들이 읽음 처리 되었습니다.");
+    }
+
+    @DeleteMapping("/notifications/{notification-id}")
+    @Operation(summary = "알림 하나를 삭제 처리 하는 API", description = "알림 id를 받아 유저에게 보내진 알림을 삭제 한다.")
+    public ApiResponse<String> deleteNotification(@PathVariable(name = "notification-id") Long id){
+        userCommandService.deleteNotification(id);
+        return ApiResponse.onSuccess("해당 알림이 삭제 처리 되었습니다.");
+    }
+    @DeleteMapping("/notifications")
+    @Operation(summary = "알림 하나를 삭제 처리 하는 API", description = "모든 알림을 삭제 한다.")
+    public ApiResponse<String> deleteNotifications(){
+        userCommandService.deleteNotifications();
+        return ApiResponse.onSuccess("모든 알림들이 삭제 되었습니다.");
     }
 }
