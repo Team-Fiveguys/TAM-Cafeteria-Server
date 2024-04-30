@@ -1,5 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.domain.user.dto;
 
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,4 +27,23 @@ public class UserResponseDTO {
         private List<QueryNotification> notificationList;
 
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class QueryUserList {
+        private List<QueryUser> userList;
+        private Integer totalPage;
+        private Integer nowPage;
+    }
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class QueryUser {
+        private Long id;
+        private String name;
+        private String email;
+        private Role role;
+    }
+
 }

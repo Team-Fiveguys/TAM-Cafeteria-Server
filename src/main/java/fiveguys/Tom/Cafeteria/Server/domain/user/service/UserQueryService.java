@@ -12,4 +12,6 @@ public interface UserQueryService {
     public boolean isExistByEmail(String email);
 
     public UserResponseDTO.QueryNotificationList getNotifications();
+
+    public UserResponseDTO.QueryUserList getUsers(int page);
 }

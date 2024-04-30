@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
@@ -99,10 +100,13 @@ public class Diet extends BaseEntity {
             // 목요일이 다음 달에 속하면, 그 주는 다음 달의 첫째 주로 간주
             // 목요일의 주차 정보를 이용
             this.week = thursday.get(weekOfMonth);
-            this.month += 1;
-            if( this.month > 12){
-                this.month = 1;
-                this.year += 1;
+            Month thursdayMonth = thursday.getMonth();
+            if( this.month < thursdayMonth.getValue()){
+                this.month += 1;
+                if( this.month > 12){
+                    this.month = 1;
+                    this.year += 1;
+                }
             }
         } else {
             // 그렇지 않으면, 원래 날짜의 주차 정보를 이용
