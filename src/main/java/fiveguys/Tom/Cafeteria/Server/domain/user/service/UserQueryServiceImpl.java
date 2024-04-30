@@ -5,12 +5,16 @@ import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.converter.NotificationConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotification;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotification;
+import fiveguys.Tom.Cafeteria.Server.domain.user.converter.UserConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepository;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -20,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserQueryServiceImpl implements UserQueryService{
+    private static int userPageSize = 20;
     private final UserRepository userRepository;
 
     @Override
@@ -64,5 +69,11 @@ public class UserQueryServiceImpl implements UserQueryService{
 
         return NotificationConverter.toQueryNotificationList(notificationDTOList);
 
+    }
+
+    @Override
+    public UserResponseDTO.QueryUserList getUsers(int page) {
+        Page<User> userPage = userRepository.findAll(PageRequest.of(page - 1, userPageSize, Sort.by(Sort.Order.desc("createdAt"))));
+        return UserConverter.toQueryUserList(userPage);
     }
 }
