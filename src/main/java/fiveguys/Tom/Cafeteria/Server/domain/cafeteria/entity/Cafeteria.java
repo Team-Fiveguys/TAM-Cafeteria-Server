@@ -20,10 +20,14 @@ public class Cafeteria extends BaseEntity {
 
     private String name;
 
-    private String address; //식당 위치?
+    private String location; //식당 위치?
 
     @Enumerated(EnumType.STRING)
     private Congestion congestion;
+
+    private boolean runLunch;
+
+    private boolean runBreakfast;
 
     private LocalTime breakfastStartTime; //조식 운영 시작 시간
 

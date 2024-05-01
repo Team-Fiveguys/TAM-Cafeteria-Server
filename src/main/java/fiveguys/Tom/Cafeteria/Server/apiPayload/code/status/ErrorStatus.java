@@ -39,6 +39,7 @@ public enum ErrorStatus implements BaseCode {
     CAFETERIA_IS_EMPTY(HttpStatus.BAD_REQUEST, "CAFETERIA4002", "식당은 null일 수 없습니다."),
     CAFETERIA_IS_BLANK(HttpStatus.BAD_REQUEST, "CAFETERIA4003", "식당은 공백일 수 없습니다."),
     CAFETERIA_TOO_LONG(HttpStatus.BAD_REQUEST, "CAFETERIA4004", "해당 식당의 길이가 100을 넘어갑니다."),
+    CAFETERIA_NAME_DUPLICATE(HttpStatus.BAD_REQUEST, "CAFETERIA4005", "등록하려는 식당의 이름이 이미 존재합니다."),
 
     // 알림 관련 에러
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION4001", "id에 해당하는 알림이 존재하지 않습니다."),

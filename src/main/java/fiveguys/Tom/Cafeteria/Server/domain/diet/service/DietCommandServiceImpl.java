@@ -49,7 +49,12 @@ public class DietCommandServiceImpl implements DietCommandService{
     public Diet removeMenu(Diet diet, Menu menu) {
         MenuDiet menuDiet = menuDietRepository.findFirstByDietAndMenu(diet, menu);
         diet.remove(menuDiet);
-        menuDietRepository.delete(menuDiet);
+        if(diet.getMenuDietList().isEmpty()){ // 빈 식단이면 식단자체를 삭제 -> cascade.REMOVE 식단 메뉴 삭제
+            dietRepository.delete(diet);
+        }
+        else{
+            menuDietRepository.delete(menuDiet); // 빈 식단이 아니면 식단메뉴만 삭제
+        }
         return diet;
     }
 
