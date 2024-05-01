@@ -1,8 +1,10 @@
 package fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service;
 
+import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Congestion;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.repository.CafeteriaRepository;
+import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,10 @@ public class CafeteriaCommandServiceImpl implements CafeteriaCommandService {
 
     @Override
     public Cafeteria enroll(Cafeteria cafeteria) {
+        boolean exists = cafeteriaRepository.existsByName(cafeteria.getName());
+        if (exists){
+            throw new GeneralException(ErrorStatus.CAFETERIA_NAME_DUPLICATE);
+        }
         return cafeteriaRepository.save(cafeteria);
     }
 
