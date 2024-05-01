@@ -31,4 +31,13 @@ public class CafeteriaResponseDTO {
     public static class QueryCongestionResponseDTO {
         private Congestion congestion;
     }
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class QueryRunResponseDTO {
+        private boolean runBreakfast;
+        private boolean runLunch;
+    }
 }

@@ -8,7 +8,9 @@ import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Congestion;
 public class CafeteriaConverter {
     public static Cafeteria toCafeteria(CafeteriaRequestDTO.CafeteriaCreateDTO cafeteriaCreateDTO){
         Cafeteria newCafeteria = Cafeteria.builder()
-                .address(cafeteriaCreateDTO.getAddress())
+                .location(cafeteriaCreateDTO.getLocation())
+                .runBreakfast(cafeteriaCreateDTO.isRunBreakfast())
+                .runLunch(cafeteriaCreateDTO.isRunLunch())
                 .breakfastStartTime(cafeteriaCreateDTO.getBreakfastStartTime())
                 .breakfastEndTime(cafeteriaCreateDTO.getBreakfastEndTime())
                 .lunchStartTime(cafeteriaCreateDTO.getLunchStartTime())
@@ -34,4 +36,10 @@ public class CafeteriaConverter {
                 .build();
     }
 
+    public static CafeteriaResponseDTO.QueryRunResponseDTO toQueryRunResponseDTO(Cafeteria cafeteria){
+        return CafeteriaResponseDTO.QueryRunResponseDTO.builder()
+                .runBreakfast(cafeteria.isRunBreakfast())
+                .runLunch(cafeteria.isRunLunch())
+                .build();
+    }
 }

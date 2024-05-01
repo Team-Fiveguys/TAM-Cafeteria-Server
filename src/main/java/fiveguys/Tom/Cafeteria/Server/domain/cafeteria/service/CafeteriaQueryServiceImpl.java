@@ -22,6 +22,13 @@ public class CafeteriaQueryServiceImpl implements CafeteriaQueryService{
     }
 
     @Override
+    public Cafeteria findByName(String name) {
+        Cafeteria findedCafeteria = cafeteriaRepository.
+                findByName(name).orElseThrow(() -> new GeneralException(ErrorStatus.CAFETERIA_NOT_FOUND));
+        return findedCafeteria;
+    }
+
+    @Override
     public List<Cafeteria> findAll() {
         return cafeteriaRepository.findAll();
     }

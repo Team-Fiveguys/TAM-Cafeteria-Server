@@ -13,7 +13,9 @@ public class CafeteriaRequestDTO {
     @ToString
     public static class CafeteriaCreateDTO {
         private String name;
-        private String address;
+        private String location;
+        private boolean runBreakfast;
+        private boolean runLunch;
         private LocalTime breakfastStartTime; //조식 운영 시작 시간
 
         private LocalTime breakfastEndTime; //조식 운영 시작 시간
