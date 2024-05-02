@@ -68,15 +68,22 @@ public class DietCommandServiceImpl implements DietCommandService{
     public Diet switchDayOff(DietRequestDTO.CheckDayOffDTO checkDayOffDTO) {
         Cafeteria cafeteria = cafeteriaQueryService.findById(checkDayOffDTO.getCafeteriaId());
         List<Diet> dietList = dietQueryService.getDietsOfDay(cafeteria, checkDayOffDTO.getLocalDate());
-        if( dietList.isEmpty() ){
-            Diet diet = Diet.builder()
+        if( dietList.isEmpty() ){ // 식단이 없으면 만들어서
+            Diet breakfast = Diet.builder()
                     .meals(Meals.BREAKFAST)
                     .localDate(checkDayOffDTO.getLocalDate())
                     .cafeteria(cafeteria)
                     .dayOff(true)
                     .build();
-            createDiet(cafeteria, diet,new ArrayList<>());
-            return diet;
+            Diet lunch = Diet.builder()
+                    .meals(Meals.LUNCH)
+                    .localDate(checkDayOffDTO.getLocalDate())
+                    .cafeteria(cafeteria)
+                    .dayOff(true)
+                    .build();
+            createDiet(cafeteria, breakfast, new ArrayList<>());
+            createDiet(cafeteria, lunch, new ArrayList<>());
+            return breakfast;
         }
         dietList.forEach(diet ->  diet.switchDayOff());
         return dietList.get(0);
