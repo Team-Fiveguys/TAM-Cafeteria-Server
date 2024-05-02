@@ -76,4 +76,11 @@ public class UserQueryServiceImpl implements UserQueryService{
         Page<User> userPage = userRepository.findAll(PageRequest.of(page - 1, userPageSize, Sort.by(Sort.Order.desc("createdAt"))));
         return UserConverter.toQueryUserList(userPage);
     }
+
+    @Override
+    public UserResponseDTO.QueryNotificationSet getNotificationSet() {
+        Long userId = UserContext.getUserId();
+        User user = getUserById(userId);
+        return UserConverter.toQueryNotificationSet(user.getNotificationSet());
+    }
 }

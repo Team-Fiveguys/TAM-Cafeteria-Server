@@ -14,4 +14,6 @@ public interface UserQueryService {
     public UserResponseDTO.QueryNotificationList getNotifications();
 
     public UserResponseDTO.QueryUserList getUsers(int page);
+
+    public UserResponseDTO.QueryNotificationSet getNotificationSet();
 }
