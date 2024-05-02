@@ -45,6 +45,9 @@ public class User extends BaseEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<UserAppNotification> userAppNotificationList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<UserCafeteria> userCafeteriaList = new ArrayList<>();
     public static void setRoleAdmin(User user) {
         user.role = Role.ADMIN;
     }

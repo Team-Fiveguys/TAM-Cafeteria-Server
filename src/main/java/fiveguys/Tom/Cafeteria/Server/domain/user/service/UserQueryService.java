@@ -1,5 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.domain.user.service;
 
+import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.dto.response.CafeteriaResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 
@@ -16,4 +17,6 @@ public interface UserQueryService {
     public UserResponseDTO.QueryUserList getUsers(int page);
 
     public UserResponseDTO.QueryNotificationSet getNotificationSet();
+
+    public CafeteriaResponseDTO.QueryCafeteriaList getRunningCafeteriaList();
 }

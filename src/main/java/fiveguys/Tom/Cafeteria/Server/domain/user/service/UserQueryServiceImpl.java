@@ -2,6 +2,9 @@ package fiveguys.Tom.Cafeteria.Server.domain.user.service;
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
+import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.converter.CafeteriaConverter;
+import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.dto.response.CafeteriaResponseDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.converter.NotificationConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotification;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotification;
@@ -9,6 +12,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.user.converter.UserConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.UserCafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepository;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -82,5 +86,16 @@ public class UserQueryServiceImpl implements UserQueryService{
         Long userId = UserContext.getUserId();
         User user = getUserById(userId);
         return UserConverter.toQueryNotificationSet(user.getNotificationSet());
+    }
+
+    @Override
+    public CafeteriaResponseDTO.QueryCafeteriaList getRunningCafeteriaList() {
+        Long userId = UserContext.getUserId();
+        User user = getUserById(userId);
+        List<UserCafeteria> userCafeteriaList = user.getUserCafeteriaList();
+        List<Cafeteria> cafeteriaList = userCafeteriaList.stream()
+                .map(userCafeteria -> userCafeteria.getCafeteria())
+                .collect(Collectors.toList());
+        return CafeteriaConverter.toQueryCafeteriaList(cafeteriaList);
     }
 }
