@@ -2,10 +2,13 @@ package fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity;
 
 
 import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.UserCafeteria;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder
@@ -36,6 +39,9 @@ public class Cafeteria extends BaseEntity {
     private LocalTime lunchStartTime; //중식 운영 시작 시간
 
     private LocalTime lunchEndTime; //중식 운영 시작 시간
+
+    @OneToMany(mappedBy = "cafeteria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserCafeteria> userCafeteriaList = new ArrayList<>();
 
     public void setCongestion(Congestion congestion) {
         this.congestion = congestion;

@@ -4,6 +4,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Congestion;
 import lombok.*;
 
 import java.time.LocalTime;
+import java.util.List;
 
 public class CafeteriaRequestDTO {
     @Getter

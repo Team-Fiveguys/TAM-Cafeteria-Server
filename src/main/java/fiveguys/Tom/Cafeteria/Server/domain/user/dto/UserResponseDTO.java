@@ -1,6 +1,7 @@
 package fiveguys.Tom.Cafeteria.Server.domain.user.dto;
 
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,19 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class UserResponseDTO {
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class QueryNotificationSet{
+        private boolean hakGwan;
+        private boolean myeongJin;
+        private boolean todayDiet;
+        private boolean dietPhotoEnroll;
+        private boolean weekDietEnroll;
+        private boolean dietSoldOut;
+        private boolean dietChange;
+    }
 
     @Getter
     @Builder

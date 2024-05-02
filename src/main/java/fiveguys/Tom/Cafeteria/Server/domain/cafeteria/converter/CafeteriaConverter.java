@@ -5,6 +5,9 @@ import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.dto.response.CafeteriaResp
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Congestion;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class CafeteriaConverter {
     public static Cafeteria toCafeteria(CafeteriaRequestDTO.CafeteriaCreateDTO cafeteriaCreateDTO){
         Cafeteria newCafeteria = Cafeteria.builder()
@@ -40,6 +43,30 @@ public class CafeteriaConverter {
         return CafeteriaResponseDTO.QueryRunResponseDTO.builder()
                 .runBreakfast(cafeteria.isRunBreakfast())
                 .runLunch(cafeteria.isRunLunch())
+                .build();
+    }
+
+    public static CafeteriaResponseDTO.QueryCafeteriaList toQueryCafeteriaList(List<Cafeteria> cafeteriaList){
+        List<CafeteriaResponseDTO.QueryCafeteria> queryCafeteriaList = cafeteriaList.stream()
+                .map(CafeteriaConverter::toQueryCafeteria)
+                .collect(Collectors.toList());
+
+        return CafeteriaResponseDTO.QueryCafeteriaList.builder()
+                .queryCafeteriaList(queryCafeteriaList)
+                .build();
+
+    }
+
+    public static CafeteriaResponseDTO.QueryCafeteria toQueryCafeteria(Cafeteria cafeteria){
+        return CafeteriaResponseDTO.QueryCafeteria.builder()
+                .runLunch(cafeteria.isRunLunch())
+                .runBreakfast(cafeteria.isRunBreakfast())
+                .breakfastStartTime(cafeteria.getBreakfastStartTime())
+                .breakfastEndTime(cafeteria.getBreakfastEndTime())
+                .lunchStartTime(cafeteria.getLunchStartTime())
+                .lunchEndTime(cafeteria.getLunchEndTime())
+                .name(cafeteria.getName())
+                .location(cafeteria.getLocation())
                 .build();
     }
 }

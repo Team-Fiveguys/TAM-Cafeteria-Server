@@ -75,4 +75,16 @@ public class UserConverter {
                 .nowPage(userPage.getNumber()+1)
                 .build();
     }
+
+    public static UserResponseDTO.QueryNotificationSet toQueryNotificationSet(NotificationSet notificationSet){
+        return UserResponseDTO.QueryNotificationSet.builder()
+                .hakGwan(notificationSet.isHakGwan())
+                .myeongJin(notificationSet.isMyeongJin())
+                .todayDiet(notificationSet.isTodayDiet())
+                .weekDietEnroll(notificationSet.isWeekDietEnroll())
+                .dietSoldOut(notificationSet.isDietSoldOut())
+                .dietChange(notificationSet.isDietChange())
+                .dietPhotoEnroll(notificationSet.isDietPhotoEnroll())
+                .build();
+    }
 }

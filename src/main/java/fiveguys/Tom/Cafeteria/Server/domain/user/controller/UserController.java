@@ -25,6 +25,13 @@ public class UserController {
     }
 
     @PutMapping("/notificationSet")
+    @Operation(summary = "알림 항목을 조회하는 API", description = "현재 설정된 알림 항목에 대한 정보를 응답한다.")
+    public ApiResponse<UserResponseDTO.QueryNotificationSet> queryNotification(){
+        UserResponseDTO.QueryNotificationSet notificationSet = userQueryService.getNotificationSet();
+        return ApiResponse.onSuccess(notificationSet);
+    }
+
+    @GetMapping("/notificationSet")
     @Operation(summary = "알림 항목을 업데이트 하는 API", description = "알림 항목에 대한 동의 여부를 받아서 저장시킨다. 구독과 항상 같이 이루어져야 한다.")
     public ApiResponse<String> modifyNotification(@RequestBody UserRequestDTO.UpdateNotificationSet dto){
         userCommandService.updateNotificationSet(dto);
