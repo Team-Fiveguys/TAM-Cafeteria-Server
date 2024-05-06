@@ -6,6 +6,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.entity.DietPhoto;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ import java.util.Locale;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@DynamicUpdate
 @Entity
 public class Diet extends BaseEntity {
     @Id
@@ -44,7 +46,7 @@ public class Diet extends BaseEntity {
     private int week;
 
     @JoinColumn(name = "cafeteria_id")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Cafeteria cafeteria;
 
     @OneToMany(mappedBy = "diet", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
@@ -113,5 +115,9 @@ public class Diet extends BaseEntity {
             this.week = monday.get(weekOfMonth);
         }
         System.out.println(localDate + "는 " + thursday.getMonthValue() + "월의 " + this.week+ "주차 입니다.");
+    }
+
+    public void clearDietPhoto() {
+        this.dietPhoto = null;
     }
 }

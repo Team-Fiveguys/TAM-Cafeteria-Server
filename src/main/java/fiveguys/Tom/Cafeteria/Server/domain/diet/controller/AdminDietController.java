@@ -44,7 +44,7 @@ public class AdminDietController {
                 .collect(Collectors.toList());
         Long cafeteriaId = dietCreateDTO.getCafeteriaId();
         Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
-        Diet diet = dietCommandService.createDiet(cafeteria, DietConverter.toDiet(dietCreateDTO), menuList);
+        Diet diet = dietCommandService.createDiet(cafeteria, dietCreateDTO, menuList);
         return ApiResponse.onSuccess(DietConverter.toDietCreateResponseDTO(diet));
     }
 

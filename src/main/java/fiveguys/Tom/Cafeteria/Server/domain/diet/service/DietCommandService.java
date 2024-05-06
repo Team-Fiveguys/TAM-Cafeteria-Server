@@ -9,7 +9,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
 import java.util.List;
 
 public interface DietCommandService {
-    public Diet createDiet(Cafeteria cafeteria, Diet diet, List<Menu> menuList);
+    public Diet createDiet(Cafeteria cafeteria, DietRequestDTO.DietCreateDTO dietCreateDTO, List<Menu> menuList);
 
     public Diet addMenu(Diet diet, Menu menu);
 

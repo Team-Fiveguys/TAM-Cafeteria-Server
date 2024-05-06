@@ -28,4 +28,14 @@ public class DietPhotoController {
         DietPhoto dietPhoto = dietPhotoService.uploadDietPhoto(dietQueryDTO, multipartFile);
         return ApiResponse.onSuccess(DietPhotoConverter.toDietPhotoUploadDTO(dietPhoto));
     }
+
+    @Operation(summary = "식단 사진을 재업로드하는 API")
+    @PutMapping(value = "/dietPhoto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<DietPhotoResponseDTO.DietPhotoUploadDTO> updateDietPhoto(
+            @RequestPart(name = "photo")MultipartFile multipartFile,
+            @RequestPart(name = "dietQuery") DietRequestDTO.DietQueryDTO dietQueryDTO){
+        dietPhotoService.deleteDietPhoto(dietQueryDTO);
+        DietPhoto dietPhoto = dietPhotoService.uploadDietPhoto(dietQueryDTO, multipartFile);
+        return ApiResponse.onSuccess(DietPhotoConverter.toDietPhotoUploadDTO(dietPhoto));
+    }
 }
