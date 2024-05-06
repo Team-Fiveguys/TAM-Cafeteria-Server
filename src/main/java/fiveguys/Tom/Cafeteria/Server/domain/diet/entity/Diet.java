@@ -116,4 +116,8 @@ public class Diet extends BaseEntity {
         }
         System.out.println(localDate + "는 " + thursday.getMonthValue() + "월의 " + this.week+ "주차 입니다.");
     }
+
+    public void clearDietPhoto() {
+        this.dietPhoto = null;
+    }
 }
