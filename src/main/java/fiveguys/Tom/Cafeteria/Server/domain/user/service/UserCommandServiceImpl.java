@@ -71,7 +71,15 @@ public class UserCommandServiceImpl implements UserCommandService{
         TopicManagementResponse response = null;
 
         try {
-            response = FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "general");
+              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "hakGwan");
+              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "myeongJin");
+              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "myeongBun");
+              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "todayDiet");
+              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "general");
+              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "dietPhotoEnroll");
+              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "dietChange");
+              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "weekDietEnroll");
+              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "dietSoldOut");
             log.info("tokens were subscribed successfully");
         } catch (FirebaseMessagingException e) {
             throw new RuntimeException(e);
