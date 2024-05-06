@@ -81,7 +81,7 @@ public class AdminDietController {
 
     @Operation(summary = "식단의 품절 유무를 체크하는 API", description = "토글 형식으로 품절 유무를 표시한다 응답으로 soldOut이 true이면 품절")
     @PatchMapping("/sold-out")
-    public ApiResponse<DietResponseDTO.SwitchSoldOutResponseDTO> checkSoldOut(DietRequestDTO.DietQueryDTO dietQueryDTO){
+    public ApiResponse<DietResponseDTO.SwitchSoldOutResponseDTO> checkSoldOut(@RequestBody DietRequestDTO.DietQueryDTO dietQueryDTO){
         Diet diet = dietQueryService.getDiet(dietQueryDTO.getCafeteriaId(), dietQueryDTO.getLocalDate(), dietQueryDTO.getMeals());
         dietCommandService.switchSoldOut(diet);
         return ApiResponse.onSuccess(DietConverter.toSwitchSoldOutResponseDTO(diet.isSoldOut()));

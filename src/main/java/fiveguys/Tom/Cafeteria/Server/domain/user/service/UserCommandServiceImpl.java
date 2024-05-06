@@ -39,12 +39,14 @@ public class UserCommandServiceImpl implements UserCommandService{
     }
 
     @Override
+    @Transactional
     public void grantAdmin(Long userId) {
         User user = userQueryService.getUserById(userId);
         User.setRoleAdmin(user);
     }
 
     @Override
+    @Transactional
     public void depriveAdmin(Long userId) {
         User user = userQueryService.getUserById(userId);
         User.setRoleMember(user);
