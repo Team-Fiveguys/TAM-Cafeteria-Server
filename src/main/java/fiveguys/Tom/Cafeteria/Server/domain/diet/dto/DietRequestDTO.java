@@ -37,6 +37,7 @@ public class DietRequestDTO {
     public static class CheckDayOffDTO{
        private Long cafeteriaId;
        private LocalDate localDate;
+       private Meals meals;
     }
 
     @AllArgsConstructor

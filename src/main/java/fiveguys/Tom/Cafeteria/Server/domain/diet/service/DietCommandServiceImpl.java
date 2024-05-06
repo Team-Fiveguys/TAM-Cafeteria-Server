@@ -30,7 +30,8 @@ public class DietCommandServiceImpl implements DietCommandService{
     private final MenuDietRepository menuDietRepository;
 
     @Override
-    public Diet createDiet(Cafeteria cafeteria, Diet diet, List<Menu> menuList) {
+    public Diet createDiet(Cafeteria cafeteria, DietRequestDTO.DietCreateDTO dietCreateDTO, List<Menu> menuList) {
+        Diet diet = DietConverter.toDiet(dietCreateDTO);
         menuList.stream()
                 .forEach( (menu) ->MenuDiet.createMenuDiet(menu, diet));
         diet.setCafeteria(cafeteria);
@@ -67,25 +68,29 @@ public class DietCommandServiceImpl implements DietCommandService{
     @Override
     public Diet switchDayOff(DietRequestDTO.CheckDayOffDTO checkDayOffDTO) {
         Cafeteria cafeteria = cafeteriaQueryService.findById(checkDayOffDTO.getCafeteriaId());
-        List<Diet> dietList = dietQueryService.getDietsOfDay(cafeteria, checkDayOffDTO.getLocalDate());
-        if( dietList.isEmpty() ){ // 식단이 없으면 만들어서
-            Diet breakfast = Diet.builder()
-                    .meals(Meals.BREAKFAST)
+        boolean existsDiet = dietQueryService.existsDiet(checkDayOffDTO.getCafeteriaId(), checkDayOffDTO.getLocalDate(), checkDayOffDTO.getMeals());
+        if(!existsDiet) { // 해당 식당과 시간에 식단이 없다면 dayOff인 빈 식단을 만듦
+            Diet createdDiet = Diet.builder()
                     .localDate(checkDayOffDTO.getLocalDate())
+                    .meals(checkDayOffDTO.getMeals())
                     .cafeteria(cafeteria)
+                    .menuDietList(new ArrayList<>())
                     .dayOff(true)
+                    .soldOut(false)
                     .build();
-            Diet lunch = Diet.builder()
-                    .meals(Meals.LUNCH)
-                    .localDate(checkDayOffDTO.getLocalDate())
-                    .cafeteria(cafeteria)
-                    .dayOff(true)
-                    .build();
-            createDiet(cafeteria, breakfast, new ArrayList<>());
-            createDiet(cafeteria, lunch, new ArrayList<>());
-            return breakfast;
+            createdDiet.setDateInfo();
+            return dietRepository.save(createdDiet);
         }
-        dietList.forEach(diet ->  diet.switchDayOff());
-        return dietList.get(0);
+        else{ //해당 식당과 시간에 식단이 있다면
+            Diet diet = dietQueryService.getDiet(checkDayOffDTO.getCafeteriaId(), checkDayOffDTO.getLocalDate(), checkDayOffDTO.getMeals());
+            if( diet.isDayOff()){ //dayOff 였으면 식단 자체를 삭제
+                dietRepository.delete(diet);
+            }
+            else{ // 기존에 dayOff가 아니었다면 식단메뉴를 없애고 dayoff를 true로 설정
+                diet.getMenuDietList().clear();
+                diet.switchDayOff();
+            }
+            return diet;
+        }
     }
 }
