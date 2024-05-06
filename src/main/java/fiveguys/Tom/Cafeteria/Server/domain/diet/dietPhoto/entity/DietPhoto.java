@@ -1,6 +1,7 @@
 package fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.entity;
 
 
+import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,8 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@ToString
-public class DietPhoto{
+public class DietPhoto extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class DietPhoto{
 
     private String imageKey;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diet_id")
     private Diet diet;
 
