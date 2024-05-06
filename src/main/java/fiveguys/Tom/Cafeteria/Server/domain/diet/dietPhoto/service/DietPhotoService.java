@@ -9,4 +9,5 @@ public interface DietPhotoService {
 
     public DietPhoto uploadDietPhoto(DietRequestDTO.DietQueryDTO dietQueryDTO, MultipartFile multipartFile);
 
+    public DietPhoto deleteDietPhoto(DietRequestDTO.DietQueryDTO dietQueryDTO);
 }

@@ -30,6 +30,7 @@ public enum ErrorStatus implements BaseCode {
     MENU_DUPLICATE(HttpStatus.BAD_REQUEST, "MENU4002", "해당 메뉴 이름이 이미 존재합니다."),
     // 식단 관련 응답
     DIET_NOT_FOUND(HttpStatus.NOT_FOUND, "DIET4001", "해당 요일에 식단이 존재하지 않습니다."),
+    DIET_PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND, "DIET4006", "해당 식단에 이미지가 존재하지 않습니다."),
     DIET_IS_EMPTY(HttpStatus.BAD_REQUEST, "DIET4002", "식당은 null일 수 없습니다."),
     DIET_IS_BLANK(HttpStatus.BAD_REQUEST, "DIET4003", "식당은 공백일 수 없습니다."),
     DIET_TOO_LONG(HttpStatus.BAD_REQUEST, "DIET4004", "해당 식당의 길이가 100을 넘어갑니다."),
