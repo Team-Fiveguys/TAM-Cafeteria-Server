@@ -5,6 +5,8 @@ import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 
 public interface UserQueryService {
+
+    public UserResponseDTO.QueryUser getMyInfo();
     public User getUserById(Long userId);
     public User getUserBySocialId(String socialId);
     public User getUserByEmail(String email);

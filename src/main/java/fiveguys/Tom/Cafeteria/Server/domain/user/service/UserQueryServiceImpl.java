@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +31,13 @@ import java.util.stream.Collectors;
 public class UserQueryServiceImpl implements UserQueryService{
     private static int userPageSize = 20;
     private final UserRepository userRepository;
+
+    @Override
+    public UserResponseDTO.QueryUser getMyInfo() {
+        Long userId = UserContext.getUserId();
+        User user = getUserById(userId);
+        return UserConverter.toQueryUser(user);
+    }
 
     @Override
     public User getUserById(Long userId) {

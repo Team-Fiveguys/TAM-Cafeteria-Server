@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserQueryService userQueryService;
     private final UserCommandService userCommandService;
+
+    @GetMapping("/me")
+    @Operation(summary = "본인정보를 조회하는 API", description = "토큰을 통해 유저를 식별하고 정보를 응답합니다.")
+    public ApiResponse<UserResponseDTO.QueryUser> getMyInfo(){
+        return ApiResponse.onSuccess(userQueryService.getMyInfo());
+    }
+
     @PostMapping("/notificationSet")
     @Operation(summary = "알림을 허용시 호출하는 API", description = "기기토큰을 저장시키고" +
             " general 토픽에 대해서 구독을 실시한다, 모든 알림 타입에 대해서도 on 상태")
