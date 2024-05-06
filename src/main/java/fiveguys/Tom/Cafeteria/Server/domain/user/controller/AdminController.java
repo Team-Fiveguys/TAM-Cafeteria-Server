@@ -33,12 +33,12 @@ public class AdminController {
         return ApiResponse.onSuccess(userId + "번 회원 관리자 권한 회수");
     }
 
-    @GetMapping("/me/cafeterias")
-    @Operation(summary = "관리하는 식당 리스트를 조회하는 API", description = "관리하는 식당의 정보들을 응답한다.")
-    public ApiResponse<CafeteriaResponseDTO.QueryCafeteriaList> QueryRunningCafeterias(){
-        CafeteriaResponseDTO.QueryCafeteriaList runningCafeteriaList = userQueryService.getRunningCafeteriaList();
-        return ApiResponse.onSuccess(runningCafeteriaList);
-    }
+//    @GetMapping("/me/cafeterias")
+//    @Operation(summary = "관리하는 식당 리스트를 조회하는 API", description = "관리하는 식당의 정보들을 응답한다.")
+//    public ApiResponse<CafeteriaResponseDTO.QueryCafeteriaList> QueryRunningCafeterias(){
+//        CafeteriaResponseDTO.QueryCafeteriaList runningCafeteriaList = userQueryService.getRunningCafeteriaList();
+//        return ApiResponse.onSuccess(runningCafeteriaList);
+//    }
 
     @GetMapping("")
     @Operation(summary = "유저 목록 조회 API", description = "유저 id, 이름, 권한, 이메일")
