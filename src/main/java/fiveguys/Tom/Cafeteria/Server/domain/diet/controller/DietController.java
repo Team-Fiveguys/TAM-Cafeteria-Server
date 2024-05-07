@@ -34,8 +34,7 @@ public class DietController {
     public ApiResponse<DietResponseDTO.DietQueryDTO> getDiet(@RequestParam(name = "cafeteriaId") Long cafeteriaId,
                                                              @RequestParam(name = "localDate") LocalDate localDate,
                                                              @RequestParam(name = "meals") Meals meals){
-        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
-        Diet diet = dietQueryService.getDiet(cafeteria,localDate, meals);
+        Diet diet = dietQueryService.getDiet(cafeteriaId,localDate, meals);
         List<MenuDiet> menuDietList = diet.getMenuDietList();
         List<MenuResponseDTO.MenuQueryDTO> menuList = menuDietList.stream()
                 .map(MenuDiet::getMenu)

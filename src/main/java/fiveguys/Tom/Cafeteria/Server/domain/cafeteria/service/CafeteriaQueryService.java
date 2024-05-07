@@ -8,5 +8,7 @@ public interface CafeteriaQueryService {
 
     public Cafeteria findById(Long id);
 
+    public Cafeteria findByName(String name);
+
     public List findAll();
 }

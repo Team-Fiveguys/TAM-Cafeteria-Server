@@ -23,4 +23,11 @@ public class CafeteriaController {
         Congestion congestion = cafeteria.getCongestion();
         return ApiResponse.onSuccess(CafeteriaConverter.toQueryCongestionResponseDTO(congestion));
     }
+
+    @Operation(summary = "식당의 조,중식 운영여부를 조회하는 API", description = "식당명을 받아서 조/중식 운영여부를 응답한다.")
+    @GetMapping("/{cafeteriaName}/run")
+    public ApiResponse<CafeteriaResponseDTO.QueryRunResponseDTO> getCongestion(@PathVariable(name = "cafeteriaName")String cafeteriaName){
+        Cafeteria cafeteria = cafeteriaQueryService.findByName(cafeteriaName);
+        return ApiResponse.onSuccess(CafeteriaConverter.toQueryRunResponseDTO(cafeteria));
+    }
 }

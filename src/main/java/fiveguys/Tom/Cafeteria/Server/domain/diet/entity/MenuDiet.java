@@ -19,11 +19,11 @@ public class MenuDiet extends BaseEntity {
     private Long id;
 
     @JoinColumn(name = "menu_id")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
 
     @JoinColumn(name = "diet_id")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Diet diet;
 
     public static MenuDiet createMenuDiet(Menu menu, Diet diet){

@@ -2,10 +2,10 @@ package fiveguys.Tom.Cafeteria.Server.domain.cafeteria.dto.response;
 
 
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Congestion;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalTime;
+import java.util.List;
 
 
 public class CafeteriaResponseDTO {
@@ -15,6 +15,32 @@ public class CafeteriaResponseDTO {
     @Getter
     public static class CreateResponseDTO {
         private Long cafeteriaId;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ToString
+    public static class QueryCafeteria {
+        private String name;
+        private String location;
+        private boolean runBreakfast;
+        private boolean runLunch;
+        private LocalTime breakfastStartTime; //조식 운영 시작 시간
+        private LocalTime breakfastEndTime; //조식 운영 시작 시간
+        private LocalTime lunchStartTime; //중식 운영 시작 시간
+        private LocalTime lunchEndTime; //중식 운영 시작 시간
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ToString
+    public static class QueryCafeteriaList {
+        List<QueryCafeteria> queryCafeteriaList;
+
     }
 
     @Builder
@@ -30,5 +56,14 @@ public class CafeteriaResponseDTO {
     @Getter
     public static class QueryCongestionResponseDTO {
         private Congestion congestion;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class QueryRunResponseDTO {
+        private boolean runBreakfast;
+        private boolean runLunch;
     }
 }

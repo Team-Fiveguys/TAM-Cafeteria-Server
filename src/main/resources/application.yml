@@ -23,7 +23,10 @@ spring:
         ssl:
           enable: true
     protocol: smtps
-
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
 
 logging:
   level:
@@ -42,5 +45,5 @@ kakao:
   client-id: ${KAKAO_CLIENT_ID}
   admin-key: ${KAKAO_ADMIN_KEY}
 fcm:
-  firebase-sdk-path : /var/app/current/src/main/resources/${FIREBASE_SDK_PATH}
+  firebase-sdk-path : ${FIREBASE_SDK_PATH}
   project-id : ${FIREBASE_PROJECT_ID}

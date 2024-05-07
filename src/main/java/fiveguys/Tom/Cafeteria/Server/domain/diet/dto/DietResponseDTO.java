@@ -17,7 +17,7 @@ public class DietResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DietCreateDTO {
-        private List<Long> menuIdList;
+        private List<String> menuNameList;
         private LocalDate date;
         private Meals meals; //key와 enum 클래스명이 같으면 매핑 가능
         private Long cafeteriaId;
@@ -32,6 +32,7 @@ public class DietResponseDTO {
         private LocalDate date;
         private String photoURI;
         private MenuResponseDTO.MenuResponseListDTO menuResponseListDTO;
+        private boolean soldOut;
         private boolean dayOff;
     }
     @Builder

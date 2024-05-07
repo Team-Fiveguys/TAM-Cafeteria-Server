@@ -2,9 +2,13 @@ package fiveguys.Tom.Cafeteria.Server.domain.user.entity;
 
 
 import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotification;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder
@@ -34,7 +38,16 @@ public class User extends BaseEntity {
     private String email;
     private String password;
     private String appleRefreshToken;
+    private String registrationToken;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private NotificationSet notificationSet;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<UserAppNotification> userAppNotificationList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<UserCafeteria> userCafeteriaList = new ArrayList<>();
     public static void setRoleAdmin(User user) {
         user.role = Role.ADMIN;
     }
@@ -46,7 +59,19 @@ public class User extends BaseEntity {
         user.setAppleRefreshToken(appleRefreshToken);
     }
 
+    public void setNotificationSet(NotificationSet notificationSet) {
+        this.notificationSet = notificationSet;
+    }
+
+    public void setRegistrationToken(String registrationToken) {
+        this.registrationToken = registrationToken;
+    }
+
     private void setAppleRefreshToken(String appleRefreshToken) {
         this.appleRefreshToken = appleRefreshToken;
+    }
+
+    public void deleteAllUserAppNotification(){
+        this.getUserAppNotificationList().clear();
     }
 }

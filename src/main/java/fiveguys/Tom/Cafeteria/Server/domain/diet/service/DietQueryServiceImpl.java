@@ -2,6 +2,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.diet.service;
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
+import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.repository.DietRepository;
@@ -10,16 +11,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Service
 @RequiredArgsConstructor
 public class DietQueryServiceImpl implements DietQueryService{
     private final DietRepository dietRepository;
+    private final CafeteriaQueryService cafeteriaQueryService;
 
     @Override
     public Diet getDiet(Long dietId) {
@@ -27,10 +27,17 @@ public class DietQueryServiceImpl implements DietQueryService{
     }
 
     @Override
-    public Diet getDiet(Cafeteria cafeteria, LocalDate localDate, Meals meals) {
+    public Diet getDiet(Long cafeteriaId, LocalDate localDate, Meals meals) {
+        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
         Diet diet = dietRepository.findByCafeteriaAndLocalDateAndMeals(cafeteria, localDate, meals)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.DIET_NOT_FOUND));
         return diet;
+    }
+
+    @Override
+    public boolean existsDiet(Long cafeteriaId, LocalDate localDate, Meals meals) {
+        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
+        return dietRepository.existsByCafeteriaAndLocalDateAndMeals(cafeteria, localDate, meals);
     }
 
     @Override

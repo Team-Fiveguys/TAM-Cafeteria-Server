@@ -27,4 +27,17 @@ public class MenuQueryServiceImpl implements MenuQueryService{
     public List<Menu> getAllMenu(Cafeteria cafeteria) {
         return menuRepository.findAllByCafeteria(cafeteria);
     }
+
+    @Override
+    public Menu findByName(String name) {
+        Menu menu = menuRepository.findByName(name).orElseThrow(
+                () -> new GeneralException(ErrorStatus.MENU_NOT_FOUND)
+        );
+        return menu;
+    }
+
+    @Override
+    public boolean existByName(String name) {
+        return menuRepository.existsByName(name);
+    }
 }
