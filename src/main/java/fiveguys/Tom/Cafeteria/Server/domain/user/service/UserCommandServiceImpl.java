@@ -161,7 +161,9 @@ public class UserCommandServiceImpl implements UserCommandService{
         Long userId = UserContext.getUserId();
         User user = userQueryService.getUserById(userId);
         userRepository.delete(user);
-        disconnectApp(user);
+        if(!user.getSocialType().equals(SocialType.EMAIL) ){ // 소셜 회원은 연결끊기까지
+            disconnectApp(user);
+        }
         return user;
     }
     // 유저 소셜계정 앱 연동 해지
