@@ -13,6 +13,7 @@ import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.TokenProvider;
 import fiveguys.Tom.Cafeteria.Server.auth.service.AppleLoginService;
 import fiveguys.Tom.Cafeteria.Server.auth.service.EmailLoginService;
 import fiveguys.Tom.Cafeteria.Server.auth.service.KakaoLoginService;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.SocialType;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserCommandService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
@@ -151,4 +152,13 @@ public class LoginController {
         return ResponseEntity.ok("accessToken="+ tokenResponse.getAccessToken() +
                 "\n\nidToken=" + tokenResponse.getIdToken());
     }
+
+
+    @ResponseBody
+    @DeleteMapping("/users/me")
+    @Operation(summary = "회원 탈퇴 API",description = "유저정보를 삭제하고 외래키로 사용된 ID를 null로 만듭니다.(HARD DELETE)")
+    public ApiResponse<String> withdrawUser(){
+        return ApiResponse.onSuccess(userCommandService.withdrawUser().getId() + "번 유저가 삭제되었습니다.");
+    }
+
 }

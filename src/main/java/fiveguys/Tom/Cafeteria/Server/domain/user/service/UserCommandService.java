@@ -24,4 +24,6 @@ public interface UserCommandService {
 
     public void deleteNotification(Long id);
     public void deleteNotifications();
+
+    public User withdrawUser();
 }
