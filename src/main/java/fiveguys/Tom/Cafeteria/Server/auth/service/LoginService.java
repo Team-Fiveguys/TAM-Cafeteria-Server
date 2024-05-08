@@ -9,4 +9,6 @@ public interface LoginService {
     }
     public TokenResponse getAccessTokenByCode(String code);
     public void validate(String accessToken);
+
+    void revokeTokens(String socialId);
 }
