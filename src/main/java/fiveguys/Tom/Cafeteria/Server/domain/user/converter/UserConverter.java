@@ -6,6 +6,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.SocialType;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -48,6 +49,7 @@ public class UserConverter {
         log.info("encodedPassword = {}", encodedPassword);
         return User.builder()
                 .role(Role.MEMBER)
+                .socialType(SocialType.EMAIL)
                 .name(signUpDTO.getName())
                 .email(signUpDTO.getEmail())
                 .sex(signUpDTO.getSex())
