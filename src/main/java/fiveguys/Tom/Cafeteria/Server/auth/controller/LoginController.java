@@ -146,6 +146,7 @@ public class LoginController {
     테스트용 API
      */
     @GetMapping("/oauth2/login/kakao")
+    @Operation(summary = "인증 코드를 통해서 인증 토큰을 발급해주는 API", description = "카카오 서버에 인증 코드를 보내 인증토큰을 받아 응답본문에 넣어 응답한다.")
     @ResponseBody
     public ResponseEntity<String> getAccessToken(@RequestParam(name = "code") String code){
         TokenResponse tokenResponse = kakaoLoginService.getAccessTokenByCode(code);
