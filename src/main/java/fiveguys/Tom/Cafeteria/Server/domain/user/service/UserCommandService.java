@@ -14,6 +14,8 @@ public interface UserCommandService {
 
     public void initNotificationSet(String token);
 
+    public void updateRegistrationToken(String token);
+
     public void updateNotificationSet(UserRequestDTO.UpdateNotificationSet updateNotificationSet);
 
     public void receiveMessage(Long notificationId);
