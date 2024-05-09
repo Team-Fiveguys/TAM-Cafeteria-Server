@@ -38,7 +38,7 @@ apple:
   team-id: ${APPLE_TEAM_ID} # =  ID prefix
   key:
     id: ${APPLE_KEY_ID}
-    path: /var/app/current/src/main/resources/AuthKey_${APPLE_KEY_ID}.p8 # ??? src/main/resources/apple/? ? ?? ??
+    path: /var/app/current/AuthKey_${APPLE_KEY_ID}.p8 # ??? src/main/resources/apple/? ? ?? ??
 kakao:
   redirect-uri: ${KAKAO_REDIRECT_URI}
   iss: https://kauth.kakao.com
