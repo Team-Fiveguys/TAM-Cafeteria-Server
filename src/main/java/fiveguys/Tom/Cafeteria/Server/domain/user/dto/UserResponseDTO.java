@@ -24,6 +24,12 @@ public class UserResponseDTO {
         private boolean dietSoldOut;
         private boolean dietChange;
     }
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class QueryRegistrationToken{
+      private String registrationToken;
+    }
 
     @Getter
     @Builder

@@ -97,6 +97,15 @@ public class UserQueryServiceImpl implements UserQueryService{
     }
 
     @Override
+    public UserResponseDTO.QueryRegistrationToken getRegistrationToken() {
+        Long userId = UserContext.getUserId();
+        User user = getUserById(userId);
+        return UserResponseDTO.QueryRegistrationToken.builder()
+                .registrationToken(user.getRegistrationToken())
+                .build();
+    }
+
+    @Override
     public CafeteriaResponseDTO.QueryCafeteriaList getRunningCafeteriaList() {
         Long userId = UserContext.getUserId();
         User user = getUserById(userId);
