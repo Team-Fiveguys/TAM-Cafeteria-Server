@@ -40,14 +40,14 @@ public class UserController {
 
     @GetMapping("/notificationSet/registration-token")
     @Operation(summary = "기기토큰을 조회하는 API", description = "현재 설정된 알림 항목에 대한 정보를 응답한다.")
-    public ApiResponse<UserResponseDTO.QueryNotificationSet> queryRegistrationToken(){
-        UserResponseDTO.QueryNotificationSet notificationSet = userQueryService.getNotificationSet();
-        return ApiResponse.onSuccess(notificationSet);
+    public ApiResponse<UserResponseDTO.QueryRegistrationToken> queryRegistrationToken(){
+        return ApiResponse.onSuccess(userQueryService.getRegistrationToken());
     }
     @GetMapping("/notificationSet")
     @Operation(summary = "알림 항목을 조회하는 API", description = "현재 설정된 알림 항목에 대한 정보를 응답한다.")
-    public ApiResponse<UserResponseDTO.QueryRegistrationToken> queryNotification(){
-        return ApiResponse.onSuccess(userQueryService.getRegistrationToken());
+    public ApiResponse<UserResponseDTO.QueryNotificationSet> queryNotification(){
+        UserResponseDTO.QueryNotificationSet notificationSet = userQueryService.getNotificationSet();
+        return ApiResponse.onSuccess(notificationSet);
     }
 
     @PutMapping("/notificationSet")
