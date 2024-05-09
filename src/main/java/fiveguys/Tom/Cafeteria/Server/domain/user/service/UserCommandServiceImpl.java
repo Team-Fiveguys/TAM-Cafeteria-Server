@@ -95,6 +95,14 @@ public class UserCommandServiceImpl implements UserCommandService{
 
     @Override
     @Transactional
+    public void updateRegistrationToken(String token) {
+        Long userId = UserContext.getUserId();
+        User user = userQueryService.getUserById(userId);
+        user.setRegistrationToken(token);
+    }
+
+    @Override
+    @Transactional
     public void updateNotificationSet(UserRequestDTO.UpdateNotificationSet updateNotificationSet) {
         Long userId = UserContext.getUserId();
         User user = userQueryService.getUserById(userId);
