@@ -104,8 +104,9 @@ public class UserQueryServiceImpl implements UserQueryService{
     public UserResponseDTO.QueryRegistrationToken getRegistrationToken() {
         Long userId = UserContext.getUserId();
         User user = getUserById(userId);
+        NotificationSet notificationSet = user.getNotificationSet();
         return UserResponseDTO.QueryRegistrationToken.builder()
-                .registrationToken(user.getRegistrationToken())
+                .registrationToken(notificationSet.getRegistrationToken())
                 .build();
     }
 
