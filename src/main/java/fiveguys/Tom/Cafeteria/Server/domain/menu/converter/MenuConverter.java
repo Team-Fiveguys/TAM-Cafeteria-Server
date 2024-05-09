@@ -8,9 +8,9 @@ import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
 import java.util.List;
 
 public class MenuConverter {
-    public static Menu toMenu(MenuRequestDTO.MenuEnrollDTO enrollDTO, Cafeteria cafeteria){
+    public static Menu toMenu(Cafeteria cafeteria, String menuName){
         return Menu.builder()
-                .name(enrollDTO.getName())
+                .name(menuName)
                 .cafeteria(cafeteria)
                 .build();
     }

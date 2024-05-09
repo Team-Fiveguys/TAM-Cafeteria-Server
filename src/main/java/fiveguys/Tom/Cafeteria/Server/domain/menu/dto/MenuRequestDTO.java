@@ -12,7 +12,7 @@ public class MenuRequestDTO {
     @NoArgsConstructor
     @Getter
     public static class MenuEnrollDTO{
-        private String name;
+        private String menuName;
         private Long cafeteriaId;
     }
 }

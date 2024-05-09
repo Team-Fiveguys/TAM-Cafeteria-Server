@@ -29,8 +29,7 @@ public class MenuController {
     @PostMapping("")
     public ApiResponse<MenuResponseDTO.MenuEnrollDTO> enrollMenu(@RequestBody MenuRequestDTO.MenuEnrollDTO menuEnrollDTO){
         Long cafeteriaId = menuEnrollDTO.getCafeteriaId();
-        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
-        Long enrolledId = menuCommandService.enroll(MenuConverter.toMenu(menuEnrollDTO, cafeteria));
+        Long enrolledId = menuCommandService.enroll(menuEnrollDTO.getCafeteriaId(), menuEnrollDTO.getMenuName());
         return ApiResponse.onSuccess(MenuConverter.toEnrollResponseDTO(enrolledId));
     }
 

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -101,7 +102,8 @@ public class UserCommandServiceImpl implements UserCommandService{
     public void updateRegistrationToken(String token) {
         Long userId = UserContext.getUserId();
         User user = userQueryService.getUserById(userId);
-        user.setRegistrationToken(token);
+        NotificationSet notificationSet = user.getNotificationSet();
+        notificationSet.setRegistrationToken(token);
     }
 
     @Override
@@ -109,7 +111,40 @@ public class UserCommandServiceImpl implements UserCommandService{
     public void updateNotificationSet(UserRequestDTO.UpdateNotificationSet updateNotificationSet) {
         Long userId = UserContext.getUserId();
         User user = userQueryService.getUserById(userId);
-        user.setNotificationSet(UserConverter.toNotificationSet(updateNotificationSet));
+        NotificationSet notificationSet = user.getNotificationSet();
+
+        String registrationToken = notificationSet.getRegistrationToken();
+        notificationSet.setNotificationSet(updateNotificationSet);
+
+        if(registrationToken == null){
+            throw new GeneralException(ErrorStatus.NOTIFICATION_SET_IS_NOT_SET);
+        }
+        ArrayList<String> tokenList = new ArrayList<>();
+        tokenList.add(registrationToken);
+
+        updateSubscription(tokenList, updateNotificationSet.isHakGwan(), "hakGwan");
+        updateSubscription(tokenList, updateNotificationSet.isMyeongJin(), "myeongJin");
+        updateSubscription(tokenList, updateNotificationSet.isMyeongDon(), "myeongDon");
+        updateSubscription(tokenList, updateNotificationSet.isTodayDiet(), "todayDiet");
+        updateSubscription(tokenList, updateNotificationSet.isDietPhotoEnroll(), "dietPhotoEnroll");
+        updateSubscription(tokenList, updateNotificationSet.isWeekDietEnroll(), "weekDietEnroll");
+        updateSubscription(tokenList, updateNotificationSet.isDietSoldOut(), "dietSoldOut");
+        updateSubscription(tokenList, updateNotificationSet.isDietChange(), "dietChange");
+
+    }
+
+    private void updateSubscription(List<String> tokenList , boolean subscribe, String topic) {
+        try{
+            if (subscribe) {
+                FirebaseMessaging.getInstance().subscribeToTopic(tokenList, topic);
+
+            } else {
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(tokenList, topic);
+            }
+        }
+        catch (FirebaseMessagingException exception){
+            exception.printStackTrace();
+        }
     }
 
     @Override
