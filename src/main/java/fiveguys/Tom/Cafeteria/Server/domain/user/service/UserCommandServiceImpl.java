@@ -102,7 +102,8 @@ public class UserCommandServiceImpl implements UserCommandService{
     public void updateRegistrationToken(String token) {
         Long userId = UserContext.getUserId();
         User user = userQueryService.getUserById(userId);
-        user.setRegistrationToken(token);
+        NotificationSet notificationSet = user.getNotificationSet();
+        notificationSet.setRegistrationToken(token);
     }
 
     @Override
@@ -110,7 +111,11 @@ public class UserCommandServiceImpl implements UserCommandService{
     public void updateNotificationSet(UserRequestDTO.UpdateNotificationSet updateNotificationSet) {
         Long userId = UserContext.getUserId();
         User user = userQueryService.getUserById(userId);
-        String registrationToken = user.getRegistrationToken();
+        NotificationSet notificationSet = user.getNotificationSet();
+
+        String registrationToken = notificationSet.getRegistrationToken();
+        notificationSet.setNotificationSet(updateNotificationSet);
+
         if(registrationToken == null){
             throw new GeneralException(ErrorStatus.NOTIFICATION_SET_IS_NOT_SET);
         }
@@ -126,7 +131,6 @@ public class UserCommandServiceImpl implements UserCommandService{
         updateSubscription(tokenList, updateNotificationSet.isDietSoldOut(), "dietSoldOut");
         updateSubscription(tokenList, updateNotificationSet.isDietChange(), "dietChange");
 
-        user.setNotificationSet(UserConverter.toNotificationSet(updateNotificationSet));
     }
 
     private void updateSubscription(List<String> tokenList , boolean subscribe, String topic) {

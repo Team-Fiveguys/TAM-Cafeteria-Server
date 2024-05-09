@@ -1,6 +1,7 @@
 package fiveguys.Tom.Cafeteria.Server.domain.user.entity;
 
 import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
+import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,4 +35,20 @@ public class NotificationSet extends BaseEntity {
     private boolean dietSoldOut;
     @Column(columnDefinition = "boolean default true")
     private boolean dietChange;
+
+    public void setRegistrationToken(String registrationToken) {
+        this.registrationToken = registrationToken;
+    }
+
+    public void setNotificationSet(UserRequestDTO.UpdateNotificationSet updateNotificationSet){
+        this.hakGwan = updateNotificationSet.isHakGwan();
+        this.myeongJin = updateNotificationSet.isMyeongJin();
+        this.myeongDon = updateNotificationSet.isMyeongDon();
+        this.todayDiet = updateNotificationSet.isTodayDiet();
+        this.weekDietEnroll = updateNotificationSet.isWeekDietEnroll();
+        this.dietPhotoEnroll = updateNotificationSet.isDietPhotoEnroll();
+        this.dietSoldOut = updateNotificationSet.isDietSoldOut();
+        this.dietChange = updateNotificationSet.isDietChange();
+
+    }
 }

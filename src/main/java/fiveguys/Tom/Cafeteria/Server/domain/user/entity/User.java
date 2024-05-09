@@ -38,7 +38,6 @@ public class User extends BaseEntity {
     private String email;
     private String password;
     private String appleRefreshToken;
-    private String registrationToken;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private NotificationSet notificationSet;
@@ -61,10 +60,6 @@ public class User extends BaseEntity {
 
     public void setNotificationSet(NotificationSet notificationSet) {
         this.notificationSet = notificationSet;
-    }
-
-    public void setRegistrationToken(String registrationToken) {
-        this.registrationToken = registrationToken;
     }
 
     private void setAppleRefreshToken(String appleRefreshToken) {
