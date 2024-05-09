@@ -82,7 +82,7 @@ public class UserConverter {
         return UserResponseDTO.QueryNotificationSet.builder()
                 .hakGwan(notificationSet.isHakGwan())
                 .myeongJin(notificationSet.isMyeongJin())
-                .myeongBun(notificationSet.isMyeongBun())
+                .myeongDon(notificationSet.isMyeongDon())
                 .todayDiet(notificationSet.isTodayDiet())
                 .weekDietEnroll(notificationSet.isWeekDietEnroll())
                 .dietSoldOut(notificationSet.isDietSoldOut())

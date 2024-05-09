@@ -17,7 +17,7 @@ public class UserResponseDTO {
     public static class QueryNotificationSet{
         private boolean hakGwan;
         private boolean myeongJin;
-        private boolean myeongBun;
+        private boolean myeongDon;
         private boolean todayDiet;
         private boolean dietPhotoEnroll;
         private boolean weekDietEnroll;
