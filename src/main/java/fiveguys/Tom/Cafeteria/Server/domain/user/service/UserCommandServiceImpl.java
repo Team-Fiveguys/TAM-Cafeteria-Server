@@ -64,6 +64,9 @@ public class UserCommandServiceImpl implements UserCommandService{
         Long id = UserContext.getUserId();
         User user = userQueryService.getUserById(id);
         NotificationSet newNotificationSet = NotificationSet.builder()
+                .hakGwan(true)
+                .myeongJin(true)
+                .myeongDon(true)
                 .todayDiet(true)
                 .weekDietEnroll(true)
                 .dietPhotoEnroll(true)
@@ -80,7 +83,7 @@ public class UserCommandServiceImpl implements UserCommandService{
         try {
               FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "hakGwan");
               FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "myeongJin");
-              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "myeongBun");
+              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "myeongDon");
               FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "todayDiet");
               FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "general");
               FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "dietPhotoEnroll");
