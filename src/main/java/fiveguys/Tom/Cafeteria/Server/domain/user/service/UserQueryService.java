@@ -20,5 +20,7 @@ public interface UserQueryService {
 
     public UserResponseDTO.QueryNotificationSet getNotificationSet();
 
+    public UserResponseDTO.QueryRegistrationToken getRegistrationToken();
+
     public CafeteriaResponseDTO.QueryCafeteriaList getRunningCafeteriaList();
 }

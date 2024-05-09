@@ -23,7 +23,7 @@ public class NotificationSet extends BaseEntity {
     @Column(columnDefinition = "boolean default true")
     private boolean myeongJin;
     @Column(columnDefinition = "boolean default true")
-    private boolean myeongBun;
+    private boolean myeongDon;
     @Column(columnDefinition = "boolean default true")
     private boolean todayDiet;
     @Column(columnDefinition = "boolean default true")

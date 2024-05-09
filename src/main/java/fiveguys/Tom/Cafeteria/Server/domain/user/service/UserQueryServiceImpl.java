@@ -93,7 +93,20 @@ public class UserQueryServiceImpl implements UserQueryService{
     public UserResponseDTO.QueryNotificationSet getNotificationSet() {
         Long userId = UserContext.getUserId();
         User user = getUserById(userId);
+        NotificationSet notificationSet = user.getNotificationSet();
+        if (notificationSet == null){
+            throw new GeneralException(ErrorStatus.NOTIFICATION_SET_IS_NOT_SET);
+        }
         return UserConverter.toQueryNotificationSet(user.getNotificationSet());
+    }
+
+    @Override
+    public UserResponseDTO.QueryRegistrationToken getRegistrationToken() {
+        Long userId = UserContext.getUserId();
+        User user = getUserById(userId);
+        return UserResponseDTO.QueryRegistrationToken.builder()
+                .registrationToken(user.getRegistrationToken())
+                .build();
     }
 
     @Override

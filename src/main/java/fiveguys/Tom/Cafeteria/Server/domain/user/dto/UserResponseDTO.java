@@ -17,12 +17,18 @@ public class UserResponseDTO {
     public static class QueryNotificationSet{
         private boolean hakGwan;
         private boolean myeongJin;
-        private boolean myeongBun;
+        private boolean myeongDon;
         private boolean todayDiet;
         private boolean dietPhotoEnroll;
         private boolean weekDietEnroll;
         private boolean dietSoldOut;
         private boolean dietChange;
+    }
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class QueryRegistrationToken{
+      private String registrationToken;
     }
 
     @Getter

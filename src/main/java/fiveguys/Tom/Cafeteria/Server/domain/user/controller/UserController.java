@@ -34,10 +34,15 @@ public class UserController {
     @PutMapping("/notificationSet/registration-token")
     @Operation(summary = "기기 토큰을 업데이트하는 API", description = "기기토큰이 변경될 시 호출하여 서버에 기기토큰 정보를 최신화한다.")
     public ApiResponse<String> updateRegistrationToken(@RequestParam(name = "registrationToken") String token){
-        userCommandService.initNotificationSet(token);
+        userCommandService.updateRegistrationToken(token);
         return ApiResponse.onSuccess("알림이 활성화 되었습니다.");
     }
 
+    @GetMapping("/notificationSet/registration-token")
+    @Operation(summary = "기기토큰을 조회하는 API", description = "현재 설정된 알림 항목에 대한 정보를 응답한다.")
+    public ApiResponse<UserResponseDTO.QueryRegistrationToken> queryRegistrationToken(){
+        return ApiResponse.onSuccess(userQueryService.getRegistrationToken());
+    }
     @GetMapping("/notificationSet")
     @Operation(summary = "알림 항목을 조회하는 API", description = "현재 설정된 알림 항목에 대한 정보를 응답한다.")
     public ApiResponse<UserResponseDTO.QueryNotificationSet> queryNotification(){
