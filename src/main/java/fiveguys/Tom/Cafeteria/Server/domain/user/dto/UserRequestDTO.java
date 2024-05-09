@@ -8,6 +8,7 @@ public class UserRequestDTO {
     public static class UpdateNotificationSet{
         private boolean hakGwan;
         private boolean myeongJin;
+        private boolean myeongDon;
         private boolean todayDiet;
         private boolean dietPhotoEnroll;
         private boolean weekDietEnroll;
