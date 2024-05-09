@@ -12,5 +12,5 @@ public interface MenuQueryService {
 
     public Menu findByName(String name);
 
-    public boolean existByName(String name);
+    public boolean existByNameAndCafeteria(Long cafeteriaId ,String name);
 }

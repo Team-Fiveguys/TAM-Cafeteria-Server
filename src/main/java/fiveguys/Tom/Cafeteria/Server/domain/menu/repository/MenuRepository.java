@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface MenuRepository extends JpaRepository<Menu, Long> {
     public List<Menu> findAllByCafeteria(Cafeteria cafeteria);
 
-    public boolean existsByName(String name);
+    public boolean existsByCafeteriaAndName(Cafeteria cafeteria, String name);
 
     public Optional<Menu> findByName(String name);
 }
