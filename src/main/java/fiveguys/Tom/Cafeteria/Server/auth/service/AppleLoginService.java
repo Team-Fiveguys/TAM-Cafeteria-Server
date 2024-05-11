@@ -88,7 +88,7 @@ public class AppleLoginService implements LoginService{
         byte[] content = pemObject.getContent();
         PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(content);
         try {
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            KeyFactory keyFactory = KeyFactory.getInstance("EC");
             return keyFactory.generatePrivate(privateKeySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException(e);
