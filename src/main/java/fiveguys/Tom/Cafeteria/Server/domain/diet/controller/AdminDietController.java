@@ -51,7 +51,7 @@ public class AdminDietController {
     @PutMapping("/menus")
     public ApiResponse<DietResponseDTO.DietQueryDTO> addMenu(@RequestBody DietRequestDTO.ChangeMenuDTO menuAddDTO){
         Diet diet = dietQueryService.getDiet(menuAddDTO.getCafeteriaId(), menuAddDTO.getLocalDate(), menuAddDTO.getMeals());
-        Menu menu = menuQueryService.findByName(menuAddDTO.getMenuName());
+        Menu menu = menuQueryService.findByCafeteriaAndName(menuAddDTO.getCafeteriaId(), menuAddDTO.getMenuName());
         Diet addedDiet = dietCommandService.addMenu(diet, menu);
 
         List<MenuDiet> menuDietList = diet.getMenuDietList();
@@ -66,7 +66,7 @@ public class AdminDietController {
     @DeleteMapping("/menus")
     public ApiResponse<DietResponseDTO.DietQueryDTO> deleteMenu(@RequestBody DietRequestDTO.ChangeMenuDTO menuAddDTO){
         Diet diet = dietQueryService.getDiet(menuAddDTO.getCafeteriaId(), menuAddDTO.getLocalDate(), menuAddDTO.getMeals());
-        Menu menu = menuQueryService.findByName(menuAddDTO.getMenuName());
+        Menu menu = menuQueryService.findByCafeteriaAndName(menuAddDTO.getCafeteriaId(), menuAddDTO.getMenuName());
         Diet removedDiet = dietCommandService.removeMenu(diet, menu);
 
         List<MenuDiet> menuDietList = diet.getMenuDietList();
