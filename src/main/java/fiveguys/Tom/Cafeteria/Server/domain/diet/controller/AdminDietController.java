@@ -40,10 +40,9 @@ public class AdminDietController {
     public ApiResponse<DietResponseDTO.DietCreateDTO> createDiet(@RequestBody @EnrollDietValidation DietRequestDTO.DietCreateDTO dietCreateDTO){
         List<String> menuNameList = dietCreateDTO.getMenuNameList();
         List<Menu> menuList = menuNameList.stream()
-                .map(menuName -> menuQueryService.findByName(menuName))
+                .map(menuName -> menuQueryService.findByCafeteriaAndName(dietCreateDTO.getCafeteriaId() ,menuName))
                 .collect(Collectors.toList());
-        Long cafeteriaId = dietCreateDTO.getCafeteriaId();
-        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
+        Cafeteria cafeteria = cafeteriaQueryService.findById(dietCreateDTO.getCafeteriaId());
         Diet diet = dietCommandService.createDiet(cafeteria, dietCreateDTO, menuList);
         return ApiResponse.onSuccess(DietConverter.toDietCreateResponseDTO(diet));
     }

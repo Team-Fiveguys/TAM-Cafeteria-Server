@@ -10,7 +10,7 @@ public interface MenuQueryService {
 
     public List<Menu> getAllMenu(Cafeteria cafeteria);
 
-    public Menu findByName(String name);
+    public Menu findByCafeteriaAndName(Long cafeteriaId, String name);
 
     public boolean existByNameAndCafeteria(Long cafeteriaId ,String name);
 }
