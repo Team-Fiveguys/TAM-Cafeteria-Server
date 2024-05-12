@@ -130,6 +130,11 @@ public class UserCommandServiceImpl implements UserCommandService{
         updateSubscription(tokenList, updateNotificationSet.isWeekDietEnroll(), "weekDietEnroll");
         updateSubscription(tokenList, updateNotificationSet.isDietSoldOut(), "dietSoldOut");
         updateSubscription(tokenList, updateNotificationSet.isDietChange(), "dietChange");
+        try {
+            FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "general");
+        } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
+        }
 
     }
 

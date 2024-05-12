@@ -31,8 +31,9 @@ public class MenuQueryServiceImpl implements MenuQueryService{
     }
 
     @Override
-    public Menu findByName(String name) {
-        Menu menu = menuRepository.findByName(name).orElseThrow(
+    public Menu findByCafeteriaAndName(Long cafeteriaId, String name) {
+        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
+        Menu menu = menuRepository.findByCafeteriaAndName(cafeteria, name).orElseThrow(
                 () -> new GeneralException(ErrorStatus.MENU_NOT_FOUND)
         );
         return menu;

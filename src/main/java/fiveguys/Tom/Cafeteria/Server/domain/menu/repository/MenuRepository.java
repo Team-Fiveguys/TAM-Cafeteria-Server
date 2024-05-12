@@ -12,5 +12,5 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
 
     public boolean existsByCafeteriaAndName(Cafeteria cafeteria, String name);
 
-    public Optional<Menu> findByName(String name);
+    public Optional<Menu> findByCafeteriaAndName(Cafeteria cafeteria, String name);
 }
