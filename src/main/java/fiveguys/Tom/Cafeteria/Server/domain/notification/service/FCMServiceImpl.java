@@ -15,7 +15,7 @@ public class FCMServiceImpl implements FCMService{
     private final AppNotificationRepository notificationRepository;
 
     @Override
-    public void sendMessageByTopic(Message message) {
+    public void sendMessage(Message message) {
         try {
             String response = FirebaseMessaging.getInstance().send(message);
             log.info("response = {}", response);
@@ -23,6 +23,7 @@ public class FCMServiceImpl implements FCMService{
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public Message createMessage(String title, String content, String cafeteriaName, String type, Long notificationId) {

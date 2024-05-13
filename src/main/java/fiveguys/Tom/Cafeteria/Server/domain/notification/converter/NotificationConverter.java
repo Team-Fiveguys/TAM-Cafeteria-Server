@@ -46,7 +46,7 @@ public class NotificationConverter {
                 .id(appNotification.getId())
                 .title(appNotification.getTitle())
                 .content(appNotification.getContent())
-                .transmitDate(appNotification.getCreatedAt().toLocalDate())
+                .transmitTime(appNotification.getCreatedAt())
                 .isRead(userAppNotification.isRead())
                 .build();
     }

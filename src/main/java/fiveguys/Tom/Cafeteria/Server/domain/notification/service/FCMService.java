@@ -4,7 +4,7 @@ import com.google.firebase.messaging.Message;
 import org.springframework.scheduling.annotation.Async;
 
 public interface FCMService {
-    public void sendMessageByTopic(Message message);
+    public void sendMessage(Message message);
     public Message createMessage(String title, String content, String cafeteriaName, String type, Long notificationId);
     public Message createGeneralMessage(String title, String content, Long notificationId);
 

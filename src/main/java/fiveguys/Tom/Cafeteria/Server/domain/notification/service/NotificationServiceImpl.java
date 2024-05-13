@@ -23,14 +23,14 @@ public class NotificationServiceImpl implements NotificationService{
     public void sendAll(NotificationRequestDTO.SendAllDTO dto) {
         Long storedNotificationId = fcmService.storeNotification(dto.getTitle(), dto.getContent());
         Message message = fcmService.createGeneralMessage(dto.getTitle(), dto.getContent(), storedNotificationId);
-        fcmService.sendMessageByTopic(message);
+        fcmService.sendMessage(message);
     }
 
     @Override
     public void sendSubScriber(NotificationRequestDTO.SendSubscriberDTO dto) {
         Long storedNotificationId = fcmService.storeNotification(dto.getTitle(), dto.getContent());
         Message message = fcmService.createMessage(dto.getTitle(), dto.getContent(), dto.getCafeteriaName(), dto.getNotificationType().name(), storedNotificationId);
-        fcmService.sendMessageByTopic(message);
+        fcmService.sendMessage(message);
     }
 
     @Override
