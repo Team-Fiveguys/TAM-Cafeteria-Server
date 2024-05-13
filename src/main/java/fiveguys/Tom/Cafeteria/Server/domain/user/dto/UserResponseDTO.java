@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class UserResponseDTO {
@@ -38,7 +39,7 @@ public class UserResponseDTO {
         private Long id;
         private String title;
         private String content;
-        private LocalDate transmitDate;
+        private LocalDateTime transmitTime;
         private boolean isRead;
     }
     @Getter
