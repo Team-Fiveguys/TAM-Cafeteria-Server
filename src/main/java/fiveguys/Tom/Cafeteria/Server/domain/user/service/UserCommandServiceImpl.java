@@ -64,6 +64,7 @@ public class UserCommandServiceImpl implements UserCommandService{
         // 알림 정보 생성 및 저장
         Long id = UserContext.getUserId();
         User user = userQueryService.getUserById(id);
+
         NotificationSet newNotificationSet = NotificationSet.builder()
                 .hakGwan(true)
                 .myeongJin(true)
@@ -76,6 +77,7 @@ public class UserCommandServiceImpl implements UserCommandService{
                 .registrationToken(token)
                 .build();
         user.setNotificationSet(newNotificationSet);
+
         // general topic 구독
         ArrayList<String> tokenList = new ArrayList<>();
         tokenList.add(token);
@@ -102,8 +104,45 @@ public class UserCommandServiceImpl implements UserCommandService{
     public void updateRegistrationToken(String token) {
         Long userId = UserContext.getUserId();
         User user = userQueryService.getUserById(userId);
+
+        // 이전 기기에서 구독 목록 clear
+        String oldToken = user.getNotificationSet().getRegistrationToken();
+        ArrayList<String> oldTokenList = new ArrayList<>();
+        oldTokenList.add(oldToken);
+
+        clearSubscription(oldTokenList, "hakGwan");
+        clearSubscription(oldTokenList, "myeongJin");
+        clearSubscription(oldTokenList, "myeongDon");
+        clearSubscription(oldTokenList, "todayDiet");
+        clearSubscription(oldTokenList, "weekDietEnroll");
+        clearSubscription(oldTokenList, "dietSoldOut");
+        clearSubscription(oldTokenList, "dietChange");
+        clearSubscription(oldTokenList, "dieetPhotoEnroll");
+        clearSubscription(oldTokenList, "general");
+
         NotificationSet notificationSet = user.getNotificationSet();
         notificationSet.setRegistrationToken(token);
+
+        //새로운 기기에서 구독
+        if(token == null){
+            throw new GeneralException(ErrorStatus.NOTIFICATION_SET_IS_NOT_SET);
+        }
+        ArrayList<String> tokenList = new ArrayList<>();
+        tokenList.add(token);
+
+        updateSubscription(tokenList, notificationSet.isHakGwan(), "hakGwan");
+        updateSubscription(tokenList, notificationSet.isMyeongJin(), "myeongJin");
+        updateSubscription(tokenList, notificationSet.isMyeongDon(), "myeongDon");
+        updateSubscription(tokenList, notificationSet.isTodayDiet(), "todayDiet");
+        updateSubscription(tokenList, notificationSet.isDietPhotoEnroll(), "dietPhotoEnroll");
+        updateSubscription(tokenList, notificationSet.isWeekDietEnroll(), "weekDietEnroll");
+        updateSubscription(tokenList, notificationSet.isDietSoldOut(), "dietSoldOut");
+        updateSubscription(tokenList, notificationSet.isDietChange(), "dietChange");
+        try {
+            FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "general");
+        } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -146,6 +185,15 @@ public class UserCommandServiceImpl implements UserCommandService{
             } else {
                 FirebaseMessaging.getInstance().unsubscribeFromTopic(tokenList, topic);
             }
+        }
+        catch (FirebaseMessagingException exception){
+            exception.printStackTrace();
+        }
+    }
+
+    private void clearSubscription(List<String> tokenList , String topic) {
+        try{
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(tokenList, topic);
         }
         catch (FirebaseMessagingException exception){
             exception.printStackTrace();
