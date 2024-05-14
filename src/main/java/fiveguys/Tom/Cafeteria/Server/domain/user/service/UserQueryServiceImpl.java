@@ -76,7 +76,7 @@ public class UserQueryServiceImpl implements UserQueryService{
         List<UserAppNotification> userAppNotificationList = user.getUserAppNotificationList();
         List<UserResponseDTO.QueryNotification> notificationDTOList = userAppNotificationList.stream()
                 .map(userAppNotification -> NotificationConverter.toQueryNotification(userAppNotification))
-                .sorted(Comparator.comparing(UserResponseDTO.QueryNotification::getTransmitDate))
+                .sorted(Comparator.comparing(UserResponseDTO.QueryNotification::getTransmitTime))
                 .collect(Collectors.toList());
 
         return NotificationConverter.toQueryNotificationList(notificationDTOList);
