@@ -1,0 +1,39 @@
+spring:
+  config:
+    activate:
+      on-profile: "dev"
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DEV_DB_URI}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${DEV_DB_USERNAME}
+    password: ${DEV_DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+      username: ${REDIS_USERNAME}
+      password: ${REDIS_PASSWORD}
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET}
+      path:
+        diet-photo: diet-photo
+    credentials:
+      access-key: ${S3_ROLE_ACCESS_KEY}
+      secret-key: ${S3_ROLE_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
