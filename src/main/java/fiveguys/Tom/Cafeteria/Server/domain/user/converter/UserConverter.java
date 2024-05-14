@@ -34,12 +34,14 @@ public class UserConverter {
                 .socialId(userInfoResponseDTO.getSocialId())
                 .email(userInfoResponseDTO.getEmail())
                 .role(Role.MEMBER)
+                .socialType(SocialType.KAKAO)
                 .build();
     }
     public static User toUser(LoginRequestDTO.AppleTokenValidateDTO appleTokenValidateDTO){
         return User.builder()
                 .socialId(appleTokenValidateDTO.getSocialId())
                 .role(Role.MEMBER)
+                .socialType(SocialType.APPLE)
                 .build();
     }
     public static User touser(LoginRequestDTO.SignUpDTO signUpDTO){
