@@ -104,22 +104,6 @@ public class UserCommandServiceImpl implements UserCommandService{
     public void updateRegistrationToken(String token) {
         Long userId = UserContext.getUserId();
         User user = userQueryService.getUserById(userId);
-
-        // 이전 기기에서 구독 목록 clear
-        String oldToken = user.getNotificationSet().getRegistrationToken();
-        ArrayList<String> oldTokenList = new ArrayList<>();
-        oldTokenList.add(oldToken);
-
-        clearSubscription(oldTokenList, "hakGwan");
-        clearSubscription(oldTokenList, "myeongJin");
-        clearSubscription(oldTokenList, "myeongDon");
-        clearSubscription(oldTokenList, "todayDiet");
-        clearSubscription(oldTokenList, "weekDietEnroll");
-        clearSubscription(oldTokenList, "dietSoldOut");
-        clearSubscription(oldTokenList, "dietChange");
-        clearSubscription(oldTokenList, "dieetPhotoEnroll");
-        clearSubscription(oldTokenList, "general");
-
         NotificationSet notificationSet = user.getNotificationSet();
         notificationSet.setRegistrationToken(token);
 
@@ -198,6 +182,34 @@ public class UserCommandServiceImpl implements UserCommandService{
         catch (FirebaseMessagingException exception){
             exception.printStackTrace();
         }
+    }
+
+    @Override
+    @Transactional
+    public User revokeRegistrationToken(Long userId){
+        User user = userQueryService.getUserById(userId);
+        // 이전 기기토큰 구독 목록 clear
+        String oldToken = user.getNotificationSet().getRegistrationToken();
+        ArrayList<String> oldTokenList = new ArrayList<>();
+        oldTokenList.add(oldToken);
+        clearAllSubscriptions(oldTokenList);
+        // DB에서 기기 토큰 삭제
+        NotificationSet notificationSet = user.getNotificationSet();
+        notificationSet.setRegistrationToken(null);
+
+        return user;
+    }
+    
+    private void clearAllSubscriptions(List<String> tokenList){
+        clearSubscription(tokenList, "hakGwan");
+        clearSubscription(tokenList, "myeongJin");
+        clearSubscription(tokenList, "myeongDon");
+        clearSubscription(tokenList, "todayDiet");
+        clearSubscription(tokenList, "weekDietEnroll");
+        clearSubscription(tokenList, "dietSoldOut");
+        clearSubscription(tokenList, "dietChange");
+        clearSubscription(tokenList, "dieetPhotoEnroll");
+        clearSubscription(tokenList, "general");
     }
 
     @Override
