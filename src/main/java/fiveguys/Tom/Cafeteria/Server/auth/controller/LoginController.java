@@ -2,6 +2,7 @@ package fiveguys.Tom.Cafeteria.Server.auth.controller;
 
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
+import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
 import fiveguys.Tom.Cafeteria.Server.auth.converter.LoginConverter;
 import fiveguys.Tom.Cafeteria.Server.auth.dto.LoginRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.auth.dto.LoginResponseDTO;
@@ -13,16 +14,17 @@ import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.TokenProvider;
 import fiveguys.Tom.Cafeteria.Server.auth.service.AppleLoginService;
 import fiveguys.Tom.Cafeteria.Server.auth.service.EmailLoginService;
 import fiveguys.Tom.Cafeteria.Server.auth.service.KakaoLoginService;
-import fiveguys.Tom.Cafeteria.Server.domain.user.entity.SocialType;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserCommandService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.converter.UserConverter;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -154,6 +156,23 @@ public class LoginController {
                 "\n\nidToken=" + tokenResponse.getIdToken());
     }
 
+
+    @ResponseBody
+    @DeleteMapping("/logout")
+    @Operation(summary = "로그 아웃 API",description = "redis에 저장된 리프레시 토큰을 삭제하고 fcm 구독목록을 모두 해제한다.")
+    public ApiResponse<String> logout(HttpServletRequest request){
+        // redis에 저장된 토큰 만료 시키기
+        String accessToken = null;
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            accessToken = authHeader.substring(7);
+        }
+        jwtUtil.revokeTokens(accessToken);
+        // 기기토큰 구독정보 만료 시키고, DB에 저장된 기기토큰 정보 삭제
+        User user = userCommandService.revokeRegistrationToken(UserContext.getUserId());
+
+        return ApiResponse.onSuccess(user.getId() + "번 유저를 로그아웃 처리 하였습니다.");
+    }
 
     @ResponseBody
     @DeleteMapping("/users/me")
