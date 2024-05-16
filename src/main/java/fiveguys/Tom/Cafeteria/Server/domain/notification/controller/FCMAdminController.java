@@ -17,14 +17,14 @@ public class FCMAdminController {
     private final NotificationService notificationService;
 
     @Operation(summary = "특정 사용자에게 알림을 보내는 API", description = "식당id, 내용, 받는 유저 id를")
-    @PostMapping("/general/user")
+    @PostMapping("/user")
     public ApiResponse<String> sendOne(@RequestBody NotificationRequestDTO.SendOneDTO dto){
         notificationService.sendOne(dto.getCafeteriaId(), dto.getContent(), dto.getReceiverId());
-        return ApiResponse.onSuccess("알림을 성공적으로 보냈습니다.");
-    }
+        return ApiResponse.onSuccess("알림을 성공적으로 보냈습니다.");}
 
-    @Operation(summary = "알림을 허용한 모두에게 공지를 보내는 API", description = "식당 관리자 -> 이용자가 아닌 앱 관리자 -> 이용자 용도의 공지 API")
-    @PostMapping("/general/users")
+
+    @Operation(summary = "알림을 허용한 모두에게 공지를 보내는 API", description = "유저별 등록되어있는 기기토큰을 모두 가져와 알림을 보낸다.")
+    @PostMapping("/users")
     public ApiResponse<String> sendAll(@RequestBody NotificationRequestDTO.SendAllDTO dto){
         notificationService.sendAll(dto);
         return ApiResponse.onSuccess("알림을 성공적으로 보냈습니다.");
