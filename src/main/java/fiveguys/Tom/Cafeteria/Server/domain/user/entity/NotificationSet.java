@@ -20,6 +20,8 @@ public class NotificationSet extends BaseEntity {
     private Long id;
     private String registrationToken;
     @Column(columnDefinition = "boolean default true")
+    private boolean general;
+    @Column(columnDefinition = "boolean default true")
     private boolean hakGwan;
     @Column(columnDefinition = "boolean default true")
     private boolean myeongJin;

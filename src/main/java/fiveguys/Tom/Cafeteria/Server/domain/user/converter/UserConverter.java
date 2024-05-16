@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 public class UserConverter {
     public static NotificationSet toNotificationSet(UserRequestDTO.UpdateNotificationSet dto){
         return NotificationSet.builder()
+                .general(dto.isGeneral())
                 .myeongJin(dto.isMyeongJin())
                 .hakGwan(dto.isHakGwan())
                 .todayDiet(dto.isTodayDiet())
@@ -82,6 +83,7 @@ public class UserConverter {
 
     public static UserResponseDTO.QueryNotificationSet toQueryNotificationSet(NotificationSet notificationSet){
         return UserResponseDTO.QueryNotificationSet.builder()
+                .general(notificationSet.isGeneral())
                 .hakGwan(notificationSet.isHakGwan())
                 .myeongJin(notificationSet.isMyeongJin())
                 .myeongDon(notificationSet.isMyeongDon())

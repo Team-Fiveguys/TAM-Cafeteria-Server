@@ -66,6 +66,7 @@ public class UserCommandServiceImpl implements UserCommandService{
         User user = userQueryService.getUserById(id);
 
         NotificationSet newNotificationSet = NotificationSet.builder()
+                .general(true)
                 .hakGwan(true)
                 .myeongJin(true)
                 .myeongDon(true)
@@ -84,6 +85,7 @@ public class UserCommandServiceImpl implements UserCommandService{
         TopicManagementResponse response = null;
 
         try {
+              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "gerneral");
               FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "hakGwan");
               FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "myeongJin");
               FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "myeongDon");
@@ -114,6 +116,7 @@ public class UserCommandServiceImpl implements UserCommandService{
         ArrayList<String> tokenList = new ArrayList<>();
         tokenList.add(token);
 
+        updateSubscription(tokenList, notificationSet.isGeneral(), "general");
         updateSubscription(tokenList, notificationSet.isHakGwan(), "hakGwan");
         updateSubscription(tokenList, notificationSet.isMyeongJin(), "myeongJin");
         updateSubscription(tokenList, notificationSet.isMyeongDon(), "myeongDon");
@@ -122,11 +125,7 @@ public class UserCommandServiceImpl implements UserCommandService{
         updateSubscription(tokenList, notificationSet.isWeekDietEnroll(), "weekDietEnroll");
         updateSubscription(tokenList, notificationSet.isDietSoldOut(), "dietSoldOut");
         updateSubscription(tokenList, notificationSet.isDietChange(), "dietChange");
-        try {
-            FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "general");
-        } catch (FirebaseMessagingException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
@@ -145,6 +144,7 @@ public class UserCommandServiceImpl implements UserCommandService{
         ArrayList<String> tokenList = new ArrayList<>();
         tokenList.add(registrationToken);
 
+        updateSubscription(tokenList, notificationSet.isGeneral(), "general");
         updateSubscription(tokenList, updateNotificationSet.isHakGwan(), "hakGwan");
         updateSubscription(tokenList, updateNotificationSet.isMyeongJin(), "myeongJin");
         updateSubscription(tokenList, updateNotificationSet.isMyeongDon(), "myeongDon");
