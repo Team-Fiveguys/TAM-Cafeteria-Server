@@ -24,7 +24,6 @@ public class UserResponseDTO {
         private boolean dietPhotoEnroll;
         private boolean weekDietEnroll;
         private boolean dietSoldOut;
-        private boolean dietChange;
     }
     @Getter
     @Builder

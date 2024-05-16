@@ -14,6 +14,5 @@ public class UserRequestDTO {
         private boolean dietPhotoEnroll;
         private boolean weekDietEnroll;
         private boolean dietSoldOut;
-        private boolean dietChange;
     }
 }

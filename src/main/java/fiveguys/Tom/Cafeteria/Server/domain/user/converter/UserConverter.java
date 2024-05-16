@@ -26,7 +26,6 @@ public class UserConverter {
                 .todayDiet(dto.isTodayDiet())
                 .weekDietEnroll(dto.isWeekDietEnroll())
                 .dietPhotoEnroll(dto.isDietPhotoEnroll())
-                .dietChange(dto.isDietChange())
                 .dietSoldOut(dto.isDietSoldOut())
                 .build();
     }
@@ -90,7 +89,6 @@ public class UserConverter {
                 .todayDiet(notificationSet.isTodayDiet())
                 .weekDietEnroll(notificationSet.isWeekDietEnroll())
                 .dietSoldOut(notificationSet.isDietSoldOut())
-                .dietChange(notificationSet.isDietChange())
                 .dietPhotoEnroll(notificationSet.isDietPhotoEnroll())
                 .build();
     }
