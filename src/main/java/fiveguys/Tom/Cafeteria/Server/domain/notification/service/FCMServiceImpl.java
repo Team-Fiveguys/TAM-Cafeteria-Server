@@ -3,16 +3,23 @@ package fiveguys.Tom.Cafeteria.Server.domain.notification.service;
 import com.google.firebase.messaging.*;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotification;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.repository.AppNotificationRepository;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
+import fiveguys.Tom.Cafeteria.Server.domain.user.repository.NotificationSetRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class FCMServiceImpl implements FCMService{
     private final AppNotificationRepository notificationRepository;
+    private final NotificationSetRepository notificationSetRepository;
 
     @Override
     public void sendMessage(Message message) {
@@ -22,6 +29,17 @@ public class FCMServiceImpl implements FCMService{
         } catch (FirebaseMessagingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void sendMessage(MulticastMessage message) {
+        BatchResponse response = null;
+        try {
+            response = FirebaseMessaging.getInstance().sendMulticast(message);
+        } catch (FirebaseMessagingException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(response.getSuccessCount() + " messages were sent successfully");
     }
 
 
@@ -52,7 +70,12 @@ public class FCMServiceImpl implements FCMService{
     }
 
     @Override
-    public Message createGeneralMessage(String title, String content, Long notificationId) {
+    public MulticastMessage createMultiCastMessage(String title, String content, Long notificationId) {
+        List<NotificationSet> notificationSetList = notificationSetRepository.findAll();
+        List<String> tokenList = notificationSetList.stream()
+                .map(notificationSet -> notificationSet.getRegistrationToken())
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         AndroidConfig androidConfig = AndroidConfig.builder()
                 .setNotification(
                         AndroidNotification.builder()
@@ -67,11 +90,11 @@ public class FCMServiceImpl implements FCMService{
                 .setBody(content)
                 .build();
 
-        return Message.builder()
+        return MulticastMessage.builder()
                 .putData("id", String.valueOf(notificationId))
-                .setTopic("general")
                 .setNotification(notification)
                 .setAndroidConfig(androidConfig)
+                .addAllTokens(tokenList)
                 .build();
     }
 
