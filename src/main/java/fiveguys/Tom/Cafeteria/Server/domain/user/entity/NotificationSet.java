@@ -41,6 +41,7 @@ public class NotificationSet extends BaseEntity {
     }
 
     public void setNotificationSet(UserRequestDTO.UpdateNotificationSet updateNotificationSet){
+        this.general = updateNotificationSet.isGeneral();
         this.hakGwan = updateNotificationSet.isHakGwan();
         this.myeongJin = updateNotificationSet.isMyeongJin();
         this.myeongDon = updateNotificationSet.isMyeongDon();
