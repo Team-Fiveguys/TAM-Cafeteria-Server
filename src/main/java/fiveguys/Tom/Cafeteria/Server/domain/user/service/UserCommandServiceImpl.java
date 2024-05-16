@@ -21,6 +21,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepository;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,6 +61,7 @@ public class UserCommandServiceImpl implements UserCommandService{
 
     @Transactional
     @Override
+    @Async
     public void initNotificationSet(String token) {
         // 알림 정보 생성 및 저장
         Long id = UserContext.getUserId();
@@ -156,7 +158,8 @@ public class UserCommandServiceImpl implements UserCommandService{
 
     }
 
-    private void updateSubscription(List<String> tokenList , boolean subscribe, String topic) {
+    @Async
+    public void updateSubscription(List<String> tokenList , boolean subscribe, String topic) {
         try{
             if (subscribe) {
                 FirebaseMessaging.getInstance().subscribeToTopic(tokenList, topic);
@@ -170,7 +173,8 @@ public class UserCommandServiceImpl implements UserCommandService{
         }
     }
 
-    private void clearSubscription(List<String> tokenList , String topic) {
+    @Async
+    public void clearSubscription(List<String> tokenList , String topic) {
         try{
             FirebaseMessaging.getInstance().unsubscribeFromTopic(tokenList, topic);
         }
