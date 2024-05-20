@@ -8,10 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class BoardCreateDTO {
+public class PostCreateDTO {
     private BoardType boardType;
-    private Long userId;
     private String title;
     private String content;
-
+    private Long cafeteriaId;
 }

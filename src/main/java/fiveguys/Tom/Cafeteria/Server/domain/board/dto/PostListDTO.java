@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class BoardListDTO {
+public class PostListDTO {
     private Long id;
     private String title;
 

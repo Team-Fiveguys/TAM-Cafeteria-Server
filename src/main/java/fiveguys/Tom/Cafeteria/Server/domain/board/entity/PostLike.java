@@ -1,6 +1,5 @@
 package fiveguys.Tom.Cafeteria.Server.domain.board.entity;
 
-
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,25 +11,17 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Entity
-public class Board {
+public class PostLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private BoardType boardType;
+    @JoinColumn(name = "post_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Post post;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
-
-    private String title;
-
-    @Lob
-    private String content;
-
-    private int likeCount;
-
-    private boolean isAdminPick;
-
 }
+

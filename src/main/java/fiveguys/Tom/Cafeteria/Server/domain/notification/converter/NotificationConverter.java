@@ -36,7 +36,6 @@ public class NotificationConverter {
                 .role(Role.MEMBER)
                 .name(signUpDTO.getName())
                 .email(signUpDTO.getEmail())
-                .sex(signUpDTO.getSex())
                 .password(encodedPassword)
                 .build();
     }
