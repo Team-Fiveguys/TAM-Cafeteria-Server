@@ -2,11 +2,14 @@ package fiveguys.Tom.Cafeteria.Server.domain.board.controller;
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
 import fiveguys.Tom.Cafeteria.Server.domain.board.dto.*;
+import fiveguys.Tom.Cafeteria.Server.domain.board.entity.BoardType;
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Post;
 import fiveguys.Tom.Cafeteria.Server.domain.board.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -25,12 +28,14 @@ public class BoardController {
     }
 
     // 특정 게시판의 전체 게시글 조회
-//    @Operation(summary = "게시글 리스트 조회 API", description = "수정 필요")
-//    @GetMapping("/{boardType}/boards")
-//    public ApiResponse<List<PostListDTO>> getAllBoardsByType(@PathVariable("boardType") BoardType boardType) {
-//        List<PostListDTO> postListDTOList = boardService.getAllBoardsByType(boardType);
-//        return ApiResponse.onSuccess(postListDTOList);
-//    }
+    @Operation(summary = "게시글 리스트 최신순 조회 API", description = "최신 순으로 정렬하여 받을 페이지를 인자로 받아 응답한다")
+    @GetMapping("/{boardType}/boards")
+    public ApiResponse<List<PostPreviewDTO>> getAllBoardsByType(@PathVariable("boardType") BoardType boardType,
+                                                                @RequestParam(name = "cafeteriaId") Long cafeteriaId,
+                                                                @RequestParam(name = "page") int page ) {
+        List<PostPreviewDTO> postList = postService.getPostPageOrderedByTime(boardType, cafeteriaId, page);
+        return ApiResponse.onSuccess(postList);
+    }
 
 
 //    //특정 게시글 조회
