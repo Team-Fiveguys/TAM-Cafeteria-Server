@@ -14,6 +14,7 @@ import lombok.*;
 @Entity
 public class Board {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)

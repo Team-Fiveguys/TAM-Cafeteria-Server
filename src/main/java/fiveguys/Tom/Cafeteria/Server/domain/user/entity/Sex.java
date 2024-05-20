@@ -1,5 +1,5 @@
 package fiveguys.Tom.Cafeteria.Server.domain.user.entity;
 
 public enum Sex {
-    남자, 여자
+    남성, 여성
 }

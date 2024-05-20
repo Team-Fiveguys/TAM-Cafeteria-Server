@@ -1,23 +1,60 @@
 package fiveguys.Tom.Cafeteria.Server.domain.diet.dto;
 
-import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
-import jakarta.persistence.*;
+import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.List;
 
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class DietResponseDTO {
-    private Long id;
-//    private Meals meals;
-//    private DayOfWeek dayOfWeek; // 나중에 과거의 식단까지 볼 수 있도록 확장하면 날짜로 수정할 예정
-//    private String imageUri; //이미지 테이블 만들어야 함
-//
-//    private Cafeteria cafeteria;
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DietCreateDTO {
+        private List<String> menuNameList;
+        private LocalDate date;
+        private Meals meals; //key와 enum 클래스명이 같으면 매핑 가능
+        private Long cafeteriaId;
+        private boolean dayOff;
+    }
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DietQueryDTO {
+        private Long dietId;
+        private LocalDate date;
+        private String photoURI;
+        private MenuResponseDTO.MenuResponseListDTO menuResponseListDTO;
+        private boolean soldOut;
+        private boolean dayOff;
+    }
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class WeekDietsResponseDTO {
+        private List<DietResponseDTO.DietQueryDTO> dietResponseDTOList;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class SwitchSoldOutResponseDTO {
+        private boolean isSoldOut;
+    }
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class SwitchDayOffResponseDTO {
+        private boolean isDayOff;
+    }
 }
