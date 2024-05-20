@@ -1,8 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.auth.dto;
 
 
-import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Sex;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 
@@ -34,7 +32,6 @@ public class LoginRequestDTO {
         private String email;
 //        private String name;
 //        private String password;
-//        private Sex sex;
     }
     @Getter
     public static class VerifyAuthCodeDTO{
@@ -46,7 +43,6 @@ public class LoginRequestDTO {
     public static class SignUpDTO{
         private String name;
         private String password;
-        private Sex sex;
         @Email
         private String email;
         private String authCode;

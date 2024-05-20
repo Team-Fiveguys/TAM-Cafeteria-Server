@@ -54,7 +54,6 @@ public class UserConverter {
                 .socialType(SocialType.EMAIL)
                 .name(signUpDTO.getName())
                 .email(signUpDTO.getEmail())
-                .sex(signUpDTO.getSex())
                 .password(encodedPassword)
                 .build();
     }
