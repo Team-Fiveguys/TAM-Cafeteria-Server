@@ -29,9 +29,11 @@ public class BoardController {
     // 특정 게시판의 전체 게시글 조회
     @Operation(summary = "게시글 리스트 조회 API", description = "수정 필요")
     @GetMapping("/{boardType}/boards")
-    public List<Board> getAllBoardsByType(@PathVariable("boardType") BoardType boardType) {
-        return boardService.getAllBoardsByType(boardType);
+    public ApiResponse<List<BoardListDTO>> getAllBoardsByType(@PathVariable("boardType") BoardType boardType) {
+        List<BoardListDTO> boardListDTOs = boardService.getAllBoardsByType(boardType);
+        return ApiResponse.onSuccess(boardListDTOs);
     }
+
 
     //특정 게시글 조회
     @Operation(summary = "특정 게시글 조회 API")
@@ -52,8 +54,9 @@ public class BoardController {
     // 게시글 삭제
     @Operation(summary = "특정 게시글 삭제 API")
     @DeleteMapping("/{id}")
-    public void deleteBoard(@PathVariable Long id) {
-        boardService.deleteBoard(id);
+    public ApiResponse<Void> deleteBoard(@PathVariable Long id, @RequestBody BoardDeleteDTO boardDeleteDTO) {
+        boardService.deleteBoard(id, boardDeleteDTO);
+        return ApiResponse.onSuccess(null); // 성공적으로 삭제 처리됐음을 응답. 별도의 데이터 반환 필요 없음
     }
 
     //게시글 좋아요

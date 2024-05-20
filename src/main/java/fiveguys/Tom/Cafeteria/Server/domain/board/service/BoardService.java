@@ -14,6 +14,7 @@ import fiveguys.Tom.Cafeteria.Server.exception.ResourceNotFoundException;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BoardService {
@@ -41,9 +42,14 @@ public class BoardService {
     }
 
     //boardType에 따라 특정 게시판의 전체 게시물 조회
-    public List<Board> getAllBoardsByType(BoardType boardType) {
-        return boardRepository.findAllByBoardType(boardType);
+    public List<BoardListDTO> getAllBoardsByType(BoardType boardType) {
+        List<Board> boards = boardRepository.findAllByBoardType(boardType);
+        List<BoardListDTO> boardListDTOs = boards.stream()
+                .map(board -> new BoardListDTO(board.getId(), board.getTitle()))
+                .collect(Collectors.toList());
+        return boardListDTOs;
     }
+
 
     //특정 게시물 조회
     public BoardResponseDTO getBoardById(Long id) {
@@ -80,7 +86,6 @@ public class BoardService {
     }
 
     // 게시글 좋아요 토글
-    // 게시글 좋아요 토글
     public BoardResponseDTO toggleLike(Long boardId, Long userId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다. id=" + boardId));
@@ -107,6 +112,15 @@ public class BoardService {
         // Board 엔티티를 BoardResponseDTO로 변환
         return convertToBoardResponseDTO(board);
     }
+
+    //게시글 삭제
+    public void deleteBoard(Long id, BoardDeleteDTO boardDeleteDTO) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + id));
+
+        boardRepository.delete(board);
+    }
+
 
     // Board 엔티티를 BoardResponseDTO로 변환하는 메소드
     private BoardResponseDTO convertToBoardResponseDTO(Board board) {
