@@ -10,10 +10,15 @@ import fiveguys.Tom.Cafeteria.Server.domain.board.repository.PostRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.repository.CafeteriaRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
+import fiveguys.Tom.Cafeteria.Server.domain.user.converter.UserConverter;
+import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import fiveguys.Tom.Cafeteria.Server.exception.ResourceNotFoundException;
 
@@ -30,6 +35,8 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final UserQueryService userQueryService;
     private final CafeteriaQueryService cafeteriaQueryService;
+
+    private static int postPageSize = 20;
 
     //게시물 생성
     public Post createPost(PostCreateDTO boardCreateDTO) {
@@ -48,13 +55,41 @@ public class PostService {
     }
 
     //boardType에 따라 특정 게시판의 전체 게시물 조회
-    public List<PostListDTO> getAllPostsByType(BoardType boardType) {
-        List<Post> posts = postRepository.findAllByBoardType(boardType);
-        List<PostListDTO> boardListDTOs = posts.stream()
-                .map(post -> new PostListDTO(post.getId(), post.getTitle()))
+    public List<PostPreviewDTO> getPostPageOrderedByTime(BoardType boardType, Long cafeteriaId, int page) {
+        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
+        Page<Post> userPage = postRepository.findAllByCafeteriaAndBoardType(
+                PageRequest.of(page - 1, postPageSize, Sort.by(Sort.Order.desc("createdAt") ) ),
+                cafeteria, boardType);
+        List<PostPreviewDTO> postPreviewDTOList = userPage.stream()
+                .map(post -> PostPreviewDTO.builder()
+                        .id(post.getId())
+                        .title(post.getTitle())
+                        .publisherName(post.getUser().getName())
+                        .uploadTime(post.getCreatedAt())
+                        .build()
+                )
                 .collect(Collectors.toList());
-        return boardListDTOs;
+
+        return postPreviewDTOList;
     }
+
+//    public List<PostPreviewDTO> getPostPageOrderedByLike(BoardType boardType, Long cafeteriaId, int page) {
+//        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
+//        Page<Post> userPage = postRepository.findAllByCafeteriaAndBoardType(
+//                PageRequest.of(page - 1, postPageSize, Sort.by(Sort.Order.desc("createdAt") ) ),
+//                cafeteria, boardType);
+//        List<PostPreviewDTO> postPreviewDTOList = userPage.stream()
+//                .map(post -> PostPreviewDTO.builder()
+//                        .id(post.getId())
+//                        .title(post.getTitle())
+//                        .publisherName(post.getUser().getName())
+//                        .uploadTime(post.getCreatedAt())
+//                        .build()
+//                )
+//                .collect(Collectors.toList());
+//
+//        return postPreviewDTOList;
+//    }
 
 
     //특정 게시물 조회
