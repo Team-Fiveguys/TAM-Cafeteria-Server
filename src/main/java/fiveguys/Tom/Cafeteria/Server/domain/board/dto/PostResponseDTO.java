@@ -9,7 +9,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardResponseDTO {
+public class PostResponseDTO {
     private Long id;
     private BoardType boardType;
     private Long userId;

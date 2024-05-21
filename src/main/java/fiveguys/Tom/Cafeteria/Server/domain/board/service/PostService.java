@@ -1,5 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.domain.board.service;
 
+import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
 import fiveguys.Tom.Cafeteria.Server.domain.board.dto.*;
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Post;
@@ -15,16 +16,15 @@ import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
+import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import fiveguys.Tom.Cafeteria.Server.exception.ResourceNotFoundException;
 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,6 +64,7 @@ public class PostService {
                 .map(post -> PostPreviewDTO.builder()
                         .id(post.getId())
                         .title(post.getTitle())
+                        .content(post.getContent())
                         .publisherName(post.getUser().getName())
                         .uploadTime(post.getCreatedAt())
                         .build()
@@ -93,16 +94,17 @@ public class PostService {
 
 
     //특정 게시물 조회
-//    public BoardResponseDTO getBoardById(Long id) {
-//        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Board", "id", id));
-//        BoardResponseDTO boardResponseDTO = new BoardResponseDTO();
-//        boardResponseDTO.setId(post.getId());
-//        boardResponseDTO.setTitle(post.getTitle());
-//        boardResponseDTO.setContent(post.getContent());
-//        boardResponseDTO.setBoardType(post.getBoardType());
-//        // 기타 필요한 속성 설정
-//        return boardResponseDTO;
-//    }
+    public PostResponseDTO getPostById(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+        PostResponseDTO responseDTO = PostResponseDTO.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .userId(post.getUser().getId())
+                .boardType(post.getBoardType())
+                .build();
+        // 기타 필요한 속성 설정
+        return responseDTO;
+    }
 
 //    public BoardResponseDTO updateBoard(Long id, BoardUpdateDTO boardDetails) {
 //

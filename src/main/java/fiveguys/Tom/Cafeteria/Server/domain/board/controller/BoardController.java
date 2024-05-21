@@ -38,13 +38,13 @@ public class BoardController {
     }
 
 
-//    //특정 게시글 조회
-//    @Operation(summary = "특정 게시글 조회 API")
-//    @GetMapping("/{id}")
-//    public ApiResponse<BoardResponseDTO> getBoardById(@PathVariable Long id) {
-//        BoardResponseDTO boardResponseDTO = postService.getBoardById(id);
-//        return ApiResponse.onSuccess(boardResponseDTO);
-//    }
+    //특정 게시글 조회
+    @Operation(summary = "특정 게시글 조회 API")
+    @GetMapping("/{id}")
+    public ApiResponse<PostResponseDTO> getBoardById(@PathVariable(name = "id") Long id) {
+        PostResponseDTO postResponseDTO = postService.getPostById(id);
+        return ApiResponse.onSuccess(postResponseDTO);
+    }
 
     // 게시글 수정
 //    @Operation(summary = "특정 게시글 수정 API")
@@ -62,11 +62,11 @@ public class BoardController {
 //        return ApiResponse.onSuccess(null); // 성공적으로 삭제 처리됐음을 응답. 별도의 데이터 반환 필요 없음
 //    }
 //
-//    //게시글 좋아요
+    //게시글 좋아요
 //    @Operation(summary = "게시글에 좋아요")
 //    @PostMapping("/{id}/like")
-//    public ApiResponse<BoardResponseDTO> toggleLike(@PathVariable Long id, @RequestParam Long userId) {
-//        BoardResponseDTO boardResponseDTO = boardService.toggleLike(id, userId);
+//    public ApiResponse<PostResponseDTO> toggleLike(@PathVariable Long id, @RequestParam Long userId) {
+//        PostResponseDTO boardResponseDTO = postService.toggleLike(id, userId);
 //        return ApiResponse.onSuccess(boardResponseDTO);
 //    }
 
