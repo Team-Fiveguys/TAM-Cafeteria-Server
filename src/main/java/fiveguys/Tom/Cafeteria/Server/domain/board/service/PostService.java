@@ -1,5 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.domain.board.service;
 
+import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
 import fiveguys.Tom.Cafeteria.Server.domain.board.dto.*;
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Post;
@@ -15,16 +16,17 @@ import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
+import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import fiveguys.Tom.Cafeteria.Server.exception.ResourceNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,6 +66,7 @@ public class PostService {
                 .map(post -> PostPreviewDTO.builder()
                         .id(post.getId())
                         .title(post.getTitle())
+                        .content(post.getContent())
                         .publisherName(post.getUser().getName())
                         .uploadTime(post.getCreatedAt())
                         .build()
@@ -93,16 +96,22 @@ public class PostService {
 
 
     //특정 게시물 조회
-//    public BoardResponseDTO getBoardById(Long id) {
-//        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Board", "id", id));
-//        BoardResponseDTO boardResponseDTO = new BoardResponseDTO();
-//        boardResponseDTO.setId(post.getId());
-//        boardResponseDTO.setTitle(post.getTitle());
-//        boardResponseDTO.setContent(post.getContent());
-//        boardResponseDTO.setBoardType(post.getBoardType());
-//        // 기타 필요한 속성 설정
-//        return boardResponseDTO;
-//    }
+    public PostResponseDTO getPostById(Long id) {
+        Long userId = UserContext.getUserId();
+        User user = userQueryService.getUserById(userId);
+
+        Post post = postRepository.findById(id).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+        PostResponseDTO responseDTO = PostResponseDTO.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .userId(post.getUser().getId())
+                .boardType(post.getBoardType())
+                .likeCount(post.getLikeCount())
+                .toggleLike(postLikeRepository.existsByUserAndPost(user, post))
+                .build();
+        // 기타 필요한 속성 설정
+        return responseDTO;
+    }
 
 //    public BoardResponseDTO updateBoard(Long id, BoardUpdateDTO boardDetails) {
 //
@@ -127,32 +136,28 @@ public class PostService {
 //    }
 
     // 게시글 좋아요 토글
-//    public BoardResponseDTO toggleLike(Long boardId, Long userId) {
-//        Post post = postRepository.findById(boardId)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다. id=" + boardId));
-//
-//        // User 엔티티 찾기
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다. id=" + userId));
-//
-//        if (postLikeRepository.existsByUserIdAndBoardId(userId, boardId)) {
-//            // 이미 좋아요를 한 경우, 좋아요 취소 처리
-//            postLikeRepository.deleteByUserIdAndBoardId(userId, boardId);
-//            post.setLikeCount(post.getLikeCount() - 1);
-//        } else {
-//            // 좋아요를 하지 않은 경우, 좋아요 처리
-//            PostLike postLike = new PostLike();
-//            postLike.setUser(user); // User 엔티티를 설정
-//            postLike.setPost(post);
-//            postLikeRepository.save(postLike);
-//            post.setLikeCount(post.getLikeCount() + 1);
-//        }
-//
-//        post = postRepository.save(post);
-//
-//        // Board 엔티티를 BoardResponseDTO로 변환
-//        return convertToBoardResponseDTO(post);
-//    }
+    @Transactional
+    public boolean toggleLike(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+
+        Long userId = UserContext.getUserId();
+        User user = userQueryService.getUserById(userId);
+        if (postLikeRepository.existsByUserAndPost(user, post)) {
+            // 이미 좋아요를 한 경우, 좋아요 취소 처리
+            postLikeRepository.deleteByUserAndPost(user,post);
+            post.setLikeCount(post.getLikeCount() - 1);
+            return false;
+        } else {
+            // 좋아요를 하지 않은 경우, 좋아요 처리
+            PostLike postLike = new PostLike();
+            postLike.setUser(user); // User 엔티티를 설정
+            postLike.setPost(post);
+            postLikeRepository.save(postLike);
+            post.setLikeCount(post.getLikeCount() + 1);
+            return true;
+        }
+    }
 
     //게시글 삭제
     public void deleteBoard(Long id, BoardDeleteDTO boardDeleteDTO) {
