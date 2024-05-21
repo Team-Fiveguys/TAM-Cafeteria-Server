@@ -63,12 +63,16 @@ public class BoardController {
 //    }
 //
     //게시글 좋아요
-//    @Operation(summary = "게시글에 좋아요")
-//    @PostMapping("/{id}/like")
-//    public ApiResponse<PostResponseDTO> toggleLike(@PathVariable Long id, @RequestParam Long userId) {
-//        PostResponseDTO boardResponseDTO = postService.toggleLike(id, userId);
-//        return ApiResponse.onSuccess(boardResponseDTO);
-//    }
+    @Operation(summary = "게시글에 좋아요/취소 토글 API")
+    @PostMapping("/{id}/like")
+    public ApiResponse<String> toggleLike(@PathVariable(name = "id") Long id) {
+        if (postService.toggleLike(id)){
+            return ApiResponse.onSuccess(id + "번 게시물에 좋아요를 눌렀습니다.");
+        }
+        else{
+            return ApiResponse.onSuccess(id + "번 게시물에 좋아요를 취소하였습니다.");
+        }
+    }
 
 }
 

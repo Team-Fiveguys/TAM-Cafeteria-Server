@@ -16,6 +16,7 @@ public class PostResponseDTO {
     private String title;
     private String content;
     private int likeCount;
+    private boolean toggleLike;
     private boolean isAdminPick;
 
 }
