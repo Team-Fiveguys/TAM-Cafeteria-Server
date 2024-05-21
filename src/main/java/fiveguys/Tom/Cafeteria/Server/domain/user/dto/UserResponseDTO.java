@@ -16,6 +16,7 @@ public class UserResponseDTO {
     @Builder
     @AllArgsConstructor
     public static class QueryNotificationSet{
+        private boolean general;
         private boolean hakGwan;
         private boolean myeongJin;
         private boolean myeongDon;
@@ -23,7 +24,6 @@ public class UserResponseDTO {
         private boolean dietPhotoEnroll;
         private boolean weekDietEnroll;
         private boolean dietSoldOut;
-        private boolean dietChange;
     }
     @Getter
     @Builder

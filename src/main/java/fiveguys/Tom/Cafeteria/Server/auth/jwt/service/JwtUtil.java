@@ -127,4 +127,10 @@ public class JwtUtil {
                 .getPayload()
                 .get("email", String.class);
     }
+
+    public void revokeTokens(String accessToken) {
+        String refreshToken = redisService.getValue(accessToken);
+        redisService.deleteValues(refreshToken);
+        redisService.deleteValues(accessToken);
+    }
 }

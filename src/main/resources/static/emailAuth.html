@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입 인증 코드</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .title {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .code {
+            color: #555;
+            font-size: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            display: inline-block;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">탐식당 회원가입 인증 코드</div>
+    <div class="code" onclick="document.execCommand('selectAll',false,null)">AUTH_CODE</div>
+    <p>위 인증 코드를 선택하고 복사하여 가입 창에 붙여넣기해주세요.</p>
+</div>
+</body>
+</html>

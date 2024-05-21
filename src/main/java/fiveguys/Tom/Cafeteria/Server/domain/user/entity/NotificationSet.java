@@ -20,6 +20,8 @@ public class NotificationSet extends BaseEntity {
     private Long id;
     private String registrationToken;
     @Column(columnDefinition = "boolean default true")
+    private boolean general;
+    @Column(columnDefinition = "boolean default true")
     private boolean hakGwan;
     @Column(columnDefinition = "boolean default true")
     private boolean myeongJin;
@@ -33,14 +35,13 @@ public class NotificationSet extends BaseEntity {
     private boolean weekDietEnroll;
     @Column(columnDefinition = "boolean default true")
     private boolean dietSoldOut;
-    @Column(columnDefinition = "boolean default true")
-    private boolean dietChange;
 
     public void setRegistrationToken(String registrationToken) {
         this.registrationToken = registrationToken;
     }
 
     public void setNotificationSet(UserRequestDTO.UpdateNotificationSet updateNotificationSet){
+        this.general = updateNotificationSet.isGeneral();
         this.hakGwan = updateNotificationSet.isHakGwan();
         this.myeongJin = updateNotificationSet.isMyeongJin();
         this.myeongDon = updateNotificationSet.isMyeongDon();
@@ -48,7 +49,5 @@ public class NotificationSet extends BaseEntity {
         this.weekDietEnroll = updateNotificationSet.isWeekDietEnroll();
         this.dietPhotoEnroll = updateNotificationSet.isDietPhotoEnroll();
         this.dietSoldOut = updateNotificationSet.isDietSoldOut();
-        this.dietChange = updateNotificationSet.isDietChange();
-
     }
 }

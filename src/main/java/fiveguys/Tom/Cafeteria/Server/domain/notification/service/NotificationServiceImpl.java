@@ -1,16 +1,14 @@
 package fiveguys.Tom.Cafeteria.Server.domain.notification.service;
 
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.*;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.dto.NotificationRequestDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.google.firebase.messaging.Message;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +20,8 @@ public class NotificationServiceImpl implements NotificationService{
     @Override
     public void sendAll(NotificationRequestDTO.SendAllDTO dto) {
         Long storedNotificationId = fcmService.storeNotification(dto.getTitle(), dto.getContent());
-        Message message = fcmService.createGeneralMessage(dto.getTitle(), dto.getContent(), storedNotificationId);
-        fcmService.sendMessage(message);
+        MulticastMessage multicastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent(), storedNotificationId);
+        fcmService.sendMessage(multicastMessage);
     }
 
     @Override
@@ -37,7 +35,9 @@ public class NotificationServiceImpl implements NotificationService{
     public void sendOne(Long cafeteriaId, String content, Long receiverId) {
         User receiver = userQueryService.getUserById(receiverId);
         Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
-        String registrationToken = "fgdaEkcYQPepOZCKU9klN_:APA91bEAcajJGUyQeaXC7YVe2Z5OhNn7L96ncHDtllH4vcyczAWUN5m3riHLjYR_BkIThikIclXywlu9pizq3g2j7IvYv16ZEGWo4T4ROVTi5besccZLmn9o96m3-QIgsuuDMaK20FpS";
+        NotificationSet notificationSet = receiver.getNotificationSet();
+        String token = notificationSet.getRegistrationToken();
+        String registrationToken = token;
 
         // See documentation on defining a message payload.
         Notification notification = Notification.builder()

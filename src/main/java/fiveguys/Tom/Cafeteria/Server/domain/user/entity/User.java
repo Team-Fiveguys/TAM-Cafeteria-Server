@@ -24,9 +24,6 @@ public class User extends BaseEntity {
     private String socialId;
 
     @Enumerated(EnumType.STRING)
-    private Sex sex;
-
-    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Enumerated(EnumType.STRING)

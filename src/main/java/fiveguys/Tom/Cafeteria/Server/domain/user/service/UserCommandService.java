@@ -28,4 +28,6 @@ public interface UserCommandService {
     public void deleteNotifications();
 
     public User withdrawUser();
+
+    public User revokeRegistrationToken(Long userId);
 }

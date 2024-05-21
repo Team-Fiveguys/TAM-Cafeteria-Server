@@ -6,16 +6,25 @@ import fiveguys.Tom.Cafeteria.Server.domain.common.RedisService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Duration;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +34,7 @@ public class EmailLoginServiceImpl implements EmailLoginService {
     @Value("${spring.mail.username}")
     private String sender;
     private final JavaMailSender emailSender;
+    private final ResourceLoader resourceLoader;
     private final RedisService redisService;
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final Duration duration = Duration.ofMinutes(3);
@@ -37,17 +47,38 @@ public class EmailLoginServiceImpl implements EmailLoginService {
         }
         String authCode = generateAuthCode(8);
         redisService.setValue("USER:" + loginFormDTO.getEmail() + "authCode:", authCode, duration );
-        SimpleMailMessage simpleMailMessage = createEmailForm(loginFormDTO.getEmail(), authCode);
-        emailSender.send(simpleMailMessage);
+        MimeMessage mimeMessage = createEmailForm(loginFormDTO.getEmail(), authCode);
+        emailSender.send(mimeMessage);
     }
 
-    private SimpleMailMessage createEmailForm(String email, String authCode){
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(email);
-        mailMessage.setSubject("탐식당 회원가입 인증 번호");
-        mailMessage.setFrom(sender);
-        mailMessage.setText(authCode);
-        return mailMessage;
+    private MimeMessage createEmailForm(String email, String authCode){
+        MimeMessage mimeMessage = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+
+
+        String htmlMsg = getHtmlFromResource("classpath:/static/emailAuth.html");
+        htmlMsg = htmlMsg.replace("AUTH_CODE", authCode);
+
+        try{
+            helper.setTo(email);
+            helper.setSubject("탐식당 회원가입 인증 코드");
+            helper.setFrom(sender);
+            helper.setText(htmlMsg, true); // 'true' indicates that this is an HTML email
+        }
+        catch (MessagingException e){
+            e.printStackTrace();
+        }
+        return mimeMessage;
+    }
+
+    private String getHtmlFromResource(String resourcePath) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(resourceLoader.getResource(resourcePath).getInputStream(), StandardCharsets.UTF_8));
+            return reader.lines().collect(Collectors.joining(System.lineSeparator()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     private static String generateAuthCode(int length) {
         SecureRandom random = new SecureRandom();

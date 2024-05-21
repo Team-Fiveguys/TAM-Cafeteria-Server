@@ -20,12 +20,12 @@ import java.util.stream.Stream;
 public class UserConverter {
     public static NotificationSet toNotificationSet(UserRequestDTO.UpdateNotificationSet dto){
         return NotificationSet.builder()
+                .general(dto.isGeneral())
                 .myeongJin(dto.isMyeongJin())
                 .hakGwan(dto.isHakGwan())
                 .todayDiet(dto.isTodayDiet())
                 .weekDietEnroll(dto.isWeekDietEnroll())
                 .dietPhotoEnroll(dto.isDietPhotoEnroll())
-                .dietChange(dto.isDietChange())
                 .dietSoldOut(dto.isDietSoldOut())
                 .build();
     }
@@ -54,7 +54,6 @@ public class UserConverter {
                 .socialType(SocialType.EMAIL)
                 .name(signUpDTO.getName())
                 .email(signUpDTO.getEmail())
-                .sex(signUpDTO.getSex())
                 .password(encodedPassword)
                 .build();
     }
@@ -82,13 +81,13 @@ public class UserConverter {
 
     public static UserResponseDTO.QueryNotificationSet toQueryNotificationSet(NotificationSet notificationSet){
         return UserResponseDTO.QueryNotificationSet.builder()
+                .general(notificationSet.isGeneral())
                 .hakGwan(notificationSet.isHakGwan())
                 .myeongJin(notificationSet.isMyeongJin())
                 .myeongDon(notificationSet.isMyeongDon())
                 .todayDiet(notificationSet.isTodayDiet())
                 .weekDietEnroll(notificationSet.isWeekDietEnroll())
                 .dietSoldOut(notificationSet.isDietSoldOut())
-                .dietChange(notificationSet.isDietChange())
                 .dietPhotoEnroll(notificationSet.isDietPhotoEnroll())
                 .build();
     }
