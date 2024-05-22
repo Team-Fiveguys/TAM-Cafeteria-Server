@@ -2,6 +2,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.user.controller;
 
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
+import fiveguys.Tom.Cafeteria.Server.domain.board.dto.PostPreviewDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserCommandService;
@@ -9,6 +10,8 @@ import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -96,5 +99,11 @@ public class UserController {
     public ApiResponse<String> deleteNotifications(){
         userCommandService.deleteNotifications();
         return ApiResponse.onSuccess("모든 알림들이 삭제 되었습니다.");
+    }
+
+    @GetMapping("/me/posts")
+    @Operation(summary = "내가 작성한 게시글을 조회하는 API", description = "")
+    public ApiResponse<List<PostPreviewDTO>> queryMyPost(){
+        return ApiResponse.onSuccess(userQueryService.getCreatedPostList());
     }
 }

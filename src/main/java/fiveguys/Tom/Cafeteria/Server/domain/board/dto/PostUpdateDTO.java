@@ -8,11 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class BoardUpdateDTO {
-    private BoardType boardType;
+public class PostUpdateDTO {
     private String title;
     private String content;
-    private int likeCount;
-    private boolean isAdminPick;
-
 }
