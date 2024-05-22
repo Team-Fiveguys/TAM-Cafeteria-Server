@@ -59,7 +59,7 @@ public class PostService {
         User user = userQueryService.getUserById(userId);
         Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
         Page<Post> userPage = postRepository.findAllByCafeteriaAndBoardType(
-                PageRequest.of(page - 1, postPageSize, Sort.by(Sort.Order.asc("createdAt") ) ),
+                PageRequest.of(page - 1, postPageSize, Sort.by(Sort.Order.desc("createdAt") ) ),
                 cafeteria, boardType);
         List<PostPreviewDTO> postPreviewDTOList = userPage.stream()
                 .map(post -> PostPreviewDTO.builder()
@@ -82,7 +82,7 @@ public class PostService {
         Page<Post> userPage = postRepository.findAllByCafeteriaAndBoardType(
                 PageRequest.of(page - 1, postPageSize, Sort.by(
                         Sort.Order.desc("likeCount"),
-                        Sort.Order.asc("createdAt") ) ),
+                        Sort.Order.desc("createdAt") ) ),
                 cafeteria, boardType);
         List<PostPreviewDTO> postPreviewDTOList = userPage.stream()
                 .map(post -> PostPreviewDTO.builder()
