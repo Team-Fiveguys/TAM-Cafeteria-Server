@@ -60,7 +60,7 @@ public class PostService {
     public List<PostPreviewDTO> getPostPageOrderedByTime(BoardType boardType, Long cafeteriaId, int page) {
         Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
         Page<Post> userPage = postRepository.findAllByCafeteriaAndBoardType(
-                PageRequest.of(page - 1, postPageSize, Sort.by(Sort.Order.desc("createdAt") ) ),
+                PageRequest.of(page - 1, postPageSize, Sort.by(Sort.Order.asc("createdAt") ) ),
                 cafeteria, boardType);
         List<PostPreviewDTO> postPreviewDTOList = userPage.stream()
                 .map(post -> PostPreviewDTO.builder()
@@ -68,6 +68,7 @@ public class PostService {
                         .title(post.getTitle())
                         .content(post.getContent())
                         .publisherName(post.getUser().getName())
+                        .likeCount(post.getLikeCount())
                         .uploadTime(post.getCreatedAt())
                         .build()
                 )
@@ -76,23 +77,27 @@ public class PostService {
         return postPreviewDTOList;
     }
 
-//    public List<PostPreviewDTO> getPostPageOrderedByLike(BoardType boardType, Long cafeteriaId, int page) {
-//        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
-//        Page<Post> userPage = postRepository.findAllByCafeteriaAndBoardType(
-//                PageRequest.of(page - 1, postPageSize, Sort.by(Sort.Order.desc("createdAt") ) ),
-//                cafeteria, boardType);
-//        List<PostPreviewDTO> postPreviewDTOList = userPage.stream()
-//                .map(post -> PostPreviewDTO.builder()
-//                        .id(post.getId())
-//                        .title(post.getTitle())
-//                        .publisherName(post.getUser().getName())
-//                        .uploadTime(post.getCreatedAt())
-//                        .build()
-//                )
-//                .collect(Collectors.toList());
-//
-//        return postPreviewDTOList;
-//    }
+    public List<PostPreviewDTO> getPostPageOrderedByLike(BoardType boardType, Long cafeteriaId, int page) {
+        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
+        Page<Post> userPage = postRepository.findAllByCafeteriaAndBoardType(
+                PageRequest.of(page - 1, postPageSize, Sort.by(
+                        Sort.Order.desc("likeCount"),
+                        Sort.Order.asc("createdAt") ) ),
+                cafeteria, boardType);
+        List<PostPreviewDTO> postPreviewDTOList = userPage.stream()
+                .map(post -> PostPreviewDTO.builder()
+                        .id(post.getId())
+                        .title(post.getTitle())
+                        .content(post.getContent())
+                        .publisherName(post.getUser().getName())
+                        .likeCount(post.getLikeCount())
+                        .uploadTime(post.getCreatedAt())
+                        .build()
+                )
+                .collect(Collectors.toList());
+
+        return postPreviewDTOList;
+    }
 
 
     //특정 게시물 조회
@@ -112,23 +117,6 @@ public class PostService {
         // 기타 필요한 속성 설정
         return responseDTO;
     }
-
-//    public BoardResponseDTO updateBoard(Long id, BoardUpdateDTO boardDetails) {
-//
-//        Post post = postRepository.findById(id).orElseThrow(
-//                () -> new IllegalArgumentException("Invalid board Id:" + id));
-//
-//        post.setTitle(boardDetails.getTitle());
-//        post.setContent(boardDetails.getContent());
-//        post.setBoardType(boardDetails.getBoardType());
-//        // board.setLikeCount(boardDetails.getLikeCount()); // 직접 수정 불가 필드 제외
-//        post.setAdminPick(boardDetails.isAdminPick());
-//
-//        post = postRepository.save(post);
-//
-//        // Board 엔티티를 BoardResponseDTO로 변환
-//        return convertToBoardResponseDTO(post);
-//    }
 
 //    public void deleteBoard(Long id) {
 //        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid board Id:" + id));
@@ -166,20 +154,5 @@ public class PostService {
 
         postRepository.delete(post);
     }
-
-
-//    // Board 엔티티를 BoardResponseDTO로 변환하는 메소드
-//    private BoardResponseDTO convertToBoardResponseDTO(Post post) {
-//        BoardResponseDTO dto = new BoardResponseDTO();
-//        dto.setId(post.getId());
-//        dto.setTitle(post.getTitle());
-//        dto.setContent(post.getContent());
-//        dto.setBoardType(post.getBoardType());
-//        dto.setLikeCount(post.getLikeCount());
-//        dto.setAdminPick(post.isAdminPick());
-//        // 필요한 다른 필드들도 여기에 추가
-//        return dto;
-//    }
-
 }
 

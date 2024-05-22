@@ -3,6 +3,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.board.controller;
 import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
 import fiveguys.Tom.Cafeteria.Server.domain.board.dto.*;
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.BoardType;
+import fiveguys.Tom.Cafeteria.Server.domain.board.entity.OrderType;
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Post;
 import fiveguys.Tom.Cafeteria.Server.domain.board.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,9 +14,9 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/boards")
+@RequestMapping("/posts")
 @RequiredArgsConstructor
-public class BoardController {
+public class PostController {
 
     private final PostService postService;
 
@@ -28,14 +29,30 @@ public class BoardController {
     }
 
     // 특정 게시판의 전체 게시글 조회
-    @Operation(summary = "게시글 리스트 최신순 조회 API", description = "최신 순으로 정렬하여 받을 페이지를 인자로 받아 응답한다")
-    @GetMapping("/{boardType}/boards")
-    public ApiResponse<List<PostPreviewDTO>> getAllBoardsByType(@PathVariable("boardType") BoardType boardType,
-                                                                @RequestParam(name = "cafeteriaId") Long cafeteriaId,
-                                                                @RequestParam(name = "page") int page ) {
-        List<PostPreviewDTO> postList = postService.getPostPageOrderedByTime(boardType, cafeteriaId, page);
+    @Operation(summary = "메뉴 건의 게시글 리스트 조회 API", description = "메뉴건의 요청 게시글 리스트를 조회한다. orderType을 통해 정렬할 기준을 page를 통해 받을 페이지를 받아 응답한다")
+    @GetMapping("/menu-request")
+    public ApiResponse<List<PostPreviewDTO>> getAllMenuRequestPosts(@RequestParam(name = "cafeteriaId") Long cafeteriaId,
+                                                                @RequestParam(name = "page") int page,
+                                                                @RequestParam(name = "orderType") OrderType orderType) {
+        List<PostPreviewDTO> postList;
+        if(orderType.equals(OrderType.TIME)) {
+            postList = postService.getPostPageOrderedByTime(BoardType.MENU_REQUEST, cafeteriaId, page);
+        }
+        else{
+            postList = postService.getPostPageOrderedByLike(BoardType.MENU_REQUEST, cafeteriaId, page);
+        }
         return ApiResponse.onSuccess(postList);
     }
+
+    @Operation(summary = "메뉴 건의 게시글 리스트 조회 API", description = "공지사항 게시글 리스트를 조회한다. page를 통해 최신순으로 정렬된 페이지 목록을 응답한다")
+    @GetMapping("/notice")
+    public ApiResponse<List<PostPreviewDTO>> getAllNoticePosts(@RequestParam(name = "cafeteriaId") Long cafeteriaId,
+                                                                @RequestParam(name = "page") int page) {
+        List<PostPreviewDTO> postList;
+        postList = postService.getPostPageOrderedByTime(BoardType.NOTICE, cafeteriaId, page);
+        return ApiResponse.onSuccess(postList);
+    }
+
 
 
     //특정 게시글 조회
