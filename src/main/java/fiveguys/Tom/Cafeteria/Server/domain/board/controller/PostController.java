@@ -64,21 +64,21 @@ public class PostController {
     }
 
     // 게시글 수정
-//    @Operation(summary = "특정 게시글 수정 API")
-//    @PutMapping("/{id}")
-//    public ApiResponse<BoardResponseDTO> updateBoard(@PathVariable Long id, @RequestBody BoardUpdateDTO boardUpdateDTO) {
-//        BoardResponseDTO updatedBoard = boardService.updateBoard(id, boardUpdateDTO);
-//        return ApiResponse.onSuccess(updatedBoard);
-//    }
+    @Operation(summary = "특정 게시글 수정 API", description = "경로 변수로 postId를 받아 게시물을 식별하여 제목과 내용을 변경한다.")
+    @PutMapping("/{id}")
+    public ApiResponse<String> updateBoard(@PathVariable(name = "id") Long postId, @RequestBody PostUpdateDTO postUpdateDTO) {
+        Post post = postService.updatePost(postId, postUpdateDTO);
+        return ApiResponse.onSuccess(post.getId() + "번 게시물이 수정 되었습니다.");
+    }
 
     // 게시글 삭제
-//    @Operation(summary = "특정 게시글 삭제 API")
-//    @DeleteMapping("/{id}")
-//    public ApiResponse<Void> deleteBoard(@PathVariable Long id, @RequestBody BoardDeleteDTO boardDeleteDTO) {
-//        boardService.deleteBoard(id, boardDeleteDTO);
-//        return ApiResponse.onSuccess(null); // 성공적으로 삭제 처리됐음을 응답. 별도의 데이터 반환 필요 없음
-//    }
-//
+    @Operation(summary = "특정 게시글 삭제 API")
+    @DeleteMapping("/{id}")
+    public ApiResponse<String> deletePost(@PathVariable(name = "id") Long postId) {
+        postService.deletePost(postId);
+        return ApiResponse.onSuccess(postId + "번 게시물이 삭제되었습니다."); // 성공적으로 삭제 처리됐음을 응답. 별도의 데이터 반환 필요 없음
+    }
+
     //게시글 좋아요
     @Operation(summary = "게시글에 좋아요/취소 토글 API")
     @PostMapping("/{id}/like")

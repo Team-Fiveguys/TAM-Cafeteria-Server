@@ -22,11 +22,13 @@ import lombok.ToString;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.jca.endpoint.GenericMessageEndpointFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +43,7 @@ public class PostService {
     private static int postPageSize = 20;
 
     //게시물 생성
+    @Transactional
     public Post createPost(PostCreateDTO boardCreateDTO) {
         Long cafeteriaId = boardCreateDTO.getCafeteriaId();
         Long userId = UserContext.getUserId();
@@ -118,10 +121,17 @@ public class PostService {
         return responseDTO;
     }
 
-//    public void deleteBoard(Long id) {
-//        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid board Id:" + id));
-//        postRepository.delete(post);
-//    }
+    @Transactional
+    public Post updatePost(Long postId, PostUpdateDTO postUpdateDTO) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new GeneralException(ErrorStatus.POST_NOT_FOUND)
+        );
+        if(post.getBoardType().equals(BoardType.MENU_REQUEST)){ // 메뉴 건의는 수정 기능이 없으므로 예외 발생
+            throw new GeneralException(ErrorStatus.INVALID_POST_TYPE);
+        }
+        post.updatePost(postUpdateDTO.getTitle(), postUpdateDTO.getContent());
+        return post;
+    }
 
     // 게시글 좋아요 토글
     @Transactional
@@ -147,11 +157,13 @@ public class PostService {
         }
     }
 
+
+    @Transactional
     //게시글 삭제
-    public void deleteBoard(Long id, BoardDeleteDTO boardDeleteDTO) {
+    public void deletePost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + id));
-
+        postLikeRepository.deleteAllByPost(post);
         postRepository.delete(post);
     }
 }

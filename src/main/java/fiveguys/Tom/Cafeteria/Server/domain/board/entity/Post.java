@@ -39,4 +39,9 @@ public class Post extends BaseEntity {
 
     private boolean isAdminPick;
 
+    public void updatePost(String title, String content){
+        this.title = title;
+        this.content = content;
+    }
+
 }
