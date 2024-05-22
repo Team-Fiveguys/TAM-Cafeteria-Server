@@ -2,11 +2,13 @@ package fiveguys.Tom.Cafeteria.Server.domain.user.service;
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
+import fiveguys.Tom.Cafeteria.Server.domain.board.dto.PostPreviewDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Post;
+import fiveguys.Tom.Cafeteria.Server.domain.board.repository.PostLikeRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.converter.CafeteriaConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.dto.response.CafeteriaResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.converter.NotificationConverter;
-import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotification;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotification;
 import fiveguys.Tom.Cafeteria.Server.domain.user.converter.UserConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
@@ -25,12 +27,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class UserQueryServiceImpl implements UserQueryService{
     private static int userPageSize = 20;
     private final UserRepository userRepository;
+    private final PostLikeRepository postLikeRepository;
 
     @Override
     public UserResponseDTO.QueryUser getMyInfo() {
@@ -119,5 +123,27 @@ public class UserQueryServiceImpl implements UserQueryService{
                 .map(userCafeteria -> userCafeteria.getCafeteria())
                 .collect(Collectors.toList());
         return CafeteriaConverter.toQueryCafeteriaList(cafeteriaList);
+    }
+
+    @Override
+    public List<PostPreviewDTO> getCreatedPostList() {
+        Long userId = UserContext.getUserId();
+        User user = getUserById(userId);
+        List<Post> postList = user.getPostList();
+        List<PostPreviewDTO> previewDTOList = postList.stream()
+                .sorted(Comparator.comparing(Post::getCreatedAt).reversed())
+                .limit(20)
+                .map(post -> PostPreviewDTO.builder()
+                        .id(post.getId())
+                        .title(post.getTitle())
+                        .content(post.getContent())
+                        .uploadTime(post.getCreatedAt())
+                        .likeCount(post.getLikeCount())
+                        .publisherName(post.getUser().getName())
+                        .toggleLike(postLikeRepository.existsByUserAndPost(user, post))
+                        .build()
+                )
+                .collect(Collectors.toList());
+        return previewDTOList;
     }
 }

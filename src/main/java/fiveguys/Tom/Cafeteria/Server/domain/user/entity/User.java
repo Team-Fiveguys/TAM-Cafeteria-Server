@@ -1,6 +1,7 @@
 package fiveguys.Tom.Cafeteria.Server.domain.user.entity;
 
 
+import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Post;
 import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotification;
 import jakarta.persistence.*;
@@ -41,6 +42,9 @@ public class User extends BaseEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private List<UserAppNotification> userAppNotificationList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Post> postList = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private List<UserCafeteria> userCafeteriaList = new ArrayList<>();
