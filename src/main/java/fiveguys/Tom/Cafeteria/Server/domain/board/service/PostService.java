@@ -9,26 +9,20 @@ import fiveguys.Tom.Cafeteria.Server.domain.board.entity.BoardType;
 import fiveguys.Tom.Cafeteria.Server.domain.board.repository.PostLikeRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.board.repository.PostRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
-import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.repository.CafeteriaRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
-import fiveguys.Tom.Cafeteria.Server.domain.user.converter.UserConverter;
-import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
-import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.jca.endpoint.GenericMessageEndpointFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,6 +55,8 @@ public class PostService {
 
     //boardType에 따라 특정 게시판의 전체 게시물 조회
     public List<PostPreviewDTO> getPostPageOrderedByTime(BoardType boardType, Long cafeteriaId, int page) {
+        Long userId = UserContext.getUserId();
+        User user = userQueryService.getUserById(userId);
         Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
         Page<Post> userPage = postRepository.findAllByCafeteriaAndBoardType(
                 PageRequest.of(page - 1, postPageSize, Sort.by(Sort.Order.asc("createdAt") ) ),
@@ -73,6 +69,7 @@ public class PostService {
                         .publisherName(post.getUser().getName())
                         .likeCount(post.getLikeCount())
                         .uploadTime(post.getCreatedAt())
+                        .toggleLike(postLikeRepository.existsByUserAndPost(user, post))
                         .build()
                 )
                 .collect(Collectors.toList());
@@ -126,6 +123,11 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new GeneralException(ErrorStatus.POST_NOT_FOUND)
         );
+        Long userId = UserContext.getUserId();
+        User user = userQueryService.getUserById(userId);
+        if( !user.equals(post.getUser()) && user.getRole().equals(Role.MEMBER)){ // 본인이 아니거나 관리자가 아니면 예외
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
         if(post.getBoardType().equals(BoardType.MENU_REQUEST)){ // 메뉴 건의는 수정 기능이 없으므로 예외 발생
             throw new GeneralException(ErrorStatus.INVALID_POST_TYPE);
         }
@@ -163,6 +165,11 @@ public class PostService {
     public void deletePost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + id));
+        Long userId = UserContext.getUserId();
+        User user = userQueryService.getUserById(userId);
+        if( !user.equals(post.getUser()) && user.getRole().equals(Role.MEMBER)){ // 본인이 아니거나 관리자가 아니면 예외
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
         postLikeRepository.deleteAllByPost(post);
         postRepository.delete(post);
     }
