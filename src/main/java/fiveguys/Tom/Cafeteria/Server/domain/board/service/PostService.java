@@ -6,8 +6,10 @@ import fiveguys.Tom.Cafeteria.Server.domain.board.dto.*;
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Post;
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.PostLike;
 import fiveguys.Tom.Cafeteria.Server.domain.board.entity.BoardType;
+import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Report;
 import fiveguys.Tom.Cafeteria.Server.domain.board.repository.PostLikeRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.board.repository.PostRepository;
+import fiveguys.Tom.Cafeteria.Server.domain.board.repository.ReportRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
@@ -31,6 +33,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
+    private final ReportRepository reportRepository;
     private final UserQueryService userQueryService;
     private final CafeteriaQueryService cafeteriaQueryService;
 
@@ -158,6 +161,24 @@ public class PostService {
             return true;
         }
     }
+
+    @Transactional
+    public boolean reportPost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+
+        Long userId = UserContext.getUserId();
+        User user = userQueryService.getUserById(userId);
+        if (reportRepository.existsByUserAndPost(user, post)) {
+            throw new GeneralException(ErrorStatus.DUPLICATED_REPORT);
+        } else {
+            Report report = Report.createReport(user, post);
+            post.setReportCount(post.getReportCount() + 1);
+            reportRepository.save(report);
+            return true;
+        }
+    }
+
 
 
     @Transactional

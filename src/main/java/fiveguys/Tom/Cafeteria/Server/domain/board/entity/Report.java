@@ -1,16 +1,19 @@
 package fiveguys.Tom.Cafeteria.Server.domain.board.entity;
 
+
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
 @Entity
-public class PostLike {
+public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,6 +26,18 @@ public class PostLike {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    public static Report createReport(User user, Post post){
+        Report report = new Report();
+        report.setUser(user);
+        report.setPost(post);
+        return report;
+    }
 
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
-

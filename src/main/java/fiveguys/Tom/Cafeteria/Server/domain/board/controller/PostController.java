@@ -91,5 +91,12 @@ public class PostController {
         }
     }
 
+    @Operation(summary = "게시글 신고하기 API")
+    @PostMapping("/{id}/report")
+    public ApiResponse<String> reportPost(@PathVariable(name = "id") Long id) {
+        postService.reportPost(id);
+        return ApiResponse.onSuccess(id + "번 게시물을 신고 하였습니다.");
+    }
+
 }
 

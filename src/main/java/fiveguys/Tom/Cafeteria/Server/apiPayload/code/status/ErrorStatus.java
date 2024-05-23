@@ -23,7 +23,7 @@ public enum ErrorStatus implements BaseCode {
     // 게시글 관련 응답
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4001", "게시글이 존재하지 않습니다."),
     INVALID_POST_TYPE(HttpStatus.BAD_REQUEST, "POST4002", "요청한 게시물의 유형이 해당 기능을 지원하지 않습니다."),
-
+    DUPLICATED_REPORT(HttpStatus.BAD_REQUEST, "REPORT4000", "이미 신고를 한 게시글 입니다."),
     // 메뉴 관련 응답
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "MENU4001", "해당 메뉴 ID가 존재하지 않습니다."),
     MENU_DUPLICATE(HttpStatus.BAD_REQUEST, "MENU4002", "해당 메뉴 이름이 이미 존재합니다."),
