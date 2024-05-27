@@ -191,6 +191,7 @@ public class PostService {
         if( !user.equals(post.getUser()) && user.getRole().equals(Role.MEMBER)){ // 본인이 아니거나 관리자가 아니면 예외
             throw new GeneralException(ErrorStatus._FORBIDDEN);
         }
+        reportRepository.deleteAllByPost(post);
         postLikeRepository.deleteAllByPost(post);
         postRepository.delete(post);
     }
