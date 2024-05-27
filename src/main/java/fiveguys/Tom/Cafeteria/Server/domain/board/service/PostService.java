@@ -9,6 +9,8 @@ import fiveguys.Tom.Cafeteria.Server.domain.board.repository.PostRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.board.repository.ReportRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.dto.NotificationRequestDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.service.NotificationService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
@@ -33,6 +35,7 @@ public class PostService {
     private final ReportRepository reportRepository;
     private final UserQueryService userQueryService;
     private final CafeteriaQueryService cafeteriaQueryService;
+    private final NotificationService notificationService;
 
     private static int postPageSize = 20;
 
@@ -189,6 +192,12 @@ public class PostService {
         } else {
             Report report = Report.createReport(user, post);
             post.setReportCount(post.getReportCount() + 1);
+            if( post.getReportCount() == 1){
+                notificationService.sendAdmins(NotificationRequestDTO.SendAdminsDTO.builder()
+                        .title("게시물 신고")
+                        .content(postId + "번 게시물 신고가 들어왔습니다. 확인 바랍니다.")
+                        .build());
+            }
             reportRepository.save(report);
             return true;
         }

@@ -99,6 +99,30 @@ public class FCMServiceImpl implements FCMService{
     }
 
     @Override
+    public MulticastMessage createMultiCastMessage(String title, String content, Long notificationId, List<String> tokenList) {
+        AndroidConfig androidConfig = AndroidConfig.builder()
+                .setNotification(
+                        AndroidNotification.builder()
+                                .setColor("#ffffff")
+                                .build())
+                .build();
+//        ApnsConfig.builder()
+//                .setAps(Aps.builder()
+//                        .)
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(content)
+                .build();
+
+        return MulticastMessage.builder()
+                .putData("id", String.valueOf(notificationId))
+                .setNotification(notification)
+                .setAndroidConfig(androidConfig)
+                .addAllTokens(tokenList)
+                .build();
+    }
+
+    @Override
     public Message createPMessage(String title, String content, String token) {
         Notification notification = Notification.builder()
                 .setTitle(title)

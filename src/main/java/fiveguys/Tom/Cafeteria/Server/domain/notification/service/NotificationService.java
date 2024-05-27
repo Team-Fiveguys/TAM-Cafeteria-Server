@@ -8,4 +8,6 @@ public interface NotificationService {
     public void sendSubScriber(NotificationRequestDTO.SendSubscriberDTO dto);
 
     public void sendOne(Long cafeteriaId, String content, Long receiverId);
+
+    public void sendAdmins(NotificationRequestDTO.SendAdminsDTO dto);
 }
