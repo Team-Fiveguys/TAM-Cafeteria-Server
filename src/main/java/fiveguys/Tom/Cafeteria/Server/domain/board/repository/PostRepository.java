@@ -14,4 +14,6 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     public Page<Post> findAllByCafeteriaAndBoardType(Pageable pageable, Cafeteria cafeteria, BoardType boardType);
+
+    public List<Post> findAllByCafeteriaOrderByReportCount(Cafeteria cafeteria);
 }

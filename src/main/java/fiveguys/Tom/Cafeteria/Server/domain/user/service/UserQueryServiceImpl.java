@@ -13,6 +13,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotificat
 import fiveguys.Tom.Cafeteria.Server.domain.user.converter.UserConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
+import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.UserCafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepository;
@@ -41,6 +42,11 @@ public class UserQueryServiceImpl implements UserQueryService{
         Long userId = UserContext.getUserId();
         User user = getUserById(userId);
         return UserConverter.toQueryUser(user);
+    }
+
+    @Override
+    public List<User> getAdmins() {
+        return userRepository.findAllByRole(Role.ADMIN);
     }
 
     @Override

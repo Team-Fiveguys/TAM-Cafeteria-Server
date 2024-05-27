@@ -3,15 +3,14 @@ package fiveguys.Tom.Cafeteria.Server.domain.board.service;
 import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
 import fiveguys.Tom.Cafeteria.Server.domain.board.dto.*;
-import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Post;
-import fiveguys.Tom.Cafeteria.Server.domain.board.entity.PostLike;
-import fiveguys.Tom.Cafeteria.Server.domain.board.entity.BoardType;
-import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Report;
+import fiveguys.Tom.Cafeteria.Server.domain.board.entity.*;
 import fiveguys.Tom.Cafeteria.Server.domain.board.repository.PostLikeRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.board.repository.PostRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.board.repository.ReportRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.dto.NotificationRequestDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.service.NotificationService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
@@ -36,6 +35,7 @@ public class PostService {
     private final ReportRepository reportRepository;
     private final UserQueryService userQueryService;
     private final CafeteriaQueryService cafeteriaQueryService;
+    private final NotificationService notificationService;
 
     private static int postPageSize = 20;
 
@@ -102,6 +102,24 @@ public class PostService {
         return postPreviewDTOList;
     }
 
+//    public List<PostPreviewDTO> getReportedPostList(Long cafeteriaId) {
+//        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
+//        List<Post> postList = postRepository.findAllByCafeteriaOrderByReportCount(cafeteria);
+//        List<PostPreviewDTO> postPreviewDTOList = userPage.stream()
+//                .map(post -> PostPreviewDTO.builder()
+//                        .id(post.getId())
+//                        .title(post.getTitle())
+//                        .content(post.getContent())
+//                        .publisherName(post.getUser().getName())
+//                        .likeCount(post.getLikeCount())
+//                        .uploadTime(post.getCreatedAt())
+//                        .build()
+//                )
+//                .collect(Collectors.toList());
+//
+//        return postPreviewDTOList;
+//    }
+
 
     //특정 게시물 조회
     public PostResponseDTO getPostById(Long id) {
@@ -163,7 +181,7 @@ public class PostService {
     }
 
     @Transactional
-    public boolean reportPost(Long postId) {
+    public boolean reportPost(Long postId, ReportType reportType, String reportContent) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
 
@@ -174,6 +192,12 @@ public class PostService {
         } else {
             Report report = Report.createReport(user, post);
             post.setReportCount(post.getReportCount() + 1);
+            if( post.getReportCount() == 1){
+                notificationService.sendAdmins(NotificationRequestDTO.SendAdminsDTO.builder()
+                        .title("게시물 신고")
+                        .content(postId + "번 게시물 신고가 들어왔습니다. 확인 바랍니다.")
+                        .build());
+            }
             reportRepository.save(report);
             return true;
         }

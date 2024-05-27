@@ -26,6 +26,10 @@ public class Report {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    private ReportType reportType;
+
+    private String content;
+
     public static Report createReport(User user, Post post){
         Report report = new Report();
         report.setUser(user);

@@ -10,6 +10,8 @@ import java.util.List;
 public interface UserQueryService {
 
     public UserResponseDTO.QueryUser getMyInfo();
+
+    public List<User> getAdmins();
     public User getUserById(Long userId);
     public User getUserBySocialId(String socialId);
     public User getUserByEmail(String email);

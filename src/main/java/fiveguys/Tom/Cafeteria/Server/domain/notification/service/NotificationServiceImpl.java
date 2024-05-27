@@ -6,9 +6,13 @@ import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryServ
 import fiveguys.Tom.Cafeteria.Server.domain.notification.dto.NotificationRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
+import fiveguys.Tom.Cafeteria.Server.domain.user.repository.NotificationSetRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +68,17 @@ public class NotificationServiceImpl implements NotificationService{
         }
         // Response is a message ID string.
         System.out.println("Successfully sent message: " + response);
+    }
+
+    @Override
+    public void sendAdmins(NotificationRequestDTO.SendAdminsDTO dto) {
+        Long storedNotificationId = fcmService.storeNotification(dto.getTitle(), dto.getContent());
+        List<User> admins = userQueryService.getAdmins();
+        List<String> tokenList = admins.stream()
+                .map(admin -> admin.getNotificationSet().getRegistrationToken())
+                .collect(Collectors.toList());
+        MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent(), storedNotificationId, tokenList);
+        fcmService.sendMessage(multiCastMessage);
     }
 
 }
