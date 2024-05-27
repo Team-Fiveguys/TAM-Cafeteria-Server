@@ -44,7 +44,7 @@ public class PostController {
         return ApiResponse.onSuccess(postList);
     }
 
-    @Operation(summary = "메뉴 건의 게시글 리스트 조회 API", description = "공지사항 게시글 리스트를 조회한다. page를 통해 최신순으로 정렬된 페이지 목록을 응답한다")
+    @Operation(summary = "공지 게시글 리스트 조회 API", description = "공지사항 게시글 리스트를 조회한다. page를 통해 최신순으로 정렬된 페이지 목록을 응답한다")
     @GetMapping("/notice")
     public ApiResponse<List<PostPreviewDTO>> getAllNoticePosts(@RequestParam(name = "cafeteriaId") Long cafeteriaId,
                                                                 @RequestParam(name = "page") int page) {
@@ -52,6 +52,13 @@ public class PostController {
         postList = postService.getPostPageOrderedByTime(BoardType.NOTICE, cafeteriaId, page);
         return ApiResponse.onSuccess(postList);
     }
+
+//    @Operation(summary = "신고 게시글 리스트 조회 API", description = "신고 게시글 리스트를 조회한다. page를 통해 최신순으로 정렬된 페이지 목록을 응답한다")
+//    @GetMapping("/notice")
+//    public ApiResponse<List<PostPreviewDTO>> getAllReportedPosts(@RequestParam(name = "cafeteriaId") Long cafeteriaId) {
+//        List<PostPreviewDTO> postList = postService.getReportedPostList(cafeteriaId);
+//        return ApiResponse.onSuccess(postList);
+//    }
 
 
 
@@ -93,8 +100,8 @@ public class PostController {
 
     @Operation(summary = "게시글 신고하기 API")
     @PostMapping("/{id}/report")
-    public ApiResponse<String> reportPost(@PathVariable(name = "id") Long id) {
-        postService.reportPost(id);
+    public ApiResponse<String> reportPost(@PathVariable(name = "id") Long id, ReportCreateDTO reportCreateDTO) {
+        postService.reportPost(id, reportCreateDTO.getReportType(), reportCreateDTO.getContent());
         return ApiResponse.onSuccess(id + "번 게시물을 신고 하였습니다.");
     }
 

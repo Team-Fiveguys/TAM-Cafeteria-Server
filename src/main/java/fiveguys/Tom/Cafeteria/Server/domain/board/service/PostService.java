@@ -3,10 +3,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.board.service;
 import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
 import fiveguys.Tom.Cafeteria.Server.domain.board.dto.*;
-import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Post;
-import fiveguys.Tom.Cafeteria.Server.domain.board.entity.PostLike;
-import fiveguys.Tom.Cafeteria.Server.domain.board.entity.BoardType;
-import fiveguys.Tom.Cafeteria.Server.domain.board.entity.Report;
+import fiveguys.Tom.Cafeteria.Server.domain.board.entity.*;
 import fiveguys.Tom.Cafeteria.Server.domain.board.repository.PostLikeRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.board.repository.PostRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.board.repository.ReportRepository;
@@ -102,6 +99,24 @@ public class PostService {
         return postPreviewDTOList;
     }
 
+//    public List<PostPreviewDTO> getReportedPostList(Long cafeteriaId) {
+//        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
+//        List<Post> postList = postRepository.findAllByCafeteriaOrderByReportCount(cafeteria);
+//        List<PostPreviewDTO> postPreviewDTOList = userPage.stream()
+//                .map(post -> PostPreviewDTO.builder()
+//                        .id(post.getId())
+//                        .title(post.getTitle())
+//                        .content(post.getContent())
+//                        .publisherName(post.getUser().getName())
+//                        .likeCount(post.getLikeCount())
+//                        .uploadTime(post.getCreatedAt())
+//                        .build()
+//                )
+//                .collect(Collectors.toList());
+//
+//        return postPreviewDTOList;
+//    }
+
 
     //특정 게시물 조회
     public PostResponseDTO getPostById(Long id) {
@@ -163,7 +178,7 @@ public class PostService {
     }
 
     @Transactional
-    public boolean reportPost(Long postId) {
+    public boolean reportPost(Long postId, ReportType reportType, String reportContent) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
 
