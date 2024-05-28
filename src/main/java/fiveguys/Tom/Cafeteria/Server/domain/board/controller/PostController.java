@@ -31,10 +31,10 @@ public class PostController {
     // 특정 게시판의 전체 게시글 조회
     @Operation(summary = "메뉴 건의 게시글 리스트 조회 API", description = "메뉴건의 요청 게시글 리스트를 조회한다. orderType을 통해 정렬할 기준을 page를 통해 받을 페이지를 받아 응답한다")
     @GetMapping("/menu-request")
-    public ApiResponse<List<PostPreviewDTO>> getAllMenuRequestPosts(@RequestParam(name = "cafeteriaId") Long cafeteriaId,
+    public ApiResponse<PostPreviewListDTO> getAllMenuRequestPosts(@RequestParam(name = "cafeteriaId") Long cafeteriaId,
                                                                 @RequestParam(name = "page") int page,
                                                                 @RequestParam(name = "orderType") OrderType orderType) {
-        List<PostPreviewDTO> postList;
+        PostPreviewListDTO postList;
         if(orderType.equals(OrderType.TIME)) {
             postList = postService.getPostPageOrderedByTime(BoardType.MENU_REQUEST, cafeteriaId, page);
         }
@@ -46,9 +46,9 @@ public class PostController {
 
     @Operation(summary = "공지 게시글 리스트 조회 API", description = "공지사항 게시글 리스트를 조회한다. page를 통해 최신순으로 정렬된 페이지 목록을 응답한다")
     @GetMapping("/notice")
-    public ApiResponse<List<PostPreviewDTO>> getAllNoticePosts(@RequestParam(name = "cafeteriaId") Long cafeteriaId,
+    public ApiResponse<PostPreviewListDTO> getAllNoticePosts(@RequestParam(name = "cafeteriaId") Long cafeteriaId,
                                                                 @RequestParam(name = "page") int page) {
-        List<PostPreviewDTO> postList;
+        PostPreviewListDTO postList;
         postList = postService.getPostPageOrderedByTime(BoardType.NOTICE, cafeteriaId, page);
         return ApiResponse.onSuccess(postList);
     }
