@@ -57,13 +57,15 @@ public class PostService {
     }
 
     //boardType에 따라 특정 게시판의 전체 게시물 조회
-    public List<PostPreviewDTO> getPostPageOrderedByTime(BoardType boardType, Long cafeteriaId, int page) {
+    public PostPreviewListDTO getPostPageOrderedByTime(BoardType boardType, Long cafeteriaId, int page) {
         Long userId = UserContext.getUserId();
         User user = userQueryService.getUserById(userId);
         Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
         Page<Post> userPage = postRepository.findAllByCafeteriaAndBoardType(
                 PageRequest.of(page - 1, postPageSize, Sort.by(Sort.Order.desc("createdAt") ) ),
                 cafeteria, boardType);
+        int totalPages = userPage.getTotalPages() + 1;
+        int currentPage = userPage.getNumber() + 1;
         List<PostPreviewDTO> postPreviewDTOList = userPage.stream()
                 .map(post -> PostPreviewDTO.builder()
                         .id(post.getId())
@@ -76,17 +78,24 @@ public class PostService {
                         .build()
                 )
                 .collect(Collectors.toList());
+        PostPreviewListDTO postPreviewListDTO = PostPreviewListDTO.builder()
+                .currentPage(currentPage)
+                .totalPages(totalPages)
+                .postPreviewDTOList(postPreviewDTOList)
+                .build();
 
-        return postPreviewDTOList;
+        return postPreviewListDTO;
     }
 
-    public List<PostPreviewDTO> getPostPageOrderedByLike(BoardType boardType, Long cafeteriaId, int page) {
+    public PostPreviewListDTO getPostPageOrderedByLike(BoardType boardType, Long cafeteriaId, int page) {
         Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
         Page<Post> userPage = postRepository.findAllByCafeteriaAndBoardType(
                 PageRequest.of(page - 1, postPageSize, Sort.by(
                         Sort.Order.desc("likeCount"),
                         Sort.Order.desc("createdAt") ) ),
                 cafeteria, boardType);
+        int totalPages = userPage.getTotalPages() + 1;
+        int currentPage = userPage.getNumber() + 1;
         List<PostPreviewDTO> postPreviewDTOList = userPage.stream()
                 .map(post -> PostPreviewDTO.builder()
                         .id(post.getId())
@@ -98,8 +107,13 @@ public class PostService {
                         .build()
                 )
                 .collect(Collectors.toList());
+        PostPreviewListDTO postPreviewListDTO = PostPreviewListDTO.builder()
+                .currentPage(currentPage)
+                .totalPages(totalPages)
+                .postPreviewDTOList(postPreviewDTOList)
+                .build();
 
-        return postPreviewDTOList;
+        return postPreviewListDTO;
     }
 
 //    public List<PostPreviewDTO> getReportedPostList(Long cafeteriaId) {
