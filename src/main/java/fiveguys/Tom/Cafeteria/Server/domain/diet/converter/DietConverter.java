@@ -6,13 +6,15 @@ import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
 public class DietConverter {
-    private static String dietPhotoURI= "https://tam-cafeteria-dev.s3.ap-northeast-2.amazonaws.com/";
+    @Value(value = "${cloud.aws.s3.path.prefix}")
+    private static String dietPhotoURI;
     public static Diet toDiet(DietRequestDTO.DietCreateDTO dietCreateDTO){
         Diet diet = Diet.builder()
                 .meals(dietCreateDTO.getMeals())

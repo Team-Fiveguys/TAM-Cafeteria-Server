@@ -77,8 +77,6 @@ public class Diet extends BaseEntity {
     }
 
     public void setDateInfo(){
-        this.year = localDate.getYear();
-        this.month = localDate.getMonthValue();
         // 주의 시작을 월요일로 설정
         WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 1);
 
@@ -102,18 +100,15 @@ public class Diet extends BaseEntity {
             // 목요일이 다음 달에 속하면, 그 주는 다음 달의 첫째 주로 간주
             // 목요일의 주차 정보를 이용
             this.week = thursday.get(weekOfMonth);
-            Month thursdayMonth = thursday.getMonth();
-            if( this.month < thursdayMonth.getValue()){
-                this.month += 1;
-                if( this.month > 12){
-                    this.month = 1;
-                    this.year += 1;
-                }
-            }
+            this.month = thursday.getMonthValue();
+            this.year = thursday.getYear();
         } else {
-            // 그렇지 않으면, 원래 날짜의 주차 정보를 이용
+            // 그렇지 않으면, 월요일 기준의 주차 정보를 이용
             this.week = monday.get(weekOfMonth);
+            this.month = monday.getMonthValue();
+            this.year = monday.getYear();
         }
+
         System.out.println(localDate + "는 " + thursday.getMonthValue() + "월의 " + this.week+ "주차 입니다.");
     }
 

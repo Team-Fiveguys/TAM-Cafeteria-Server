@@ -93,7 +93,7 @@ public class UserCommandServiceImpl implements UserCommandService{
               FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "dietPhotoEnroll");
               FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "weekDietEnroll");
               FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "dietSoldOut");
-              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "gerneral");
+              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "general");
             log.info("tokens were subscribed successfully");
         } catch (FirebaseMessagingException e) {
             throw new RuntimeException(e);
@@ -150,12 +150,6 @@ public class UserCommandServiceImpl implements UserCommandService{
         updateSubscription(tokenList, updateNotificationSet.isDietPhotoEnroll(), "dietPhotoEnroll");
         updateSubscription(tokenList, updateNotificationSet.isWeekDietEnroll(), "weekDietEnroll");
         updateSubscription(tokenList, updateNotificationSet.isDietSoldOut(), "dietSoldOut");
-        try {
-            FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "general");
-        } catch (FirebaseMessagingException e) {
-            e.printStackTrace();
-        }
-
     }
 
     @Async
@@ -206,7 +200,7 @@ public class UserCommandServiceImpl implements UserCommandService{
         clearSubscription(tokenList, "todayDiet");
         clearSubscription(tokenList, "weekDietEnroll");
         clearSubscription(tokenList, "dietSoldOut");
-        clearSubscription(tokenList, "dieetPhotoEnroll");
+        clearSubscription(tokenList, "dietPhotoEnroll");
         clearSubscription(tokenList, "general");
     }
 
