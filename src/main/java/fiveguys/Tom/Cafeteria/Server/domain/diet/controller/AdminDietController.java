@@ -18,6 +18,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.menu.service.MenuQueryService;
 import fiveguys.Tom.Cafeteria.Server.exception.validation.annotation.EnrollDietValidation;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,8 @@ public class AdminDietController {
     private final DietQueryService dietQueryService;
     private final MenuQueryService menuQueryService;
     private final CafeteriaQueryService cafeteriaQueryService;
+    @Value("${cloud.aws.s3.path.prefix}")
+    private String prefixURI;
 
     @Operation(summary = "식단을 등록하는 API", description = "식당id, 날짜, 식때, 메뉴리스트를 받아서 저장")
     @PostMapping("")
@@ -59,7 +62,7 @@ public class AdminDietController {
                 .map(MenuDiet::getMenu)
                 .map(MenuConverter::toMenuQueryDTO)
                 .collect(Collectors.toList());
-        DietResponseDTO.DietQueryDTO dietQueryDTO = DietConverter.toDietResponseDTO(addedDiet, MenuConverter.toMenuResponseListDTO(menuList));
+        DietResponseDTO.DietQueryDTO dietQueryDTO = DietConverter.toDietResponseDTO(prefixURI, addedDiet, MenuConverter.toMenuResponseListDTO(menuList));
         return ApiResponse.onSuccess(dietQueryDTO);
     }
     @Operation(summary = "식단에 등록된 메뉴를 제거하는 API", description = "식단 id와 메뉴 이름을 받아 식단에 등록된 메뉴를 제거")
@@ -74,7 +77,7 @@ public class AdminDietController {
                 .map(MenuDiet::getMenu)
                 .map(MenuConverter::toMenuQueryDTO)
                 .collect(Collectors.toList());
-        DietResponseDTO.DietQueryDTO dietQueryDTO = DietConverter.toDietResponseDTO(removedDiet, MenuConverter.toMenuResponseListDTO(menuList));
+        DietResponseDTO.DietQueryDTO dietQueryDTO = DietConverter.toDietResponseDTO(prefixURI, removedDiet, MenuConverter.toMenuResponseListDTO(menuList));
         return ApiResponse.onSuccess(dietQueryDTO);
     }
 
