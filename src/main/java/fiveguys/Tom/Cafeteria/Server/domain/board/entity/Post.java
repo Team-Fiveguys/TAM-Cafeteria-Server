@@ -37,6 +37,13 @@ public class Post extends BaseEntity {
 
     private int likeCount;
 
+    private int reportCount;
+
     private boolean isAdminPick;
+
+    public void updatePost(String title, String content){
+        this.title = title;
+        this.content = content;
+    }
 
 }

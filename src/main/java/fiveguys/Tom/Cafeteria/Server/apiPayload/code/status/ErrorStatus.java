@@ -21,11 +21,9 @@ public enum ErrorStatus implements BaseCode {
     USER_PROFILE_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4002", "해당 사용자의 프로필 이미지가 존재하지 않습니다."),
     NOTIFICATION_SET_IS_NOT_SET(HttpStatus.NOT_FOUND, "USER4003", "알림을 허용하지 않은 사용자 입니다."),
     // 게시글 관련 응답
-    ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "ARTICLE4001", "게시글이 존재하지 않습니다."),
-    IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "ARTICLE4002", "첨부된 사진이 없습니다."),
-    IS_NOT_IMAGE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "ARTICLE4003", "첨부된 파일이 사진 형태가 아닙니다."),
-    MINIMUM_IMAGE_REQUIREMENT_NOT_MET(HttpStatus.BAD_REQUEST, "ARTICLE4004", "이미지 개수는 최소한 1개 이상이어야 합니다."),
-
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4001", "게시글이 존재하지 않습니다."),
+    INVALID_POST_TYPE(HttpStatus.BAD_REQUEST, "POST4002", "요청한 게시물의 유형이 해당 기능을 지원하지 않습니다."),
+    DUPLICATED_REPORT(HttpStatus.BAD_REQUEST, "REPORT4000", "이미 신고를 한 게시글 입니다."),
     // 메뉴 관련 응답
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "MENU4001", "해당 메뉴 ID가 존재하지 않습니다."),
     MENU_DUPLICATE(HttpStatus.BAD_REQUEST, "MENU4002", "해당 메뉴 이름이 이미 존재합니다."),

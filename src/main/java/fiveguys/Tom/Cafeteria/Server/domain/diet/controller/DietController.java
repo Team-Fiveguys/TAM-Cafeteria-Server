@@ -15,6 +15,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.menu.converter.MenuConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -27,6 +28,8 @@ import java.util.stream.Collectors;
 public class DietController {
     private final DietQueryService dietQueryService;
     private final CafeteriaQueryService cafeteriaQueryService;
+    @Value("${cloud.aws.s3.path.prefix}")
+    private String prefixURI;
 
 
     @Operation(summary = "식단 조회 API", description = "날짜, 식당, 식때를 요청인자로 받아 해당 식단의 id, 이미지, 메뉴명 리스트를 반환함,")
@@ -40,7 +43,7 @@ public class DietController {
                 .map(MenuDiet::getMenu)
                 .map(MenuConverter::toMenuQueryDTO)
                 .collect(Collectors.toList());
-        DietResponseDTO.DietQueryDTO dietQueryResponseDTO = DietConverter.toDietResponseDTO(diet, MenuConverter.toMenuResponseListDTO(menuList));
+        DietResponseDTO.DietQueryDTO dietQueryResponseDTO = DietConverter.toDietResponseDTO(prefixURI, diet, MenuConverter.toMenuResponseListDTO(menuList));
         return ApiResponse.onSuccess(dietQueryResponseDTO);
     }
     @Operation(summary = "식당의 금주의 식단표 API", description = "식당id, 년/월/주차, 식때를 받아서 그 주차의 메뉴 리스트를 반환한다.")
@@ -60,7 +63,7 @@ public class DietController {
                             .map(MenuDiet::getMenu)
                             .map(MenuConverter::toMenuQueryDTO)
                             .collect(Collectors.toList());
-                    return DietConverter.toDietResponseDTO(diet, MenuConverter.toMenuResponseListDTO(menuList));
+                    return DietConverter.toDietResponseDTO(prefixURI, diet, MenuConverter.toMenuResponseListDTO(menuList));
                 })
                 .collect(Collectors.toList());
         return ApiResponse.onSuccess(DietConverter.toWeekDietsResponseDTO(dietResponseDTOs));

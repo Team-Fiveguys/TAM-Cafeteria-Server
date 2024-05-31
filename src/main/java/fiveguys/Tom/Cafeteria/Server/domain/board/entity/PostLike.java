@@ -5,11 +5,10 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@Setter
 @Entity
 public class PostLike {
     @Id
@@ -23,5 +22,7 @@ public class PostLike {
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+
 }
 

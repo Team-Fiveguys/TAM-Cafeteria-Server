@@ -6,13 +6,14 @@ import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
 public class DietConverter {
-    private static String dietPhotoURI= "https://tam-cafeteria-dev.s3.ap-northeast-2.amazonaws.com/";
+
     public static Diet toDiet(DietRequestDTO.DietCreateDTO dietCreateDTO){
         Diet diet = Diet.builder()
                 .meals(dietCreateDTO.getMeals())
@@ -23,11 +24,12 @@ public class DietConverter {
         return diet;
     }
 
-    public static DietResponseDTO.DietQueryDTO toDietResponseDTO(Diet diet, MenuResponseDTO.MenuResponseListDTO menuResponseListDTO){
+    public static DietResponseDTO.DietQueryDTO toDietResponseDTO(String prefixURI, Diet diet, MenuResponseDTO.MenuResponseListDTO menuResponseListDTO){
+
         return DietResponseDTO.DietQueryDTO.builder()
                 .dietId(diet.getId())
                 .menuResponseListDTO(menuResponseListDTO)
-                .photoURI(diet.getDietPhoto() != null ? dietPhotoURI + diet.getDietPhoto().getImageKey() : "사진이 등록되어있지 않습니다.")
+                .photoURI(diet.getDietPhoto() != null ? prefixURI + diet.getDietPhoto().getImageKey() : "사진이 등록되어있지 않습니다.")
                 .dayOff(diet.isDayOff())
                 .soldOut(diet.isSoldOut())
                 .date(diet.getLocalDate())

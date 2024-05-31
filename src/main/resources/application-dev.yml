@@ -30,6 +30,7 @@ cloud:
       bucket: ${S3_BUCKET}
       path:
         diet-photo: diet-photo
+        prefix: ${S3_URI_PREFIX}
     credentials:
       access-key: ${S3_ROLE_ACCESS_KEY}
       secret-key: ${S3_ROLE_SECRET_KEY}
