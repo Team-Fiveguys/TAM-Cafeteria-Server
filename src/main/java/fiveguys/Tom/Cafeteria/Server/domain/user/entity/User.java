@@ -15,7 +15,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity(name = "users")
 public class User extends BaseEntity {
     @Id

@@ -4,12 +4,17 @@ import com.google.firebase.messaging.*;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.dto.NotificationRequestDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotification;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotificationType;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotification;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.repository.UserAppNotificationRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.NotificationSetRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,19 +25,47 @@ public class NotificationServiceImpl implements NotificationService{
     private final FCMService fcmService;
     private final UserQueryService userQueryService;
     private final CafeteriaQueryService cafeteriaQueryService;
-
+    private final UserAppNotificationRepository userAppNotificationRepository;
     @Override
     public void sendAll(NotificationRequestDTO.SendAllDTO dto) {
-        Long storedNotificationId = fcmService.storeNotification(dto.getTitle(), dto.getContent());
-        MulticastMessage multicastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent(), storedNotificationId);
+        AppNotification notification = fcmService.storeNotification(dto.getTitle(), dto.getContent());
+        MulticastMessage multicastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent());
         fcmService.sendMessage(multicastMessage);
     }
 
     @Override
+    @Transactional
     public void sendSubScriber(NotificationRequestDTO.SendSubscriberDTO dto) {
-        Long storedNotificationId = fcmService.storeNotification(dto.getTitle(), dto.getContent());
-        Message message = fcmService.createMessage(dto.getTitle(), dto.getContent(), dto.getCafeteriaName(), dto.getNotificationType().name(), storedNotificationId);
+        AppNotification notification = fcmService.storeNotification(dto.getTitle(), dto.getContent());
+        Message message = fcmService.createMessage(dto.getTitle(), dto.getContent(), dto.getCafeteriaName(), dto.getNotificationType().name());
         fcmService.sendMessage(message);
+
+        // 각 유저의 알림 저장
+        List<User> userList = userQueryService.getUserByNotificationSet(dto.getNotificationType(), dto.getCafeteriaName());
+        userList.stream()
+                .forEach(user -> {
+                    UserAppNotification userAppNotification = UserAppNotification.createUserAppNotification(user, notification);
+                    userAppNotificationRepository.save(userAppNotification);
+                });
+
+    }
+
+
+    @Transactional
+    public void sendSubScriberTest(NotificationRequestDTO.SendSubscriberDTO dto) {
+        AppNotification notification = fcmService.storeNotification(dto.getTitle(), dto.getContent());
+        Message message = fcmService.createPMessage(dto.getTitle(), dto.getContent(),"eL0KqaoVokzJjORzjrG4vE:APA91bH5NUaQzgiSxwV1DCfQm2NOESxjfNcyUSjkzWEzfHqPv0Ofkn4TKBKbnopyIcJKTKJMvfFXJ0hfpVNqItolEok1epUXXtRtKWPFz1u8gGHpZy10kOIeMTrE59UBS8ltyY4Sute_");
+        fcmService.sendMessage(message);
+
+        // 각 유저의 알림 저장
+        List<User> userList = userQueryService.getUserByNotificationSet(dto.getNotificationType(), dto.getCafeteriaName());
+
+        userList.stream()
+                .forEach(user -> {
+                    UserAppNotification userAppNotification = UserAppNotification.createUserAppNotification(user, notification);
+                    userAppNotificationRepository.save(userAppNotification);
+                });
+
     }
 
     @Override
@@ -72,12 +105,12 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public void sendAdmins(NotificationRequestDTO.SendAdminsDTO dto) {
-        Long storedNotificationId = fcmService.storeNotification(dto.getTitle(), dto.getContent());
+        AppNotification notification = fcmService.storeNotification(dto.getTitle(), dto.getContent());
         List<User> admins = userQueryService.getAdmins();
         List<String> tokenList = admins.stream()
                 .map(admin -> admin.getNotificationSet().getRegistrationToken())
                 .collect(Collectors.toList());
-        MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent(), storedNotificationId, tokenList);
+        MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent(), tokenList);
         fcmService.sendMessage(multiCastMessage);
     }
 

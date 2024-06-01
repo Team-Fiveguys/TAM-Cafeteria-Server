@@ -37,5 +37,11 @@ public class FCMAdminController {
         return ApiResponse.onSuccess("알림을 성공적으로 보냈습니다.");
     }
 
+    @Operation(summary = "식당을 구독한 이용자에게 공지를 보내는 테스트 API", description = "식당명과 알림 타입을 받아서 구독을 특정하여 메시지를 전달한다.")
+    @PostMapping("/topic/subscriber/test")
+    public ApiResponse<String> sendSubscriberTest(@RequestBody NotificationRequestDTO.SendSubscriberDTO dto){
+        notificationService.sendSubScriberTest(dto);
+        return ApiResponse.onSuccess("알림을 성공적으로 보냈습니다.");
+    }
 }
 

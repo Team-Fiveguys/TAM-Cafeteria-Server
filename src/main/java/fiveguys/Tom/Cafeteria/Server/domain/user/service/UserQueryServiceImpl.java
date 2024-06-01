@@ -9,6 +9,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.converter.CafeteriaConvert
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.dto.response.CafeteriaResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.converter.NotificationConverter;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotificationType;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotification;
 import fiveguys.Tom.Cafeteria.Server.domain.user.converter.UserConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
@@ -26,9 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -151,5 +150,44 @@ public class UserQueryServiceImpl implements UserQueryService{
                 )
                 .collect(Collectors.toList());
         return previewDTOList;
+    }
+
+    @Override
+    public List<User> getUserByNotificationSet(AppNotificationType appNotificationType, String cafeteriaName) {
+
+        List<User> userList = switch (appNotificationType) {
+            case todayDiet -> {
+                if (cafeteriaName.equals("myeongJin")) yield userRepository.findAllByAcceptedTodayDietAndMyeongJin();
+                else if (cafeteriaName.equals("hakGwan")) yield userRepository.findAllByAcceptedTodayDietAndHakGwan();
+                else if (cafeteriaName.equals("myeongDon")) yield userRepository.findAllByAcceptedTodayDietAndMyeongDon();
+                else yield null; // 또는 적절한 기본값 처리
+            }
+            case weekDietEnroll -> {
+                if (cafeteriaName.equals("myeongJin")) yield userRepository.findAllByAcceptedWeekDietEnrollAndMyeongJin();
+                else if (cafeteriaName.equals("hakGwan")) yield userRepository.findAllByAcceptedWeekDietEnrollAndHakGwan();
+                else if (cafeteriaName.equals("myeongDon")) yield userRepository.findAllByAcceptedWeekDietEnrollAndMyeongDon();
+                else yield null; // 또는 적절한 기본값 처리
+            }
+            case dietPhotoEnroll -> {
+                if (cafeteriaName.equals("myeongJin")) yield userRepository.findAllByAcceptedDietPhotoEnrollAndMyeongJin();
+                else if (cafeteriaName.equals("hakGwan")) yield userRepository.findAllByAcceptedDietPhotoEnrollAndHakGwan();
+                else if (cafeteriaName.equals("myeongDon")) yield userRepository.findAllByAcceptedDietPhotoEnrollAndMyeongDon();
+                else yield null; // 또는 적절한 기본값 처리
+            }
+            case dietSoldOut -> {
+                if (cafeteriaName.equals("myeongJin")) yield userRepository.findAllByAcceptedDietSoldOutAndMyeongJin();
+                else if (cafeteriaName.equals("hakGwan")) yield userRepository.findAllByAcceptedDietSoldOutAndHakGwan();
+                else if (cafeteriaName.equals("myeongDon")) yield userRepository.findAllByAcceptedDietSoldOutAndMyeongDon();
+                else yield null; // 또는 적절한 기본값 처리
+            }
+            case general -> {
+                if (cafeteriaName.equals("myeongJin")) yield userRepository.findAllByAcceptedGeneralAndMyeongJin();
+                else if (cafeteriaName.equals("hakGwan")) yield userRepository.findAllByAcceptedGeneralAndHakGwan();
+                else if (cafeteriaName.equals("myeongDon")) yield userRepository.findAllByAcceptedGeneralAndMyeongDon();
+                else yield null; // 또는 적절한 기본값 처리
+            }
+        };
+        return userList;
+
     }
 }

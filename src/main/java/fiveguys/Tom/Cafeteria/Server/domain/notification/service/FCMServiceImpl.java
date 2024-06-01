@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class FCMServiceImpl implements FCMService{
 
 
     @Override
-    public Message createMessage(String title, String content, String cafeteriaName, String type, Long notificationId) {
+    public Message createMessage(String title, String content, String cafeteriaName, String type) {
         String condition = "'" + cafeteriaName + "' in topics && '" + type + "' in topics";
         AndroidConfig androidConfig = AndroidConfig.builder()
                 .setNotification(
@@ -62,7 +63,6 @@ public class FCMServiceImpl implements FCMService{
 
 
         return Message.builder()
-                .putData("id", String.valueOf(notificationId))
                 .setCondition(condition)
                 .setNotification(notification)
                 .setAndroidConfig(androidConfig)
@@ -70,7 +70,7 @@ public class FCMServiceImpl implements FCMService{
     }
 
     @Override
-    public MulticastMessage createMultiCastMessage(String title, String content, Long notificationId) {
+    public MulticastMessage createMultiCastMessage(String title, String content) {
         List<NotificationSet> notificationSetList = notificationSetRepository.findAll();
         List<String> tokenList = notificationSetList.stream()
                 .map(notificationSet -> notificationSet.getRegistrationToken())
@@ -91,7 +91,6 @@ public class FCMServiceImpl implements FCMService{
                 .build();
 
         return MulticastMessage.builder()
-                .putData("id", String.valueOf(notificationId))
                 .setNotification(notification)
                 .setAndroidConfig(androidConfig)
                 .addAllTokens(tokenList)
@@ -99,7 +98,7 @@ public class FCMServiceImpl implements FCMService{
     }
 
     @Override
-    public MulticastMessage createMultiCastMessage(String title, String content, Long notificationId, List<String> tokenList) {
+    public MulticastMessage createMultiCastMessage(String title, String content, List<String> tokenList) {
         AndroidConfig androidConfig = AndroidConfig.builder()
                 .setNotification(
                         AndroidNotification.builder()
@@ -115,7 +114,6 @@ public class FCMServiceImpl implements FCMService{
                 .build();
 
         return MulticastMessage.builder()
-                .putData("id", String.valueOf(notificationId))
                 .setNotification(notification)
                 .setAndroidConfig(androidConfig)
                 .addAllTokens(tokenList)
@@ -135,11 +133,13 @@ public class FCMServiceImpl implements FCMService{
                 .build();
     }
     @Override
-    public Long storeNotification(String title, String content){
+    @Transactional
+    public AppNotification storeNotification(String title, String content){
         AppNotification notification = AppNotification.builder()
                 .title(title)
                 .content(content)
+                .userAppNotificationList(new ArrayList<>())
                 .build();
-        return notificationRepository.save(notification).getId();
+        return notificationRepository.save(notification);
     }
 }

@@ -10,4 +10,6 @@ public interface NotificationService {
     public void sendOne(Long cafeteriaId, String content, Long receiverId);
 
     public void sendAdmins(NotificationRequestDTO.SendAdminsDTO dto);
+
+    public void sendSubScriberTest(NotificationRequestDTO.SendSubscriberDTO dto);
 }
