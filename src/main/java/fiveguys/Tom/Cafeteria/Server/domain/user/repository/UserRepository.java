@@ -23,6 +23,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     public List<User> findAllByRole(Role role);
 
+    List<User> findByNotificationSetIsNotNull();
+
+    /*
+    오늘의 식단 알림을 받을 사용자를 조회 하는 쿼리 (모두, 명진당만, 학관만)
+     */
+    @Query("SELECT u FROM users u WHERE u.notificationSet.todayDiet = true AND u.notificationSet.myeongJin = true AND u.notificationSet.hakGwan = true")
+    List<User> findByAcceptedTodayDietAndAll();
+
+    @Query("SELECT u FROM users u WHERE u.notificationSet.todayDiet = true AND u.notificationSet.myeongJin = true AND u.notificationSet.hakGwan = false")
+    List<User> findByAcceptedTodayDietAndOnlyMyeongJin();
+
+    @Query("SELECT u FROM users u WHERE u.notificationSet.todayDiet = true AND u.notificationSet.myeongJin = false AND u.notificationSet.hakGwan = true")
+    List<User> findByAcceptedTodayDietAndOnlyHakGwan();
+
     @Query("SELECT u FROM users u WHERE u.notificationSet.todayDiet = true AND u.notificationSet.myeongJin = true")
     public List<User> findAllByAcceptedTodayDietAndMyeongJin();
     @Query("SELECT u FROM users u WHERE u.notificationSet.todayDiet = true AND u.notificationSet.hakGwan = true")
