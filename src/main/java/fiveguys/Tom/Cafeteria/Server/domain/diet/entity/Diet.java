@@ -122,4 +122,12 @@ public class Diet extends BaseEntity {
                 .forEach(menu -> menuString.append(menu.getName() + "\n" ) );
         return menuString.toString();
     }
+
+    public static boolean isDayOffOrNull(Diet diet){
+        if(diet == null || diet.isDayOff()){
+            return true;
+        }
+
+        return false;
+    }
 }
