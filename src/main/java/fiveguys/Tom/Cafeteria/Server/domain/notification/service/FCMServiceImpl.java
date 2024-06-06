@@ -1,15 +1,18 @@
 package fiveguys.Tom.Cafeteria.Server.domain.notification.service;
 
 import com.google.firebase.messaging.*;
+import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotification;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.repository.AppNotificationRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.NotificationSetRepository;
+import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -42,35 +45,8 @@ public class FCMServiceImpl implements FCMService{
         System.out.println(response.getSuccessCount() + " messages were sent successfully");
     }
 
-
     @Override
-    public Message createMessage(String title, String content, String cafeteriaName, String type, Long notificationId) {
-        String condition = "'" + cafeteriaName + "' in topics && '" + type + "' in topics";
-        AndroidConfig androidConfig = AndroidConfig.builder()
-                .setNotification(
-                        AndroidNotification.builder()
-                                .setColor("#ffffff")
-                                .build())
-                .build();
-//        ApnsConfig.builder()
-//                .setAps(Aps.builder()
-//                        .)
-        Notification notification = Notification.builder()
-                .setTitle(title)
-                .setBody(content)
-                .build();
-
-
-        return Message.builder()
-                .putData("id", String.valueOf(notificationId))
-                .setCondition(condition)
-                .setNotification(notification)
-                .setAndroidConfig(androidConfig)
-                .build();
-    }
-
-    @Override
-    public MulticastMessage createMultiCastMessage(String title, String content, Long notificationId) {
+    public MulticastMessage createMultiCastMessage(String title, String content) {
         List<NotificationSet> notificationSetList = notificationSetRepository.findAll();
         List<String> tokenList = notificationSetList.stream()
                 .map(notificationSet -> notificationSet.getRegistrationToken())
@@ -90,8 +66,10 @@ public class FCMServiceImpl implements FCMService{
                 .setBody(content)
                 .build();
 
+        if (tokenList == null || tokenList.isEmpty()) {
+            throw new GeneralException(ErrorStatus.REGISTRATION_TOKEN_EMPTY);
+        }
         return MulticastMessage.builder()
-                .putData("id", String.valueOf(notificationId))
                 .setNotification(notification)
                 .setAndroidConfig(androidConfig)
                 .addAllTokens(tokenList)
@@ -99,7 +77,7 @@ public class FCMServiceImpl implements FCMService{
     }
 
     @Override
-    public MulticastMessage createMultiCastMessage(String title, String content, Long notificationId, List<String> tokenList) {
+    public MulticastMessage createMultiCastMessage(String title, String content, List<String> tokenList) {
         AndroidConfig androidConfig = AndroidConfig.builder()
                 .setNotification(
                         AndroidNotification.builder()
@@ -114,8 +92,10 @@ public class FCMServiceImpl implements FCMService{
                 .setBody(content)
                 .build();
 
+        if (tokenList == null || tokenList.isEmpty()) {
+            throw new GeneralException(ErrorStatus.REGISTRATION_TOKEN_EMPTY);
+        }
         return MulticastMessage.builder()
-                .putData("id", String.valueOf(notificationId))
                 .setNotification(notification)
                 .setAndroidConfig(androidConfig)
                 .addAllTokens(tokenList)
@@ -135,11 +115,13 @@ public class FCMServiceImpl implements FCMService{
                 .build();
     }
     @Override
-    public Long storeNotification(String title, String content){
+    @Transactional
+    public AppNotification storeNotification(String title, String content){
         AppNotification notification = AppNotification.builder()
                 .title(title)
                 .content(content)
+                .userAppNotificationList(new ArrayList<>())
                 .build();
-        return notificationRepository.save(notification).getId();
+        return notificationRepository.save(notification);
     }
 }

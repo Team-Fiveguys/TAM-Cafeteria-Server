@@ -66,6 +66,7 @@ public class DietCommandServiceImpl implements DietCommandService{
     }
 
     @Override
+    @Transactional
     public Diet switchDayOff(DietRequestDTO.CheckDayOffDTO checkDayOffDTO) {
         Cafeteria cafeteria = cafeteriaQueryService.findById(checkDayOffDTO.getCafeteriaId());
         boolean existsDiet = dietQueryService.existsDiet(checkDayOffDTO.getCafeteriaId(), checkDayOffDTO.getLocalDate(), checkDayOffDTO.getMeals());

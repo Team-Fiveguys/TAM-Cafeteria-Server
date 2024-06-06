@@ -16,7 +16,6 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Getter
 @Builder
@@ -114,5 +113,21 @@ public class Diet extends BaseEntity {
 
     public void clearDietPhoto() {
         this.dietPhoto = null;
+    }
+
+    public String getMenuListString(){
+        StringBuffer menuString = new StringBuffer();
+        getMenuDietList().stream()
+                .map(MenuDiet::getMenu)
+                .forEach(menu -> menuString.append(menu.getName() + "\n" ) );
+        return menuString.toString();
+    }
+
+    public static boolean isDayOffOrNull(Diet diet){
+        if(diet == null || diet.isDayOff()){
+            return true;
+        }
+
+        return false;
     }
 }

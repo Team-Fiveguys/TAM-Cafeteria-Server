@@ -206,15 +206,6 @@ public class UserCommandServiceImpl implements UserCommandService{
 
     @Override
     @Transactional
-    public void receiveMessage(Long notificationId) {
-        Long userId = UserContext.getUserId();
-        User user = userQueryService.getUserById(userId);
-        AppNotification notification = notificationQueryService.getNotificationById(notificationId);
-        UserAppNotification userAppNotification = UserAppNotification.createUserAppNotification(user, notification);
-    }
-
-    @Override
-    @Transactional
     public void readNotification(Long notificationId) {
         Long userId = UserContext.getUserId();
         User user = userQueryService.getUserById(userId);
