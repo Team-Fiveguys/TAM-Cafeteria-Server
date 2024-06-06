@@ -61,7 +61,6 @@ public class UserCommandServiceImpl implements UserCommandService{
 
     @Transactional
     @Override
-    @Async
     public void initNotificationSet(String token) {
         // 알림 정보 생성 및 저장
         Long id = UserContext.getUserId();
@@ -79,25 +78,6 @@ public class UserCommandServiceImpl implements UserCommandService{
                 .registrationToken(token)
                 .build();
         user.setNotificationSet(newNotificationSet);
-
-        // general topic 구독
-        ArrayList<String> tokenList = new ArrayList<>();
-        tokenList.add(token);
-        TopicManagementResponse response = null;
-
-        try {
-              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "hakGwan");
-              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "myeongJin");
-              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "myeongDon");
-              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "todayDiet");
-              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "dietPhotoEnroll");
-              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "weekDietEnroll");
-              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "dietSoldOut");
-              FirebaseMessaging.getInstance().subscribeToTopic(tokenList, "general");
-            log.info("tokens were subscribed successfully");
-        } catch (FirebaseMessagingException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
@@ -107,23 +87,6 @@ public class UserCommandServiceImpl implements UserCommandService{
         User user = userQueryService.getUserById(userId);
         NotificationSet notificationSet = user.getNotificationSet();
         notificationSet.setRegistrationToken(token);
-
-        //새로운 기기에서 구독
-        if(token == null){
-            throw new GeneralException(ErrorStatus.NOTIFICATION_SET_IS_NOT_SET);
-        }
-        ArrayList<String> tokenList = new ArrayList<>();
-        tokenList.add(token);
-
-        updateSubscription(tokenList, notificationSet.isGeneral(), "general");
-        updateSubscription(tokenList, notificationSet.isHakGwan(), "hakGwan");
-        updateSubscription(tokenList, notificationSet.isMyeongJin(), "myeongJin");
-        updateSubscription(tokenList, notificationSet.isMyeongDon(), "myeongDon");
-        updateSubscription(tokenList, notificationSet.isTodayDiet(), "todayDiet");
-        updateSubscription(tokenList, notificationSet.isDietPhotoEnroll(), "dietPhotoEnroll");
-        updateSubscription(tokenList, notificationSet.isWeekDietEnroll(), "weekDietEnroll");
-        updateSubscription(tokenList, notificationSet.isDietSoldOut(), "dietSoldOut");
-
     }
 
     @Override
@@ -131,77 +94,16 @@ public class UserCommandServiceImpl implements UserCommandService{
     public void updateNotificationSet(UserRequestDTO.UpdateNotificationSet updateNotificationSet) {
         Long userId = UserContext.getUserId();
         User user = userQueryService.getUserById(userId);
-        NotificationSet notificationSet = user.getNotificationSet();
-
-        String registrationToken = notificationSet.getRegistrationToken();
-        notificationSet.setNotificationSet(updateNotificationSet);
-
-        if(registrationToken == null){
-            throw new GeneralException(ErrorStatus.NOTIFICATION_SET_IS_NOT_SET);
-        }
-        ArrayList<String> tokenList = new ArrayList<>();
-        tokenList.add(registrationToken);
-
-        updateSubscription(tokenList, notificationSet.isGeneral(), "general");
-        updateSubscription(tokenList, updateNotificationSet.isHakGwan(), "hakGwan");
-        updateSubscription(tokenList, updateNotificationSet.isMyeongJin(), "myeongJin");
-        updateSubscription(tokenList, updateNotificationSet.isMyeongDon(), "myeongDon");
-        updateSubscription(tokenList, updateNotificationSet.isTodayDiet(), "todayDiet");
-        updateSubscription(tokenList, updateNotificationSet.isDietPhotoEnroll(), "dietPhotoEnroll");
-        updateSubscription(tokenList, updateNotificationSet.isWeekDietEnroll(), "weekDietEnroll");
-        updateSubscription(tokenList, updateNotificationSet.isDietSoldOut(), "dietSoldOut");
-    }
-
-    @Async
-    public void updateSubscription(List<String> tokenList , boolean subscribe, String topic) {
-        try{
-            if (subscribe) {
-                FirebaseMessaging.getInstance().subscribeToTopic(tokenList, topic);
-
-            } else {
-                FirebaseMessaging.getInstance().unsubscribeFromTopic(tokenList, topic);
-            }
-        }
-        catch (FirebaseMessagingException exception){
-            exception.printStackTrace();
-        }
-    }
-
-    @Async
-    public void clearSubscription(List<String> tokenList , String topic) {
-        try{
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(tokenList, topic);
-        }
-        catch (FirebaseMessagingException exception){
-            exception.printStackTrace();
-        }
+        user.getNotificationSet();
     }
 
     @Override
     @Transactional
     public User revokeRegistrationToken(Long userId){
         User user = userQueryService.getUserById(userId);
-        // 이전 기기토큰 구독 목록 clear
-        String oldToken = user.getNotificationSet().getRegistrationToken();
-        ArrayList<String> oldTokenList = new ArrayList<>();
-        oldTokenList.add(oldToken);
-        clearAllSubscriptions(oldTokenList);
-        // DB에서 기기 토큰 삭제
         NotificationSet notificationSet = user.getNotificationSet();
         notificationSet.setRegistrationToken(null);
-
         return user;
-    }
-    
-    private void clearAllSubscriptions(List<String> tokenList){
-        clearSubscription(tokenList, "hakGwan");
-        clearSubscription(tokenList, "myeongJin");
-        clearSubscription(tokenList, "myeongDon");
-        clearSubscription(tokenList, "todayDiet");
-        clearSubscription(tokenList, "weekDietEnroll");
-        clearSubscription(tokenList, "dietSoldOut");
-        clearSubscription(tokenList, "dietPhotoEnroll");
-        clearSubscription(tokenList, "general");
     }
 
     @Override
