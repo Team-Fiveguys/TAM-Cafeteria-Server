@@ -62,7 +62,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         }
 
         return queryFactory.selectFrom(user)
-                .join(user.notificationSet, notificationSet)
+                .join(user.notificationSet, notificationSet).fetchJoin()
                 .where(builder)
                 .fetch();
     }
@@ -120,6 +120,60 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
         return queryFactory.selectFrom(user)
                 .join(user.notificationSet, notificationSet)
+                .where(builder)
+                .fetch();
+    }
+
+    @Override
+    public List<User> findUsersByNotificationSet(String subscribedCafeteriaName1, AppNotificationType type, String subscribedCafeteriaName2) {
+        QUser user = QUser.user;
+        QNotificationSet notificationSet = QNotificationSet.notificationSet;
+
+        BooleanBuilder builder = new BooleanBuilder();
+        // 어떤 식당 구독 여부를 조건으로 할 지에 따라 where문 조건이 달라짐
+        switch (subscribedCafeteriaName1){
+            case "myeongJin":
+                builder.and(notificationSet.myeongJin.isTrue());
+                break;
+            case "hakGwan":
+                builder.and(notificationSet.hakGwan.isTrue());
+                break;
+            case "myeongDon":
+                builder.and(notificationSet.myeongDon.isTrue());
+                break;
+        }
+        switch (subscribedCafeteriaName2){
+            case "myeongJin":
+                builder.and(notificationSet.myeongJin.isTrue());
+                break;
+            case "hakGwan":
+                builder.and(notificationSet.hakGwan.isTrue());
+                break;
+            case "myeongDon":
+                builder.and(notificationSet.myeongDon.isTrue());
+                break;
+        }
+        // 어떤 알림항목 구독 여부를 조건으로 할 지에 따라 where문 조건이 달라짐
+        switch (type) {
+            case todayDiet:
+                builder.and(notificationSet.todayDiet.isTrue());
+                break;
+            case weekDietEnroll:
+                builder.and(notificationSet.weekDietEnroll.isTrue());
+                break;
+            case dietPhotoEnroll:
+                builder.and(notificationSet.dietPhotoEnroll.isTrue());
+                break;
+            case dietSoldOut:
+                builder.and(notificationSet.dietSoldOut.isTrue());
+                break;
+            case general:
+                builder.and(notificationSet.general.isTrue());
+                break;
+        }
+
+        return queryFactory.selectFrom(user)
+                .join(user.notificationSet, notificationSet).fetchJoin()
                 .where(builder)
                 .fetch();
     }
