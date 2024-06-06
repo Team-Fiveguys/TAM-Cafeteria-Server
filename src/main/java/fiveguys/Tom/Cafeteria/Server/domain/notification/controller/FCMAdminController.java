@@ -43,5 +43,12 @@ public class FCMAdminController {
         notificationService.sendSubScriberTest(dto);
         return ApiResponse.onSuccess("알림을 성공적으로 보냈습니다.");
     }
+
+    @Operation(summary = "오늘의 식단 알림 테스트 API", description = "테스트 API")
+    @PostMapping("/topic/today-diet/test")
+    public ApiResponse<String> sendTodayDietTest(@RequestBody NotificationRequestDTO.SendSubscriberDTO dto){
+        notificationService.sendTodayDietNotification();
+        return ApiResponse.onSuccess("알림을 성공적으로 보냈습니다.");
+    }
 }
 
