@@ -1,10 +1,12 @@
 package fiveguys.Tom.Cafeteria.Server.domain.notification.service;
 
 import com.google.firebase.messaging.*;
+import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotification;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.repository.AppNotificationRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.NotificationSetRepository;
+import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,32 +45,6 @@ public class FCMServiceImpl implements FCMService{
         System.out.println(response.getSuccessCount() + " messages were sent successfully");
     }
 
-
-    @Override
-    public Message createMessage(String title, String content, String cafeteriaName, String type) {
-        String condition = "'" + cafeteriaName + "' in topics && '" + type + "' in topics";
-        AndroidConfig androidConfig = AndroidConfig.builder()
-                .setNotification(
-                        AndroidNotification.builder()
-                                .setColor("#ffffff")
-                                .build())
-                .build();
-//        ApnsConfig.builder()
-//                .setAps(Aps.builder()
-//                        .)
-        Notification notification = Notification.builder()
-                .setTitle(title)
-                .setBody(content)
-                .build();
-
-
-        return Message.builder()
-                .setCondition(condition)
-                .setNotification(notification)
-                .setAndroidConfig(androidConfig)
-                .build();
-    }
-
     @Override
     public MulticastMessage createMultiCastMessage(String title, String content) {
         List<NotificationSet> notificationSetList = notificationSetRepository.findAll();
@@ -90,6 +66,9 @@ public class FCMServiceImpl implements FCMService{
                 .setBody(content)
                 .build();
 
+        if (tokenList == null || tokenList.isEmpty()) {
+            throw new GeneralException(ErrorStatus.REGISTRATION_TOKEN_EMPTY);
+        }
         return MulticastMessage.builder()
                 .setNotification(notification)
                 .setAndroidConfig(androidConfig)
@@ -113,6 +92,9 @@ public class FCMServiceImpl implements FCMService{
                 .setBody(content)
                 .build();
 
+        if (tokenList == null || tokenList.isEmpty()) {
+            throw new GeneralException(ErrorStatus.REGISTRATION_TOKEN_EMPTY);
+        }
         return MulticastMessage.builder()
                 .setNotification(notification)
                 .setAndroidConfig(androidConfig)

@@ -12,4 +12,6 @@ public interface NotificationService {
     public void sendAdmins(NotificationRequestDTO.SendAdminsDTO dto);
 
     public void sendSubScriberTest(NotificationRequestDTO.SendSubscriberDTO dto);
+
+    public void sendTodayDietNotification();
 }

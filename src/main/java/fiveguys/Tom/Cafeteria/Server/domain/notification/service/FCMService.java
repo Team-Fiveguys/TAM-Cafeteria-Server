@@ -11,7 +11,6 @@ import java.util.List;
 public interface FCMService {
     public void sendMessage(Message message);
     public void sendMessage(MulticastMessage message);
-    public Message createMessage(String title, String content, String cafeteriaName, String type);
     public MulticastMessage createMultiCastMessage(String title, String content);
 
     public MulticastMessage createMultiCastMessage(String title, String content, List<String> tokenList);
