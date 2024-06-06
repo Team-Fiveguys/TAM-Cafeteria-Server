@@ -18,6 +18,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.UserCafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepository;
+import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepositoryCustom;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 public class UserQueryServiceImpl implements UserQueryService{
     private static int userPageSize = 20;
     private final UserRepository userRepository;
+    private final UserRepositoryCustom userRepositoryCustom;
     private final PostLikeRepository postLikeRepository;
 
     @Override
@@ -153,41 +155,21 @@ public class UserQueryServiceImpl implements UserQueryService{
     }
 
     @Override
-    public List<User> getUserByNotificationSet(AppNotificationType appNotificationType, String cafeteriaName) {
+    public List<User> getUserByNotificationSet(String subscribedCafeteriaName, AppNotificationType type) {
+        return userRepositoryCustom.findUsersByNotificationSet(subscribedCafeteriaName, type);
+    }
+    @Override
+    public List<User> getUserByNotificationSet(String subscribedCafeteriaName, String unsubscribedCafeteriaName, AppNotificationType type) {
+        return userRepositoryCustom.findUsersByNotificationSet(subscribedCafeteriaName, unsubscribedCafeteriaName, type);
+    }
+    @Override
+    public List<User> getUserByNotificationSet(String subscribedCafeteriaName1, AppNotificationType type, String subscribedCafeteriaName2) {
+        return userRepositoryCustom.findUsersByNotificationSet(subscribedCafeteriaName1, type, subscribedCafeteriaName2);
+    }
 
-        List<User> userList = switch (appNotificationType) {
-            case todayDiet -> {
-                if (cafeteriaName.equals("myeongJin")) yield userRepository.findAllByAcceptedTodayDietAndMyeongJin();
-                else if (cafeteriaName.equals("hakGwan")) yield userRepository.findAllByAcceptedTodayDietAndHakGwan();
-                else if (cafeteriaName.equals("myeongDon")) yield userRepository.findAllByAcceptedTodayDietAndMyeongDon();
-                else yield null; // 또는 적절한 기본값 처리
-            }
-            case weekDietEnroll -> {
-                if (cafeteriaName.equals("myeongJin")) yield userRepository.findAllByAcceptedWeekDietEnrollAndMyeongJin();
-                else if (cafeteriaName.equals("hakGwan")) yield userRepository.findAllByAcceptedWeekDietEnrollAndHakGwan();
-                else if (cafeteriaName.equals("myeongDon")) yield userRepository.findAllByAcceptedWeekDietEnrollAndMyeongDon();
-                else yield null; // 또는 적절한 기본값 처리
-            }
-            case dietPhotoEnroll -> {
-                if (cafeteriaName.equals("myeongJin")) yield userRepository.findAllByAcceptedDietPhotoEnrollAndMyeongJin();
-                else if (cafeteriaName.equals("hakGwan")) yield userRepository.findAllByAcceptedDietPhotoEnrollAndHakGwan();
-                else if (cafeteriaName.equals("myeongDon")) yield userRepository.findAllByAcceptedDietPhotoEnrollAndMyeongDon();
-                else yield null; // 또는 적절한 기본값 처리
-            }
-            case dietSoldOut -> {
-                if (cafeteriaName.equals("myeongJin")) yield userRepository.findAllByAcceptedDietSoldOutAndMyeongJin();
-                else if (cafeteriaName.equals("hakGwan")) yield userRepository.findAllByAcceptedDietSoldOutAndHakGwan();
-                else if (cafeteriaName.equals("myeongDon")) yield userRepository.findAllByAcceptedDietSoldOutAndMyeongDon();
-                else yield null; // 또는 적절한 기본값 처리
-            }
-            case general -> {
-                if (cafeteriaName.equals("myeongJin")) yield userRepository.findAllByAcceptedGeneralAndMyeongJin();
-                else if (cafeteriaName.equals("hakGwan")) yield userRepository.findAllByAcceptedGeneralAndHakGwan();
-                else if (cafeteriaName.equals("myeongDon")) yield userRepository.findAllByAcceptedGeneralAndMyeongDon();
-                else yield null; // 또는 적절한 기본값 처리
-            }
-        };
-        return userList;
 
+    @Override
+    public List<User> getUsersAgreedNotification() {
+        return userRepository.findByNotificationSetIsNotNull();
     }
 }

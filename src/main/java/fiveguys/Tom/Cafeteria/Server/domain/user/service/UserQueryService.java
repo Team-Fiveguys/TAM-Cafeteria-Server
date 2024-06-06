@@ -2,7 +2,6 @@ package fiveguys.Tom.Cafeteria.Server.domain.user.service;
 
 import fiveguys.Tom.Cafeteria.Server.domain.board.dto.PostPreviewDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.dto.response.CafeteriaResponseDTO;
-import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotificationType;
 import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
@@ -33,5 +32,11 @@ public interface UserQueryService {
 
     public List<PostPreviewDTO> getCreatedPostList();
 
-    public List<User> getUserByNotificationSet(AppNotificationType appNotificationType, String CafeteriaName);
+    public List<User> getUserByNotificationSet(String cafeteriaName, AppNotificationType type);
+
+    public List<User> getUserByNotificationSet(String subscribedCafeteriaName, String unsubscribedCafeteriaName, AppNotificationType type);
+
+    public List<User> getUserByNotificationSet(String subscribedCafeteriaName1, AppNotificationType type, String subscribedCafeteriaName2);
+    public List<User> getUsersAgreedNotification();
+
 }
