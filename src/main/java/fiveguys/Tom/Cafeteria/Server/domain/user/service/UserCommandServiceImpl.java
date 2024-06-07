@@ -94,7 +94,9 @@ public class UserCommandServiceImpl implements UserCommandService{
     public void updateNotificationSet(UserRequestDTO.UpdateNotificationSet updateNotificationSet) {
         Long userId = UserContext.getUserId();
         User user = userQueryService.getUserById(userId);
-        user.getNotificationSet();
+        NotificationSet notificationSet = user.getNotificationSet();
+        notificationSet.setNotificationSet(updateNotificationSet);
+
     }
 
     @Override
