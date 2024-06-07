@@ -16,6 +16,8 @@ import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationServiceImpl implements NotificationService{
     private final FCMService fcmService;
     private final UserQueryService userQueryService;
@@ -93,15 +96,16 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     @Transactional
-//    @Scheduled(cron = "0 0 10 * * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 10 * * ?", zone = "Asia/Seoul")
     public void sendTodayDietNotification() {
+        log.info("메시지 전송 시작");
         List<User> onlyMyeongJinAndTodayDietUserList = userQueryService.getUserByNotificationSet("myeongJin", "hakGwan",AppNotificationType.todayDiet);
         List<User> onlyHakGwanAndTodayDietUserList = userQueryService.getUserByNotificationSet("hakGwan", "myeongJin", AppNotificationType.todayDiet);
         List<User> myeongJinAndHakGwanAndTodayDietUserList = userQueryService.getUserByNotificationSet("myeongJin", AppNotificationType.todayDiet, "hakGwan");
         sendTodayDietOfMyeongJin(onlyMyeongJinAndTodayDietUserList);
         sendTodayDietOfHakGwan(onlyHakGwanAndTodayDietUserList);
         sendTodayDietsOfAll(myeongJinAndHakGwanAndTodayDietUserList);
-
+        log.info("메시지 전송 완료");
     }
     private void sendTodayDietOfMyeongJin(List<User> userList){
         Diet diet;
