@@ -18,8 +18,6 @@ public interface UserCommandService {
 
     public void updateNotificationSet(UserRequestDTO.UpdateNotificationSet updateNotificationSet);
 
-    public void receiveMessage(Long notificationId);
-
     public void readNotification(Long notificationId);
 
     public void readAllNotification();

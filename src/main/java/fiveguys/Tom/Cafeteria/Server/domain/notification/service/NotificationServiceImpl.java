@@ -3,36 +3,235 @@ package fiveguys.Tom.Cafeteria.Server.domain.notification.service;
 import com.google.firebase.messaging.*;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.service.DietQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.dto.NotificationRequestDTO;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotification;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotificationType;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotification;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.repository.UserAppNotificationRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.NotificationSet;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
-import fiveguys.Tom.Cafeteria.Server.domain.user.repository.NotificationSetRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.user.service.UserQueryService;
+import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationServiceImpl implements NotificationService{
     private final FCMService fcmService;
     private final UserQueryService userQueryService;
     private final CafeteriaQueryService cafeteriaQueryService;
-
+    private final UserAppNotificationRepository userAppNotificationRepository;
+    private final DietQueryService dietQueryService;
     @Override
     public void sendAll(NotificationRequestDTO.SendAllDTO dto) {
-        Long storedNotificationId = fcmService.storeNotification(dto.getTitle(), dto.getContent());
-        MulticastMessage multicastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent(), storedNotificationId);
+        AppNotification notification = fcmService.storeNotification(dto.getTitle(), dto.getContent());
+        MulticastMessage multicastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent());
         fcmService.sendMessage(multicastMessage);
+
+        List<User> userList = userQueryService.getUsersAgreedNotification();
+        userList.stream()
+                .forEach(user -> {
+                    UserAppNotification userAppNotification = UserAppNotification.createUserAppNotification(user, notification);
+                    userAppNotificationRepository.save(userAppNotification);
+                });
     }
 
     @Override
+    @Transactional
     public void sendSubScriber(NotificationRequestDTO.SendSubscriberDTO dto) {
-        Long storedNotificationId = fcmService.storeNotification(dto.getTitle(), dto.getContent());
-        Message message = fcmService.createMessage(dto.getTitle(), dto.getContent(), dto.getCafeteriaName(), dto.getNotificationType().name(), storedNotificationId);
+        AppNotification notification = fcmService.storeNotification(dto.getTitle(), dto.getContent());
+
+        List<User> userList = userQueryService.getUserByNotificationSet(dto.getCafeteriaName(), dto.getNotificationType());
+        List<String> tokenList = userList.stream()
+                .map(User::getNotificationSet)
+                .map(NotificationSet::getRegistrationToken)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        // multicast로 변경 예정
+        MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent(), tokenList);
+        fcmService.sendMessage(multiCastMessage);
+
+        // 각 유저의 알림 저장
+        userList.stream()
+                .forEach(user -> {
+                    UserAppNotification userAppNotification = UserAppNotification.createUserAppNotification(user, notification);
+                    userAppNotificationRepository.save(userAppNotification);
+                });
+
+    }
+
+
+    @Transactional
+    public void sendSubScriberTest(NotificationRequestDTO.SendSubscriberDTO dto) {
+        AppNotification notification = fcmService.storeNotification(dto.getTitle(), dto.getContent());
+        Message message = fcmService.createPMessage(dto.getTitle(), dto.getContent(),"eL0KqaoVokzJjORzjrG4vE:APA91bH5NUaQzgiSxwV1DCfQm2NOESxjfNcyUSjkzWEzfHqPv0Ofkn4TKBKbnopyIcJKTKJMvfFXJ0hfpVNqItolEok1epUXXtRtKWPFz1u8gGHpZy10kOIeMTrE59UBS8ltyY4Sute_");
         fcmService.sendMessage(message);
+
+        // 각 유저의 알림 저장
+        List<User> userList = userQueryService.getUserByNotificationSet(dto.getCafeteriaName(), dto.getNotificationType());
+
+        userList.stream()
+                .forEach(user -> {
+                    UserAppNotification userAppNotification = UserAppNotification.createUserAppNotification(user, notification);
+                    userAppNotificationRepository.save(userAppNotification);
+                });
+
+    }
+    private void storeNotification(AppNotificationType notificationType, String cafeteriaName){
+
+    }
+
+    @Override
+    @Transactional
+    @Scheduled(cron = "0 0 10 * * ?", zone = "Asia/Seoul")
+    public void sendTodayDietNotification() {
+        log.info("메시지 전송 시작");
+        List<User> onlyMyeongJinAndTodayDietUserList = userQueryService.getUserByNotificationSet("myeongJin", "hakGwan",AppNotificationType.todayDiet);
+        List<User> onlyHakGwanAndTodayDietUserList = userQueryService.getUserByNotificationSet("hakGwan", "myeongJin", AppNotificationType.todayDiet);
+        List<User> myeongJinAndHakGwanAndTodayDietUserList = userQueryService.getUserByNotificationSet("myeongJin", AppNotificationType.todayDiet, "hakGwan");
+        sendTodayDietOfMyeongJin(onlyMyeongJinAndTodayDietUserList);
+        sendTodayDietOfHakGwan(onlyHakGwanAndTodayDietUserList);
+        sendTodayDietsOfAll(myeongJinAndHakGwanAndTodayDietUserList);
+        log.info("메시지 전송 완료");
+    }
+    private void sendTodayDietOfMyeongJin(List<User> userList){
+        Diet diet;
+        // 식단 정보 가져와서 알림 메시지 만들기
+        try{
+            diet = dietQueryService.getDiet(1L, LocalDate.now(), Meals.LUNCH);
+            if(diet.isDayOff()){
+                return;
+            }
+        }
+        catch ( GeneralException e){ // 식단 없으면 return (추후에 예외 클래스 리팩토링)
+            return ;
+        }
+        AppNotification notification = fcmService.storeNotification("오늘의 식단 알림", "[명진당]\n" +diet.getMenuListString());
+
+        // 메시지 받을 사용자 토큰 받아서 전송
+        List<String> tokenList = userList.stream()
+                .map(user -> user.getNotificationSet())
+                .map(NotificationSet::getRegistrationToken)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        try{
+            MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(notification.getTitle(), notification.getContent(), tokenList);
+            fcmService.sendMessage(multiCastMessage);
+        }
+        catch (GeneralException e){
+            return;
+        }
+
+        // 알림 받은 사용자의 알림 센터에 알림 저장
+        userList.stream()
+                .forEach(user -> {
+                    UserAppNotification userAppNotification = UserAppNotification.createUserAppNotification(user, notification);
+                    userAppNotificationRepository.save(userAppNotification);
+                });
+    }
+    private void sendTodayDietOfHakGwan(List<User> userList){
+        Diet diet;
+        try{
+            diet = dietQueryService.getDiet(2L, LocalDate.now(), Meals.LUNCH);
+            if(diet.isDayOff()){
+                return;
+            }
+        }
+        catch (GeneralException e){
+            return;
+        }
+         // 식단 정보 가져와서 알림 메시지 만들기
+        AppNotification notification = fcmService.storeNotification("오늘의 식단 알림", "[학관]\n" + diet.getMenuListString());
+
+        // 메시지 받을 사용자 토큰 받아서 전송
+        List<String> tokenList = userList.stream()
+                .map(user -> user.getNotificationSet())
+                .map(NotificationSet::getRegistrationToken)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        try{
+            MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(notification.getTitle(), notification.getContent(), tokenList);
+            fcmService.sendMessage(multiCastMessage);
+        }
+        catch (GeneralException e){
+            return;
+        }
+        // 알림 받은 사용자의 알림 센터에 알림 저장
+        userList.stream()
+                .forEach(user -> {
+                    UserAppNotification userAppNotification = UserAppNotification.createUserAppNotification(user, notification);
+                    userAppNotificationRepository.save(userAppNotification);
+                });
+    }
+    private void sendTodayDietsOfAll(List<User> userList){
+        // 식단 정보 가져와서 알림 메시지 만들기
+
+        // 여기선 미등록이어도 에러 처리 하지 않음
+        Diet myeongJinDiet = null;
+        Diet hakGwanDiet = null;
+        try{
+            myeongJinDiet = dietQueryService.getDiet(1L, LocalDate.now(), Meals.LUNCH);
+        }
+        catch (GeneralException e){
+
+        }
+        try{
+            hakGwanDiet = dietQueryService.getDiet(2L, LocalDate.now(), Meals.LUNCH);
+        }
+        catch (GeneralException e){
+
+        }
+        // 명진당만 미등록 이거나 휴무 이면 학관 식단 정보만 알림
+        if( Diet.isDayOffOrNull(myeongJinDiet) && !Diet.isDayOffOrNull(hakGwanDiet) ){
+            sendTodayDietOfHakGwan(userList);
+        }
+        // 학관만 미등록 이거나 휴무 이면 명진당 식단 정보만 알림
+        else if (Diet.isDayOffOrNull(hakGwanDiet) && !Diet.isDayOffOrNull(myeongJinDiet)) {
+            sendTodayDietOfMyeongJin(userList);
+        }
+        // 둘 다 미등록 이거나 둘 다 휴무 이면 알림을 보내지 않음
+        else if( Diet.isDayOffOrNull(myeongJinDiet) && Diet.isDayOffOrNull(hakGwanDiet) ){
+            return;
+        } // 아니면 둘 다 포함해서 하나의 알림을 보냄
+        else{
+            AppNotification notification = fcmService.storeNotification("오늘의 식단 알림", "[명진당]\n" + myeongJinDiet.getMenuListString() +
+                    "[학관]\n" + hakGwanDiet.getMenuListString());
+            // 메시지 받을 사용자 토큰 받아서 전송
+            List<String> tokenList = userList.stream()
+                    .map(user -> user.getNotificationSet())
+                    .map(NotificationSet::getRegistrationToken)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+            try{
+                MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(notification.getTitle(), notification.getContent(), tokenList);
+                fcmService.sendMessage(multiCastMessage);
+            }
+            catch (GeneralException e){
+                return;
+            }
+
+            // 알림 받은 사용자의 알림 센터에 알림 저장
+            userList.stream()
+                    .forEach(user -> {
+                        UserAppNotification userAppNotification = UserAppNotification.createUserAppNotification(user, notification);
+                        userAppNotificationRepository.save(userAppNotification);
+                    });
+        }
     }
 
     @Override
@@ -72,12 +271,12 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public void sendAdmins(NotificationRequestDTO.SendAdminsDTO dto) {
-        Long storedNotificationId = fcmService.storeNotification(dto.getTitle(), dto.getContent());
+        AppNotification notification = fcmService.storeNotification(dto.getTitle(), dto.getContent());
         List<User> admins = userQueryService.getAdmins();
         List<String> tokenList = admins.stream()
                 .map(admin -> admin.getNotificationSet().getRegistrationToken())
                 .collect(Collectors.toList());
-        MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent(), storedNotificationId, tokenList);
+        MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent(), tokenList);
         fcmService.sendMessage(multiCastMessage);
     }
 

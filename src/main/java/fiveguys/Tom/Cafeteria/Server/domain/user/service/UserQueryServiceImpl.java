@@ -9,6 +9,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.converter.CafeteriaConvert
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.dto.response.CafeteriaResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.converter.NotificationConverter;
+import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.AppNotificationType;
 import fiveguys.Tom.Cafeteria.Server.domain.notification.entity.UserAppNotification;
 import fiveguys.Tom.Cafeteria.Server.domain.user.converter.UserConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.user.dto.UserResponseDTO;
@@ -17,6 +18,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.UserCafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepository;
+import fiveguys.Tom.Cafeteria.Server.domain.user.repository.UserRepositoryCustom;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,15 +28,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class UserQueryServiceImpl implements UserQueryService{
     private static int userPageSize = 20;
     private final UserRepository userRepository;
+    private final UserRepositoryCustom userRepositoryCustom;
     private final PostLikeRepository postLikeRepository;
 
     @Override
@@ -151,5 +152,24 @@ public class UserQueryServiceImpl implements UserQueryService{
                 )
                 .collect(Collectors.toList());
         return previewDTOList;
+    }
+
+    @Override
+    public List<User> getUserByNotificationSet(String subscribedCafeteriaName, AppNotificationType type) {
+        return userRepositoryCustom.findUsersByNotificationSet(subscribedCafeteriaName, type);
+    }
+    @Override
+    public List<User> getUserByNotificationSet(String subscribedCafeteriaName, String unsubscribedCafeteriaName, AppNotificationType type) {
+        return userRepositoryCustom.findUsersByNotificationSet(subscribedCafeteriaName, unsubscribedCafeteriaName, type);
+    }
+    @Override
+    public List<User> getUserByNotificationSet(String subscribedCafeteriaName1, AppNotificationType type, String subscribedCafeteriaName2) {
+        return userRepositoryCustom.findUsersByNotificationSet(subscribedCafeteriaName1, type, subscribedCafeteriaName2);
+    }
+
+
+    @Override
+    public List<User> getUsersAgreedNotification() {
+        return userRepository.findByNotificationSetIsNotNull();
     }
 }

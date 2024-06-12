@@ -60,13 +60,6 @@ public class UserController {
         return ApiResponse.onSuccess("알림 항목이 수정 되었습니다.");
     }
 
-    @PostMapping("/notifications/{notification-id}")
-    @Operation(summary = "알림을 수신 받음을 서버에 알리는 API", description = "PathVariable으로 알림id를 전달하여" +
-            "유저가 해당 알림에 대해서 제어할 수 있도록 한다.")
-    public ApiResponse<String> receiveNotification(@PathVariable(name = "notification-id") Long id){
-        userCommandService.receiveMessage(id);
-        return ApiResponse.onSuccess("알림 수신 여부를 서버에 전달하였습니다.");
-    }
     @GetMapping("/notifications")
     @Operation(summary = "수신받은 알림을 조회하는 API", description = "토큰에 있는 userId를 통해 유저를 식별하여 유저가" +
             "수신받은 알림 리스트를 응답한다. 추후에 한달이 지나면 자동으로 삭제하는 API 만들 것임")

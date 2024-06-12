@@ -44,6 +44,7 @@ public enum ErrorStatus implements BaseCode {
     // 알림 관련 에러
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION4001", "id에 해당하는 알림이 존재하지 않습니다."),
     NOTIFICATION_NOT_RELATIONAL(HttpStatus.BAD_REQUEST, "NOTIFICATION4002", "해당 user와 notification은 서로 관계가 없습니다."),
+    REGISTRATION_TOKEN_EMPTY(HttpStatus.NOT_FOUND, "NOTIFICATION4003", "알림을 보낼 대상이 없습니다."),
 
     // 로그인 관련 에러
     INVALID_TOKEN_ERROR(HttpStatus.UNAUTHORIZED, "LOGIN4001", "토큰값이 잘못되었거나 유효하지 않습니다."),

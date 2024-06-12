@@ -39,7 +39,6 @@ public class LoginController {
     private final UserQueryService userQueryService;
     private final UserCommandService userCommandService;
     private final EmailLoginService emailLoginService;
-    private final TokenProvider tokenProvider;
     private final JwtUtil jwtUtil;
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
