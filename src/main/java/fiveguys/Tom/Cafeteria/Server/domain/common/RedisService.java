@@ -19,15 +19,6 @@ public class RedisService {
         return success != null && success;
     }
 
-    public boolean unlock(String key, String value) {
-        String currentValue = (String) redisTemplate.opsForValue().get(key);
-        if (value.equals(currentValue)) {
-            redisTemplate.delete(key);
-            return true;
-        }
-        return false;
-    }
-
     public void setValue(String key, String value){
         ValueOperations<String, Object> values = redisTemplate.opsForValue();
         values.set(key, value);

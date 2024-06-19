@@ -100,27 +100,20 @@ public class NotificationServiceImpl implements NotificationService{
     @Scheduled(cron = "0 0 10 * * ?", zone = "Asia/Seoul")
     public void sendTodayDietNotification() {
         String lockKey = "notificationLock";
-        String lockValue = UUID.randomUUID().toString();
-        long lockTimeout = 10; // 10초 동안 락 유지, 10:00에 중복 알림을 방지
 
-        boolean isLocked = redisService.tryLock(lockKey, lockValue, lockTimeout, TimeUnit.SECONDS);
+        long lockTimeout = 10; // 10초 동안 lock 역할을 하는 key 유지, 10:00에 동시에 실행되는 것을 방지하기 위한 시간 설정
+        boolean isLocked = redisService.tryLock(lockKey, "tam", lockTimeout, TimeUnit.SECONDS);
 
         if (isLocked) {
-            try {
-                // 임계 구역 (critical section)
-                System.out.println("Locked operation is being performed");
-                log.info("메시지 전송 시작");
-                List<User> onlyMyeongJinAndTodayDietUserList = userQueryService.getUserByNotificationSet("myeongJin", "hakGwan",AppNotificationType.todayDiet);
-                List<User> onlyHakGwanAndTodayDietUserList = userQueryService.getUserByNotificationSet("hakGwan", "myeongJin", AppNotificationType.todayDiet);
-                List<User> myeongJinAndHakGwanAndTodayDietUserList = userQueryService.getUserByNotificationSet("myeongJin", AppNotificationType.todayDiet, "hakGwan");
-                sendTodayDietOfMyeongJin(onlyMyeongJinAndTodayDietUserList);
-                sendTodayDietOfHakGwan(onlyHakGwanAndTodayDietUserList);
-                sendTodayDietsOfAll(myeongJinAndHakGwanAndTodayDietUserList);
-                log.info("메시지 전송 완료");
-                // 여기서 실제 작업을 수행합니다.
-            } finally {
-                redisService.unlock(lockKey, lockValue);
-            }
+            // 임계 구역 (critical section)
+            log.info("메시지 전송 시작");
+            List<User> onlyMyeongJinAndTodayDietUserList = userQueryService.getUserByNotificationSet("myeongJin", "hakGwan",AppNotificationType.todayDiet);
+            List<User> onlyHakGwanAndTodayDietUserList = userQueryService.getUserByNotificationSet("hakGwan", "myeongJin", AppNotificationType.todayDiet);
+            List<User> myeongJinAndHakGwanAndTodayDietUserList = userQueryService.getUserByNotificationSet("myeongJin", AppNotificationType.todayDiet, "hakGwan");
+            sendTodayDietOfMyeongJin(onlyMyeongJinAndTodayDietUserList);
+            sendTodayDietOfHakGwan(onlyHakGwanAndTodayDietUserList);
+            sendTodayDietsOfAll(myeongJinAndHakGwanAndTodayDietUserList);
+            log.info("메시지 전송 완료");
         } else {
             System.out.println("Could not acquire lock");
         }
