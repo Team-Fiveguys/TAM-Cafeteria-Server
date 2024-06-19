@@ -3,6 +3,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.notification.service;
 import com.google.firebase.messaging.*;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
+import fiveguys.Tom.Cafeteria.Server.domain.common.RedisService;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.service.DietQueryService;
@@ -24,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +38,7 @@ public class NotificationServiceImpl implements NotificationService{
     private final CafeteriaQueryService cafeteriaQueryService;
     private final UserAppNotificationRepository userAppNotificationRepository;
     private final DietQueryService dietQueryService;
+    private final RedisService redisService;
     @Override
     public void sendAll(NotificationRequestDTO.SendAllDTO dto) {
         AppNotification notification = fcmService.storeNotification(dto.getTitle(), dto.getContent());
@@ -90,22 +94,36 @@ public class NotificationServiceImpl implements NotificationService{
                 });
 
     }
-    private void storeNotification(AppNotificationType notificationType, String cafeteriaName){
-
-    }
 
     @Override
     @Transactional
     @Scheduled(cron = "0 0 10 * * ?", zone = "Asia/Seoul")
     public void sendTodayDietNotification() {
-        log.info("메시지 전송 시작");
-        List<User> onlyMyeongJinAndTodayDietUserList = userQueryService.getUserByNotificationSet("myeongJin", "hakGwan",AppNotificationType.todayDiet);
-        List<User> onlyHakGwanAndTodayDietUserList = userQueryService.getUserByNotificationSet("hakGwan", "myeongJin", AppNotificationType.todayDiet);
-        List<User> myeongJinAndHakGwanAndTodayDietUserList = userQueryService.getUserByNotificationSet("myeongJin", AppNotificationType.todayDiet, "hakGwan");
-        sendTodayDietOfMyeongJin(onlyMyeongJinAndTodayDietUserList);
-        sendTodayDietOfHakGwan(onlyHakGwanAndTodayDietUserList);
-        sendTodayDietsOfAll(myeongJinAndHakGwanAndTodayDietUserList);
-        log.info("메시지 전송 완료");
+        String lockKey = "notificationLock";
+        String lockValue = UUID.randomUUID().toString();
+        long lockTimeout = 10; // 10초 동안 락 유지, 10:00에 중복 알림을 방지
+
+        boolean isLocked = redisService.tryLock(lockKey, lockValue, lockTimeout, TimeUnit.SECONDS);
+
+        if (isLocked) {
+            try {
+                // 임계 구역 (critical section)
+                System.out.println("Locked operation is being performed");
+                log.info("메시지 전송 시작");
+                List<User> onlyMyeongJinAndTodayDietUserList = userQueryService.getUserByNotificationSet("myeongJin", "hakGwan",AppNotificationType.todayDiet);
+                List<User> onlyHakGwanAndTodayDietUserList = userQueryService.getUserByNotificationSet("hakGwan", "myeongJin", AppNotificationType.todayDiet);
+                List<User> myeongJinAndHakGwanAndTodayDietUserList = userQueryService.getUserByNotificationSet("myeongJin", AppNotificationType.todayDiet, "hakGwan");
+                sendTodayDietOfMyeongJin(onlyMyeongJinAndTodayDietUserList);
+                sendTodayDietOfHakGwan(onlyHakGwanAndTodayDietUserList);
+                sendTodayDietsOfAll(myeongJinAndHakGwanAndTodayDietUserList);
+                log.info("메시지 전송 완료");
+                // 여기서 실제 작업을 수행합니다.
+            } finally {
+                redisService.unlock(lockKey, lockValue);
+            }
+        } else {
+            System.out.println("Could not acquire lock");
+        }
     }
     private void sendTodayDietOfMyeongJin(List<User> userList){
         Diet diet;

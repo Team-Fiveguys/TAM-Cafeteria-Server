@@ -7,11 +7,26 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class RedisService {
     private final RedisTemplate<String, Object> redisTemplate;
+
+    public boolean tryLock(String key, String value, long timeout, TimeUnit unit) {
+        Boolean success = redisTemplate.opsForValue().setIfAbsent(key, value, timeout, unit);
+        return success != null && success;
+    }
+
+    public boolean unlock(String key, String value) {
+        String currentValue = (String) redisTemplate.opsForValue().get(key);
+        if (value.equals(currentValue)) {
+            redisTemplate.delete(key);
+            return true;
+        }
+        return false;
+    }
 
     public void setValue(String key, String value){
         ValueOperations<String, Object> values = redisTemplate.opsForValue();
