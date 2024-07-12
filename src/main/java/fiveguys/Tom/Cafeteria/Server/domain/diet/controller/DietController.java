@@ -3,6 +3,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.diet.controller;
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
+import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.repository.CafeteriaRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.converter.DietConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietRequestDTO;
@@ -10,6 +11,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.MenuDiet;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.repository.DietRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.service.DietQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.converter.MenuConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
@@ -27,7 +29,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/diets")
 public class DietController {
     private final DietQueryService dietQueryService;
-    private final CafeteriaQueryService cafeteriaQueryService;
+    private final CafeteriaRepository cafeteriaRepository;
     @Value("${cloud.aws.s3.path.prefix}")
     private String prefixURI;
 
@@ -53,7 +55,7 @@ public class DietController {
                                                                           @RequestParam(name = "month") int month,
                                                                           @RequestParam(name = "weekNum") int weekNum,
                                                                           @RequestParam(name = "meals") Meals meals) {
-        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
+        Cafeteria cafeteria = cafeteriaRepository.getReferenceById(cafeteriaId);
         List<Diet> dietListOfWeek = dietQueryService
                 .getDietListOfWeek(cafeteria, year, month, weekNum, meals);
         List<DietResponseDTO.DietQueryDTO> dietResponseDTOs = dietListOfWeek.stream()

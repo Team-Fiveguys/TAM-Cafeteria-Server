@@ -26,7 +26,23 @@ public interface DietRepository extends JpaRepository<Diet, Long> {
             @Param("localDate") LocalDate localDate,
             @Param("meals") Meals meals
     );
-    List<Diet> findAllByCafeteriaAndYearAndMonthAndWeekAndMeals(Cafeteria cafeteria, int year, int month, int week, Meals meals);
+    @Query("SELECT d FROM Diet d " +
+            "LEFT JOIN FETCH d.dietPhoto dp " +
+            "LEFT JOIN FETCH d.menuDietList md " +
+            "LEFT JOIN FETCH md.menu m " +
+            "WHERE d.cafeteria = :cafeteria " +
+            "AND d.year = :year " +
+            "AND d.month = :month " +
+            "AND d.week = :week " +
+            "AND d.meals = :meals "
+    )
+    List<Diet> findAllByCafeteriaAndYearAndMonthAndWeekAndMeals(
+            @Param("cafeteria") Cafeteria cafeteria,
+            @Param("year") int year,
+            @Param("month") int month,
+            @Param("week") int week,
+            @Param("meals") Meals meals
+    );
 
     boolean existsByCafeteriaAndLocalDateAndMeals(Cafeteria cafeteria, LocalDate date, Meals meals);
 }
