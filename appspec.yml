@@ -1,0 +1,21 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /var/app/current
+
+hooks:
+  ApplicationStop:
+    - location: /var/app/current/terminate_previous_version.sh
+      timeout: 300
+      runas: ubuntu
+
+  BeforeInstall:
+    - location: /var/app/current/set_env_vars.sh
+      timeout: 300
+      runas: ubuntu
+
+  ApplicationStart:
+    - location: /var/app/current/start_app.sh
+      timeout: 300
+      runas: ubuntu
