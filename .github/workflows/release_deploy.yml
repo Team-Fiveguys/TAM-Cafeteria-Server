@@ -46,9 +46,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_ACTION_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      - name: Upload to S3
+      - name: Package and Upload to S3
         run: |
-          aws s3 cp build/libs/Tom-Cafeteria-Server-0.0.1-SNAPSHOT.jar s3://tam-cafeteria-release/jars/application.jar
+          mkdir -p deployment
+          cp build/libs/Tom-Cafeteria-Server-0.0.1-SNAPSHOT.jar deployment/
+          cp appspec.yml deployment/
+          cd deployment
+          zip -r ../deployment-package.zip .
+          cd ..
+          aws s3 cp deployment-package.zip s3://tam-cafeteria-release/jars/deployment-package.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -70,4 +76,4 @@ jobs:
             --application-name tam-release-code \
             --deployment-group-name tam-release-group \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
-            --s3-location bucket=tam-cafeteria-release,key=jars/application.jar,bundleType=zip
+            --s3-location bucket=tam-cafeteria-release,key=jars/deployment-package.zip,bundleType=zip
