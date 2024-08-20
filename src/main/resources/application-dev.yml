@@ -13,8 +13,8 @@ spring:
     properties:
       hibernate:
         # generate_statistics: true
-        format_sql: true
-        show_sql: true
+        # format_sql: true
+        # show_sql: true
   servlet:
     multipart:
       max-file-size: 10MB
