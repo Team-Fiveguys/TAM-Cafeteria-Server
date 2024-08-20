@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'dev'
 
     steps:
       - name: Checkout
@@ -54,7 +54,7 @@ jobs:
           cd deployment
           zip -r ../deployment-package.zip .
           cd ..
-          aws s3 cp deployment-package.zip s3://tam-cafeteria-release/jars/deployment-package.zip
+          aws s3 cp deployment-package.zip s3://tam-cafeteria-dev/jars/deployment-package.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -73,7 +73,7 @@ jobs:
       - name: Deploy to AWS CodeDeploy
         run: |
           aws deploy create-deployment \
-            --application-name tam-release-code \
-            --deployment-group-name tam-release-group \
+            --application-name tam-dev-code \
+            --deployment-group-name tam-dev-group \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
-            --s3-location bucket=tam-cafeteria-release,key=jars/deployment-package.zip,bundleType=zip
+            --s3-location bucket=tam-cafeteria-dev,key=jars/deployment-package.zip,bundleType=zip
