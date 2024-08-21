@@ -27,7 +27,7 @@ public class JwtTokenProvider implements TokenProvider {
     }
 
     @Override
-    public Jws<Claims> verifyToken(String token) throws ExpiredJwtException{
+    public Jws<Claims> verifyToken(String token){
         try {
             Jws<Claims> claims = Jwts.parser()
                     .verifyWith(secretkey)
@@ -47,6 +47,10 @@ public class JwtTokenProvider implements TokenProvider {
             // 부적절한 인자가 전달된 경우의 처리
             log.info("부적절한 인자가 전달되었습니다.");
             throw new GeneralException(ErrorStatus.INVALID_TOKEN_ERROR);
+        } catch (ExpiredJwtException e){
+            // 토큰 기간 만료의 경우
+            log.info("토큰이 만료되었습니다.");
+            throw new GeneralException(ErrorStatus.ACCESS_TOKEN_EXPIRED);
         }
     }
 }
