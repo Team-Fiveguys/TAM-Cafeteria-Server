@@ -56,9 +56,8 @@ public enum ErrorStatus implements BaseCode {
     EMAIL_IS_NOT_SAME(HttpStatus.BAD_REQUEST, "LOGIN4006", "인증을 요청한 이메일과 검증을 요청한 이메일이 다릅니다."),
     EMAIL_SENDER_IS_NULL(HttpStatus.INTERNAL_SERVER_ERROR, "LOGIN5001", "서버내의 이메일 sender가 정해지지 않았습니다."),
     PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "LOGIN4006", "입력한 패스워드가 올바르지 않습니다."),
+    ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "LOGIN4008", "액세스 토큰이 만료되었습니다. 토큰 재발급 요청을 해주세요."),
     REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "LOGIN4007", "리프레시 토큰이 만료되었습니다. 재인증이 필요합니다.");
-
-
 
 
 

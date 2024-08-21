@@ -5,15 +5,11 @@ package fiveguys.Tom.Cafeteria.Server.filter;
  유효하지 않으면 예외 발생
  */
 
-import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.auth.UserContext;
-import fiveguys.Tom.Cafeteria.Server.auth.jwt.JwtToken;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.JwtTokenProvider;
 import fiveguys.Tom.Cafeteria.Server.auth.jwt.service.JwtUtil;
 import fiveguys.Tom.Cafeteria.Server.domain.common.RedisService;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.Role;
-import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
-import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,9 +25,8 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtUtil jwtUtil;
-    private final RedisService redisService;
     private final static String[] ignorePrefix = {"/sign-up", "/swagger-ui", "/v3/api-docs", "/auth", "/oauth2", "/health"
-            , "/token/validate" , "/message", "/enums", "/users/nickname", "/cafeterias", "/diets"};
+            , "/token/validate", "/token/access-token" , "/message", "/enums", "/users/nickname", "/cafeterias", "/diets"};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("url ={}", request.getRequestURI());
@@ -51,22 +46,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             accessToken = authHeader.substring(7);
         }
         // 토큰을 검증
-        try{
-            jwtTokenProvider.verifyToken(accessToken);
-        }
-        catch (ExpiredJwtException e){ // 만료 토큰 재발급 로직 거치기
-            String refreshToken = redisService.getValue(accessToken);
-            String userId = redisService.getValue(refreshToken);
-            redisService.deleteValues(accessToken);
-            if(userId.isEmpty()){ //refreshToken 만료
-                throw new GeneralException(ErrorStatus.REFRESH_TOKEN_EXPIRED);
-            }
-            JwtToken newJwtToken = jwtUtil.generateToken(userId); // 토큰 재발급
-            redisService.deleteValues(refreshToken);
-            accessToken = newJwtToken.getAccessToken();
-            response.addHeader("Access-Token", newJwtToken.getAccessToken());
-        }
-
+        jwtTokenProvider.verifyToken(accessToken);
 
         try{
             // 얻은 아이디로 유저 조회하기
