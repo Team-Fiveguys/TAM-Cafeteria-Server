@@ -26,7 +26,7 @@ public class RedisService {
 
     public void setValue(String key, String value, Duration duration){
         ValueOperations<String, Object> values = redisTemplate.opsForValue();
-        values.set(key, value, duration);
+        values.set(key, value, Duration.ofSeconds(1));
     }
 
     public String getValue(String key){
