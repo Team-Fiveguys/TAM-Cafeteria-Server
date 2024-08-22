@@ -28,8 +28,8 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtUtil {
     private final UserQueryService userQueryService;
-    private static final Duration refreshTokenExpireDuration = Duration.ofDays(360);
-    private static final Duration accessTokenExpireDuration = Duration.ofDays(30); // 나중에 수정
+    private static final Duration refreshTokenExpireDuration = Duration.ofSeconds(1);
+    private static final Duration accessTokenExpireDuration = Duration.ofSeconds(5); // 나중에 수정
     private final RedisService redisService;
     @Value("${spring.jwt.secret}")
     private String secret;
@@ -53,7 +53,6 @@ public class JwtUtil {
     public String generateRefreshToken(String id) {
         // 토큰의 유효 기간을 밀리초 단위로 설정.
         long refreshPeriod = refreshTokenExpireDuration.toMillis();
-        refreshPeriod = Duration.ofSeconds(1).toMillis();
         // 새로운 클레임 객체를 생성하고, 아이디를 셋
         Claims claims = Jwts.claims()
                 .subject(id)
@@ -78,7 +77,6 @@ public class JwtUtil {
     public String generateAccessToken(String id) {
         User user = userQueryService.getUserById(Long.parseLong(id));
         long tokenPeriod = accessTokenExpireDuration.toMillis();
-        tokenPeriod = Duration.ofSeconds(1).toMillis();
         Claims claims = Jwts.claims()
                 .subject(id)
                 .add("role", user.getRole())
