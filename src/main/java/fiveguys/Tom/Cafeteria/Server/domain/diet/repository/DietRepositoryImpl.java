@@ -1,0 +1,49 @@
+package fiveguys.Tom.Cafeteria.Server.domain.diet.repository;
+
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberTemplate;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.QDiet;
+import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
+
+@Repository
+@Slf4j
+public class DietRepositoryImpl implements  DietRepositoryCustom{
+    private JPAQueryFactory queryFactory;
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @PostConstruct
+    public void init() {
+        this.queryFactory = new JPAQueryFactory(entityManager);
+    }
+
+    @Override
+    public List<Diet> findDietsByThreeWeeks() {
+        QDiet qDiet = QDiet.diet;
+
+        // 현재 주차 계산 (주차 옵션 5)
+        NumberTemplate<Integer> currentWeek = numberTemplate(Integer.class, "WEEK(CURDATE())");
+
+        // 전주, 이번주, 다음주 주차 계산
+        NumberTemplate<Integer> entityWeek = numberTemplate(Integer.class, "WEEK({0})", qDiet.localDate);
+
+        // 조건 설정: 전주, 이번주, 다음주
+        BooleanExpression isWithinThreeWeeks = entityWeek.between(currentWeek.subtract(1), currentWeek.add(1));
+
+        List<Diet> dietList = queryFactory.selectFrom(qDiet)
+                .where(isWithinThreeWeeks)
+                .fetch();
+        log.info("result = {}", dietList);
+        return dietList;
+    }
+}
