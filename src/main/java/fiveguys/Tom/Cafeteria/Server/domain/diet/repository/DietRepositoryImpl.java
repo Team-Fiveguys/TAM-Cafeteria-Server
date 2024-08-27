@@ -5,6 +5,8 @@ import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.QDiet;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.QMenuDiet;
+import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.QMenu;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -17,7 +19,7 @@ import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
 
 @Repository
 @Slf4j
-public class DietRepositoryImpl implements  DietRepositoryCustom{
+public class DietRepositoryImpl implements DietRepositoryCustom{
     private JPAQueryFactory queryFactory;
     @PersistenceContext
     private EntityManager entityManager;
@@ -28,8 +30,10 @@ public class DietRepositoryImpl implements  DietRepositoryCustom{
     }
 
     @Override
-    public List<Diet> findDietsByThreeWeeks() {
+    public List<Diet> findDietsByThreeWeeks(Long cafeteriaId) {
         QDiet qDiet = QDiet.diet;
+        QMenu qMenu = QMenu.menu;
+        QMenuDiet qMenuDiet = QMenuDiet.menuDiet;
 
         // 현재 주차 계산 (주차 옵션 5)
         NumberTemplate<Integer> currentWeek = numberTemplate(Integer.class, "WEEK(CURDATE())");
@@ -41,9 +45,14 @@ public class DietRepositoryImpl implements  DietRepositoryCustom{
         BooleanExpression isWithinThreeWeeks = entityWeek.between(currentWeek.subtract(1), currentWeek.add(1));
 
         List<Diet> dietList = queryFactory.selectFrom(qDiet)
-                .where(isWithinThreeWeeks)
+                .join(qDiet.menuDietList, qMenuDiet)
+                .fetchJoin()
+                .join(qMenuDiet.menu, qMenu)
+                .fetchJoin()
+                .where(isWithinThreeWeeks
+                        .and(qDiet.cafeteria.id.eq(cafeteriaId))
+                )
                 .fetch();
-        log.info("result = {}", dietList);
         return dietList;
     }
 }
