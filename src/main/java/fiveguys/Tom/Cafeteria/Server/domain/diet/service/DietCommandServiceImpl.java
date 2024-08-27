@@ -4,14 +4,11 @@ import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.converter.DietConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietRequestDTO;
-import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
-import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.MenuDiet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.repository.MenuDietRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.repository.DietRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
-import fiveguys.Tom.Cafeteria.Server.domain.menu.service.MenuQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +32,6 @@ public class DietCommandServiceImpl implements DietCommandService{
         menuList.stream()
                 .forEach( (menu) ->MenuDiet.createMenuDiet(menu, diet));
         diet.setCafeteria(cafeteria);
-        diet.setDateInfo();
         Diet savedDiet = dietRepository.save(diet);
         return savedDiet;
     }
@@ -79,7 +75,6 @@ public class DietCommandServiceImpl implements DietCommandService{
                     .dayOff(true)
                     .soldOut(false)
                     .build();
-            createdDiet.setDateInfo();
             return dietRepository.save(createdDiet);
         }
         else{ //해당 식당과 시간에 식단이 있다면
