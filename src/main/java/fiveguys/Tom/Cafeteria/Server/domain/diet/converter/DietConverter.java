@@ -1,12 +1,12 @@
 package fiveguys.Tom.Cafeteria.Server.domain.diet.converter;
 
 
+import fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.entity.DietPhoto;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +24,12 @@ public class DietConverter {
         return diet;
     }
 
-    public static DietResponseDTO.DietQueryDTO toDietResponseDTO(String prefixURI, Diet diet, MenuResponseDTO.MenuResponseListDTO menuResponseListDTO){
+    public static DietResponseDTO.DietQueryDTO toDietResponseDTO(String prefixURI, Diet diet, DietPhoto dietPhoto, MenuResponseDTO.MenuResponseListDTO menuResponseListDTO){
 
         return DietResponseDTO.DietQueryDTO.builder()
                 .dietId(diet.getId())
                 .menuResponseListDTO(menuResponseListDTO)
-                .photoURI(diet.getDietPhoto() != null ? prefixURI + diet.getDietPhoto().getImageKey() : "사진이 등록되어있지 않습니다.")
+                .photoURI(dietPhoto != null ? prefixURI + dietPhoto.getImageKey() : "사진이 등록되어있지 않습니다.")
                 .dayOff(diet.isDayOff())
                 .soldOut(diet.isSoldOut())
                 .date(diet.getLocalDate())
@@ -43,9 +43,9 @@ public class DietConverter {
                 .build();
     }
 
-    public static DietResponseDTO.WeekDietsResponseDTO toWeekDietsResponseDTO(List<DietResponseDTO.DietQueryDTO> dietResponseDTOList){
-        return DietResponseDTO.WeekDietsResponseDTO.builder()
-                .dietResponseDTOList(dietResponseDTOList)
+    public static DietResponseDTO.ThreeWeeksDietsResponseDTO toThreeWeeksDietsResponseDTO(List<DietResponseDTO.DietQueryDTO> dietResponseDTOList){
+        return DietResponseDTO.ThreeWeeksDietsResponseDTO.builder()
+                .ThreeWeeksResponseDTO(dietResponseDTOList)
                 .build();
     }
     public static DietResponseDTO.SwitchSoldOutResponseDTO toSwitchSoldOutResponseDTO(boolean isSoldOut){
