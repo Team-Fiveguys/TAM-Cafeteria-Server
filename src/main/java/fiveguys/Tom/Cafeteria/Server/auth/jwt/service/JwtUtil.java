@@ -28,8 +28,8 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtUtil {
     private final UserQueryService userQueryService;
-    private static final Duration refreshTokenExpireDuration = Duration.ofSeconds(1);
-    private static final Duration accessTokenExpireDuration = Duration.ofSeconds(5); // 나중에 수정
+    private static final Duration refreshTokenExpireDuration = Duration.ofDays(365);
+    private static final Duration accessTokenExpireDuration = Duration.ofDays(60); // 나중에 수정
     private final RedisService redisService;
     @Value("${spring.jwt.secret}")
     private String secret;
