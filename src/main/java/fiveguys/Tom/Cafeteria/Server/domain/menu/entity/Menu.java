@@ -24,8 +24,8 @@ public class Menu extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "cafeteria_id")
-
     private Cafeteria cafeteria;
+
     @JoinColumn(name = "menu_category_id")
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private MenuCategory menuCategory;
