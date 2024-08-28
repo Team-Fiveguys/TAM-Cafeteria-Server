@@ -60,7 +60,6 @@ public class AdminDietController {
     @PutMapping("/menus")
     public ApiResponse<DietResponseDTO.DietQueryDTO> addMenu(@RequestBody DietRequestDTO.ChangeMenuDTO menuAddDTO){
         Diet diet = dietQueryService.getDiet(menuAddDTO.getCafeteriaId(), menuAddDTO.getLocalDate(), menuAddDTO.getMeals());
-        DietPhoto dietPhoto = dietPhotoRepository.findByDiet(diet);
         Menu menu = menuQueryService.findByCafeteriaAndName(menuAddDTO.getCafeteriaId(), menuAddDTO.getMenuName());
         Diet addedDiet = dietCommandService.addMenu(diet, menu);
 
@@ -69,14 +68,13 @@ public class AdminDietController {
                 .map(MenuDiet::getMenu)
                 .map(MenuConverter::toMenuQueryDTO)
                 .collect(Collectors.toList());
-        DietResponseDTO.DietQueryDTO dietQueryDTO = DietConverter.toDietResponseDTO(prefixURI, addedDiet, dietPhoto ,MenuConverter.toMenuResponseListDTO(menuList));
+        DietResponseDTO.DietQueryDTO dietQueryDTO = DietConverter.toDietResponseDTO(prefixURI, addedDiet ,MenuConverter.toMenuResponseListDTO(menuList));
         return ApiResponse.onSuccess(dietQueryDTO);
     }
     @Operation(summary = "식단에 등록된 메뉴를 제거하는 API", description = "식단 id와 메뉴 이름을 받아 식단에 등록된 메뉴를 제거")
     @DeleteMapping("/menus")
     public ApiResponse<DietResponseDTO.DietQueryDTO> deleteMenu(@RequestBody DietRequestDTO.ChangeMenuDTO menuAddDTO){
         Diet diet = dietQueryService.getDiet(menuAddDTO.getCafeteriaId(), menuAddDTO.getLocalDate(), menuAddDTO.getMeals());
-        DietPhoto dietPhoto = dietPhotoRepository.findByDiet(diet);
         Menu menu = menuQueryService.findByCafeteriaAndName(menuAddDTO.getCafeteriaId(), menuAddDTO.getMenuName());
         Diet removedDiet = dietCommandService.removeMenu(diet, menu);
 
@@ -85,7 +83,7 @@ public class AdminDietController {
                 .map(MenuDiet::getMenu)
                 .map(MenuConverter::toMenuQueryDTO)
                 .collect(Collectors.toList());
-        DietResponseDTO.DietQueryDTO dietQueryDTO = DietConverter.toDietResponseDTO(prefixURI, removedDiet, dietPhoto, MenuConverter.toMenuResponseListDTO(menuList));
+        DietResponseDTO.DietQueryDTO dietQueryDTO = DietConverter.toDietResponseDTO(prefixURI, removedDiet, MenuConverter.toMenuResponseListDTO(menuList));
         return ApiResponse.onSuccess(dietQueryDTO);
     }
 

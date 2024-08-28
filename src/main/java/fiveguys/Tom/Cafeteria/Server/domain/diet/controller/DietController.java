@@ -3,7 +3,6 @@ package fiveguys.Tom.Cafeteria.Server.domain.diet.controller;
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.converter.DietConverter;
-import fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.entity.DietPhoto;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.repository.DietPhotoRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
@@ -38,13 +37,12 @@ public class DietController {
                                                              @RequestParam(name = "localDate") LocalDate localDate,
                                                              @RequestParam(name = "meals") Meals meals){
         Diet diet = dietQueryService.getDiet(cafeteriaId,localDate, meals);
-        DietPhoto dietPhoto = dietPhotoRepository.findByDiet(diet);
         List<MenuDiet> menuDietList = diet.getMenuDietList();
         List<MenuResponseDTO.MenuQueryDTO> menuList = menuDietList.stream()
                 .map(MenuDiet::getMenu)
                 .map(MenuConverter::toMenuQueryDTO)
                 .collect(Collectors.toList());
-        DietResponseDTO.DietQueryDTO dietQueryResponseDTO = DietConverter.toDietResponseDTO(prefixURI, diet, dietPhoto ,MenuConverter.toMenuResponseListDTO(menuList));
+        DietResponseDTO.DietQueryDTO dietQueryResponseDTO = DietConverter.toDietResponseDTO(prefixURI, diet, MenuConverter.toMenuResponseListDTO(menuList));
         return ApiResponse.onSuccess(dietQueryResponseDTO);
     }
     @Operation(summary =  "특정 식당의 3주치의 식단표 조회 API", description = "식당id를 입력 받아 해당 식당의 3주치의 식단 정보 리스트를 반환한다. 날짜순 오름차순으로 반환한다.")
@@ -54,12 +52,11 @@ public class DietController {
         List<Diet> threeWeeksDiet = dietQueryService.getThreeWeeksDiet(cafeteriaId);
         List<DietResponseDTO.DietQueryDTO> dietQueryDTOList = threeWeeksDiet.stream() // diet와 연관된 dietphoto, dietMenu 가져오기
                 .map(diet -> {
-                    DietPhoto dietPhoto = dietPhotoRepository.findByDiet(diet);
                     List<MenuResponseDTO.MenuQueryDTO> menuQueryDTOList = diet.getMenuDietList().stream()
                             .map(MenuDiet::getMenu)
                             .map(MenuConverter::toMenuQueryDTO)
                             .collect(Collectors.toList());
-                    DietResponseDTO.DietQueryDTO dietQueryResponseDTO = DietConverter.toDietResponseDTO(prefixURI, diet, dietPhoto, MenuConverter.toMenuResponseListDTO(menuQueryDTOList));
+                    DietResponseDTO.DietQueryDTO dietQueryResponseDTO = DietConverter.toDietResponseDTO(prefixURI, diet, MenuConverter.toMenuResponseListDTO(menuQueryDTOList));
                     return dietQueryResponseDTO;
                 })
                 .collect(Collectors.toList());
