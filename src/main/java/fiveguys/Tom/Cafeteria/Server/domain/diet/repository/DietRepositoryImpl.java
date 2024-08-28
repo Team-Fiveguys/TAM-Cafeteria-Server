@@ -3,6 +3,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.diet.repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.entity.QDietPhoto;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.QDiet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.QMenuDiet;
@@ -34,6 +35,7 @@ public class DietRepositoryImpl implements DietRepositoryCustom{
     public List<Diet> findDietsByThreeWeeks(Long cafeteriaId) {
         QDiet qDiet = QDiet.diet;
         QMenu qMenu = QMenu.menu;
+        QDietPhoto qDietPhoto = QDietPhoto.dietPhoto;
         QMenuDiet qMenuDiet = QMenuDiet.menuDiet;
 
         // 현재 주차 계산 (주차 옵션 5)
@@ -46,6 +48,8 @@ public class DietRepositoryImpl implements DietRepositoryCustom{
         BooleanExpression isWithinThreeWeeks = entityWeek.between(currentWeek.subtract(1), currentWeek.add(1));
 
         List<Diet> dietList = queryFactory.selectFrom(qDiet)
+                .leftJoin(qDiet.dietPhoto, qDietPhoto)
+                .fetchJoin()
                 .leftJoin(qDiet.menuDietList, qMenuDiet)
                 .fetchJoin()
                 .leftJoin(qMenuDiet.menu, qMenu)
