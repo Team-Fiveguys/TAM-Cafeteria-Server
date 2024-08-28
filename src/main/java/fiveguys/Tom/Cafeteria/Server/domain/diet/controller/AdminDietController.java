@@ -48,9 +48,12 @@ public class AdminDietController {
         List<Menu> menuList = menuNameList.stream()
                 .map(menuName -> menuQueryService.findByCafeteriaAndName(dietCreateDTO.getCafeteriaId() ,menuName))
                 .collect(Collectors.toList());
-        Cafeteria cafeteria = cafeteriaQueryService.findById(dietCreateDTO.getCafeteriaId());
-        Diet diet = dietCommandService.createDiet(cafeteria, dietCreateDTO, menuList);
-        return ApiResponse.onSuccess(DietConverter.toDietCreateResponseDTO(diet));
+        Diet diet = dietCommandService.createDiet(dietCreateDTO.getCafeteriaId(), dietCreateDTO, menuList);
+        List<String> enrroledMenuNameList = diet.getMenuDietList().stream()
+                .map(menuDiet -> menuDiet.getMenu().getName())
+                .collect(Collectors.toList());
+
+        return ApiResponse.onSuccess(DietConverter.toDietCreateResponseDTO(diet, enrroledMenuNameList));
     }
 
     @Operation(summary = "식단에 메뉴를 추가하는 API", description = "식단 id와 메뉴 이름을 받아 식단에 메뉴를 추가")
