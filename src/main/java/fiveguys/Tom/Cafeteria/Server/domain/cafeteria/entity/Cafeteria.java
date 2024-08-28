@@ -14,7 +14,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 public class Cafeteria extends BaseEntity {
     @Id
@@ -41,7 +40,7 @@ public class Cafeteria extends BaseEntity {
     private LocalTime lunchEndTime; //중식 운영 시작 시간
 
     @OneToMany(mappedBy = "cafeteria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<UserCafeteria> userCafeteriaList = new ArrayList<>();
+    private List<UserCafeteria> userCafeteriaList;
 
     public void setCongestion(Congestion congestion) {
         this.congestion = congestion;

@@ -31,6 +31,7 @@ public class DietResponseDTO {
         private MenuResponseDTO.MenuResponseListDTO menuResponseListDTO;
         private boolean soldOut;
         private boolean dayOff;
+        private Meals meals;
     }
     @Builder
     @AllArgsConstructor

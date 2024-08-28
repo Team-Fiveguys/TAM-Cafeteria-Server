@@ -1,6 +1,7 @@
 package fiveguys.Tom.Cafeteria.Server.domain.diet.service;
 
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
+import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.repository.CafeteriaRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.converter.DietConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietRequestDTO;
@@ -19,16 +20,18 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class DietCommandServiceImpl implements DietCommandService{
     private final DietRepository dietRepository;
     private final CafeteriaQueryService cafeteriaQueryService;
+    private final CafeteriaRepository cafeteriaRepository;
     private final DietQueryService dietQueryService;
     private final MenuDietRepository menuDietRepository;
 
     @Override
-    public Diet createDiet(Cafeteria cafeteria, DietRequestDTO.DietCreateDTO dietCreateDTO, List<Menu> menuList) {
+    @Transactional
+    public Diet createDiet(Long cafeteriaId, DietRequestDTO.DietCreateDTO dietCreateDTO, List<Menu> menuList) {
         Diet diet = DietConverter.toDiet(dietCreateDTO);
+        Cafeteria cafeteria = cafeteriaRepository.getReferenceById(cafeteriaId);
         menuList.stream()
                 .forEach( (menu) ->MenuDiet.createMenuDiet(menu, diet));
         diet.setCafeteria(cafeteria);

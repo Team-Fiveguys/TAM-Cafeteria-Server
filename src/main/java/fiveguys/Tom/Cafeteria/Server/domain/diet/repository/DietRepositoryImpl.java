@@ -3,6 +3,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.diet.repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.entity.QDietPhoto;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.QDiet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.QMenuDiet;
@@ -12,7 +13,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
@@ -33,6 +35,7 @@ public class DietRepositoryImpl implements DietRepositoryCustom{
     public List<Diet> findDietsByThreeWeeks(Long cafeteriaId) {
         QDiet qDiet = QDiet.diet;
         QMenu qMenu = QMenu.menu;
+        QDietPhoto qDietPhoto = QDietPhoto.dietPhoto;
         QMenuDiet qMenuDiet = QMenuDiet.menuDiet;
 
         // 현재 주차 계산 (주차 옵션 5)
@@ -45,14 +48,17 @@ public class DietRepositoryImpl implements DietRepositoryCustom{
         BooleanExpression isWithinThreeWeeks = entityWeek.between(currentWeek.subtract(1), currentWeek.add(1));
 
         List<Diet> dietList = queryFactory.selectFrom(qDiet)
-                .join(qDiet.menuDietList, qMenuDiet)
+                .leftJoin(qDiet.dietPhoto, qDietPhoto)
                 .fetchJoin()
-                .join(qMenuDiet.menu, qMenu)
+                .leftJoin(qDiet.menuDietList, qMenuDiet)
+                .fetchJoin()
+                .leftJoin(qMenuDiet.menu, qMenu)
                 .fetchJoin()
                 .where(isWithinThreeWeeks
                         .and(qDiet.cafeteria.id.eq(cafeteriaId))
                 )
                 .fetch();
+        Collections.sort(dietList, Comparator.comparing(Diet::getLocalDate));
         return dietList;
     }
 }

@@ -24,19 +24,21 @@ public class DietConverter {
         return diet;
     }
 
-    public static DietResponseDTO.DietQueryDTO toDietResponseDTO(String prefixURI, Diet diet, DietPhoto dietPhoto, MenuResponseDTO.MenuResponseListDTO menuResponseListDTO){
+    public static DietResponseDTO.DietQueryDTO toDietResponseDTO(String prefixURI, Diet diet, MenuResponseDTO.MenuResponseListDTO menuResponseListDTO){
 
         return DietResponseDTO.DietQueryDTO.builder()
                 .dietId(diet.getId())
                 .menuResponseListDTO(menuResponseListDTO)
-                .photoURI(dietPhoto != null ? prefixURI + dietPhoto.getImageKey() : "사진이 등록되어있지 않습니다.")
+                .photoURI(diet.getDietPhoto() != null ? prefixURI + diet.getDietPhoto().getImageKey() : "사진이 등록되어있지 않습니다.")
                 .dayOff(diet.isDayOff())
                 .soldOut(diet.isSoldOut())
                 .date(diet.getLocalDate())
+                .meals(diet.getMeals())
                 .build();
     }
-    public static DietResponseDTO.DietCreateDTO toDietCreateResponseDTO(Diet diet){
+    public static DietResponseDTO.DietCreateDTO toDietCreateResponseDTO(Diet diet, List<String> enrolledMenuList){
         return DietResponseDTO.DietCreateDTO.builder()
+                .menuNameList(enrolledMenuList)
                 .cafeteriaId(diet.getCafeteria().getId())
                 .date(diet.getLocalDate())
                 .meals(diet.getMeals())

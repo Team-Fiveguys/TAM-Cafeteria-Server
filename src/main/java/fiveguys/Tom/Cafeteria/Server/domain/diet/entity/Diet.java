@@ -2,6 +2,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.diet.entity;
 
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.entity.DietPhoto;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,6 +38,8 @@ public class Diet extends BaseEntity {
     @OneToMany(mappedBy = "diet", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<MenuDiet> menuDietList;
 
+    @OneToOne(mappedBy = "diet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private DietPhoto dietPhoto;
     public void setCafeteria(Cafeteria cafeteria) {
         this.cafeteria = cafeteria;
     }
