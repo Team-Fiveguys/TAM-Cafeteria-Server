@@ -2,7 +2,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.menu.service;
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.code.status.ErrorStatus;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
-import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
+import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.repository.CafeteriaRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.repository.MenuRepository;
 import fiveguys.Tom.Cafeteria.Server.exception.GeneralException;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MenuQueryServiceImpl implements MenuQueryService{
     private final MenuRepository menuRepository;
-    private final CafeteriaQueryService cafeteriaQueryService;
+    private final CafeteriaRepository cafeteriaRepository;
     @Override
     public Menu findById(Long id) {
         Menu menu = menuRepository.findById(id).orElseThrow(
@@ -32,7 +32,7 @@ public class MenuQueryServiceImpl implements MenuQueryService{
 
     @Override
     public Menu findByCafeteriaAndName(Long cafeteriaId, String name) {
-        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
+        Cafeteria cafeteria = cafeteriaRepository.getReferenceById(cafeteriaId);
         Menu menu = menuRepository.findByCafeteriaAndName(cafeteria, name).orElseThrow(
                 () -> new GeneralException(ErrorStatus.MENU_NOT_FOUND)
         );
@@ -41,7 +41,7 @@ public class MenuQueryServiceImpl implements MenuQueryService{
 
     @Override
     public boolean existByNameAndCafeteria(Long cafeteriaId, String name) {
-        Cafeteria cafeteria = cafeteriaQueryService.findById(cafeteriaId);
+        Cafeteria cafeteria = cafeteriaRepository.getReferenceById(cafeteriaId);
         return menuRepository.existsByCafeteriaAndName(cafeteria, name);
     }
 }
