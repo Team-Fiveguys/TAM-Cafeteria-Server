@@ -12,7 +12,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
@@ -45,14 +46,15 @@ public class DietRepositoryImpl implements DietRepositoryCustom{
         BooleanExpression isWithinThreeWeeks = entityWeek.between(currentWeek.subtract(1), currentWeek.add(1));
 
         List<Diet> dietList = queryFactory.selectFrom(qDiet)
-                .join(qDiet.menuDietList, qMenuDiet)
+                .leftJoin(qDiet.menuDietList, qMenuDiet)
                 .fetchJoin()
-                .join(qMenuDiet.menu, qMenu)
+                .leftJoin(qMenuDiet.menu, qMenu)
                 .fetchJoin()
                 .where(isWithinThreeWeeks
                         .and(qDiet.cafeteria.id.eq(cafeteriaId))
                 )
                 .fetch();
+        Collections.sort(dietList, Comparator.comparing(Diet::getLocalDate));
         return dietList;
     }
 }
