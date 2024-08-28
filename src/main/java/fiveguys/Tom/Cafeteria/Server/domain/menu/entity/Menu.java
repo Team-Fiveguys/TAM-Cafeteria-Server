@@ -9,7 +9,6 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 public class Menu extends BaseEntity {
     @Id
