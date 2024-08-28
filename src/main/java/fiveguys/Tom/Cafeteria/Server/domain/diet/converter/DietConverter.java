@@ -33,10 +33,12 @@ public class DietConverter {
                 .dayOff(diet.isDayOff())
                 .soldOut(diet.isSoldOut())
                 .date(diet.getLocalDate())
+                .meals(diet.getMeals())
                 .build();
     }
-    public static DietResponseDTO.DietCreateDTO toDietCreateResponseDTO(Diet diet){
+    public static DietResponseDTO.DietCreateDTO toDietCreateResponseDTO(Diet diet, List<String> enrolledMenuList){
         return DietResponseDTO.DietCreateDTO.builder()
+                .menuNameList(enrolledMenuList)
                 .cafeteriaId(diet.getCafeteria().getId())
                 .date(diet.getLocalDate())
                 .meals(diet.getMeals())
