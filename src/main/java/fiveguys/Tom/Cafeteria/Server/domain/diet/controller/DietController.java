@@ -3,7 +3,6 @@ package fiveguys.Tom.Cafeteria.Server.domain.diet.controller;
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.converter.DietConverter;
-import fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.repository.DietPhotoRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
@@ -19,14 +18,12 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/diets")
 public class DietController {
     private final DietQueryService dietQueryService;
-    private final DietPhotoRepository dietPhotoRepository;
     @Value("${cloud.aws.s3.path.prefix}")
     private String prefixURI;
 
