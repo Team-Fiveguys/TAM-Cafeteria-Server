@@ -6,6 +6,7 @@ import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryServ
 import fiveguys.Tom.Cafeteria.Server.domain.diet.converter.DietConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
+import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.MenuDiet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.repository.MenuDietRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.repository.DietRepository;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,9 +42,9 @@ public class DietCommandServiceImpl implements DietCommandService{
     }
 
     @Override
-    public Diet addMenu(Diet diet, Menu menu) {
-        diet.addMenu(menu);
-        return diet;
+    public void removeDiet(Long cafeteriaId, LocalDate date, Meals meals) {
+        Diet diet = dietQueryService.getDiet(cafeteriaId, date, meals);
+        dietRepository.delete(diet);
     }
 
     @Override
