@@ -29,7 +29,7 @@ public class FCMServiceImpl implements FCMService{
         try {
             String response = FirebaseMessaging.getInstance().send(message);
             log.info("response = {}", response);
-        } catch (FirebaseMessagingException e) { // 보내지 못했을 때 예외 처리 생각하기
+        } catch (FirebaseMessagingException e) {
             throw new RuntimeException(e);
         }
     }
