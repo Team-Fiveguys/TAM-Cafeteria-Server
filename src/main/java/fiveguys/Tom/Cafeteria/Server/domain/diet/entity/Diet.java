@@ -3,7 +3,6 @@ package fiveguys.Tom.Cafeteria.Server.domain.diet.entity;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
 import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.entity.DietPhoto;
-import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -44,10 +43,6 @@ public class Diet extends BaseEntity {
         this.cafeteria = cafeteria;
     }
 
-    public void addMenu(Menu menu){
-        MenuDiet menuDiet = MenuDiet.createMenuDiet(menu, this);
-        this.menuDietList.add(menuDiet);
-    }
     public void remove(MenuDiet menuDiet){
         this.menuDietList.remove(menuDiet);
         menuDiet.setDiet(null);
