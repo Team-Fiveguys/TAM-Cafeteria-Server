@@ -61,6 +61,7 @@ public class DietCommandServiceImpl implements DietCommandService{
     }
 
     @Override
+    @Transactional
     public Diet switchSoldOut(Diet diet) {
         diet.switchSoldOut();
         return diet;
