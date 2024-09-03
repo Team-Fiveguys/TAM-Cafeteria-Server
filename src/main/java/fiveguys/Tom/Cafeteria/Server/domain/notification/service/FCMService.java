@@ -10,8 +10,7 @@ import java.util.List;
 
 public interface FCMService {
     public void sendMessage(Message message);
-    public void sendMessage(MulticastMessage message);
-    public MulticastMessage createMultiCastMessage(String title, String content);
+    public void sendMessage(MulticastMessage message, List<String> filteredTokens);
 
     public MulticastMessage createMultiCastMessage(String title, String content, List<String> tokenList);
 
