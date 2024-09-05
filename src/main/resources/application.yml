@@ -47,3 +47,4 @@ kakao:
 fcm:
   firebase-sdk-path : ${FIREBASE_SDK_PATH}
   project-id : ${FIREBASE_PROJECT_ID}
+version: ${VERSION}
