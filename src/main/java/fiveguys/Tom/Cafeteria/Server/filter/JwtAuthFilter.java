@@ -26,7 +26,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtUtil jwtUtil;
     private final static String[] ignorePrefix = {"/sign-up", "/swagger-ui", "/v3/api-docs", "/auth", "/oauth2", "/health"
-            , "/token/validate", "/token/access-token" , "/message", "/enums", "/users/nickname", "/cafeterias", "/diets"};
+            , "/token/validate", "/token/access-token" , "/message", "/enums", "/users/nickname", "/cafeterias", "/diets", "/version"};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("url ={}", request.getRequestURI());
