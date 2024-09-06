@@ -1,6 +1,7 @@
 package fiveguys.Tom.Cafeteria.Server.domain.board.entity;
 
 
+import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Report {
+public class Report extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

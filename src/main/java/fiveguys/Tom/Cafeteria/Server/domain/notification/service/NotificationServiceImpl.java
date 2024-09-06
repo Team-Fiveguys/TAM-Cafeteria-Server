@@ -291,9 +291,16 @@ public class NotificationServiceImpl implements NotificationService{
         List<User> admins = userQueryService.getAdmins();
         List<String> tokenList = admins.stream()
                 .map(admin -> admin.getNotificationSet().getRegistrationToken())
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent(), tokenList);
         fcmService.sendMessage(multiCastMessage, tokenList);
+
+        admins.stream()
+                .forEach(admin -> {
+                    UserAppNotification userAppNotification = UserAppNotification.createUserAppNotification(admin, notification);
+                    userAppNotificationRepository.save(userAppNotification);
+                });
     }
 
 }
