@@ -42,10 +42,16 @@ public class NotificationServiceImpl implements NotificationService{
     @Override
     public void sendAll(NotificationRequestDTO.SendAllDTO dto) {
         AppNotification notification = fcmService.storeNotification(dto.getTitle(), dto.getContent());
-        MulticastMessage multicastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent());
-        fcmService.sendMessage(multicastMessage);
 
         List<User> userList = userQueryService.getUsersAgreedNotification();
+        List<String> tokenList = userList.stream()
+                .map(User::getNotificationSet)
+                .map(NotificationSet::getRegistrationToken)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        MulticastMessage multicastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent(), tokenList);
+        fcmService.sendMessage(multicastMessage, tokenList);
+
         userList.stream()
                 .forEach(user -> {
                     UserAppNotification userAppNotification = UserAppNotification.createUserAppNotification(user, notification);
@@ -64,9 +70,8 @@ public class NotificationServiceImpl implements NotificationService{
                 .map(NotificationSet::getRegistrationToken)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        // multicast로 변경 예정
         MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent(), tokenList);
-        fcmService.sendMessage(multiCastMessage);
+        fcmService.sendMessage(multiCastMessage, tokenList);
 
         // 각 유저의 알림 저장
         userList.stream()
@@ -140,7 +145,7 @@ public class NotificationServiceImpl implements NotificationService{
                 .collect(Collectors.toList());
         try{
             MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(notification.getTitle(), notification.getContent(), tokenList);
-            fcmService.sendMessage(multiCastMessage);
+            fcmService.sendMessage(multiCastMessage, tokenList);
         }
         catch (GeneralException e){
             return;
@@ -176,7 +181,7 @@ public class NotificationServiceImpl implements NotificationService{
 
         try{
             MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(notification.getTitle(), notification.getContent(), tokenList);
-            fcmService.sendMessage(multiCastMessage);
+            fcmService.sendMessage(multiCastMessage, tokenList);
         }
         catch (GeneralException e){
             return;
@@ -230,7 +235,7 @@ public class NotificationServiceImpl implements NotificationService{
 
             try{
                 MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(notification.getTitle(), notification.getContent(), tokenList);
-                fcmService.sendMessage(multiCastMessage);
+                fcmService.sendMessage(multiCastMessage, tokenList);
             }
             catch (GeneralException e){
                 return;
@@ -286,9 +291,16 @@ public class NotificationServiceImpl implements NotificationService{
         List<User> admins = userQueryService.getAdmins();
         List<String> tokenList = admins.stream()
                 .map(admin -> admin.getNotificationSet().getRegistrationToken())
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         MulticastMessage multiCastMessage = fcmService.createMultiCastMessage(dto.getTitle(), dto.getContent(), tokenList);
-        fcmService.sendMessage(multiCastMessage);
+        fcmService.sendMessage(multiCastMessage, tokenList);
+
+        admins.stream()
+                .forEach(admin -> {
+                    UserAppNotification userAppNotification = UserAppNotification.createUserAppNotification(admin, notification);
+                    userAppNotificationRepository.save(userAppNotification);
+                });
     }
 
 }

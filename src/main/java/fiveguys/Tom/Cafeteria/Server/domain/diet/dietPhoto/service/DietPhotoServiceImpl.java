@@ -54,12 +54,11 @@ public class DietPhotoServiceImpl implements DietPhotoService{
     @Transactional
     public DietPhoto deleteDietPhoto(DietRequestDTO.DietQueryDTO dietQueryDTO) {
         Diet diet = dietQueryService.getDiet(dietQueryDTO.getCafeteriaId(), dietQueryDTO.getLocalDate(), dietQueryDTO.getMeals());
-        DietPhoto dietPhoto = diet.getDietPhoto();
+        DietPhoto dietPhoto = dietPhotoRepository.findByDiet(diet);
         deleteImage(dietPhoto.getImageKey());
         if(entityManager.contains(dietPhoto)){
             log.info("이건 영속성임");
         }
-        diet.clearDietPhoto();
         dietPhotoRepository.delete(dietPhoto);
 
         return dietPhoto;

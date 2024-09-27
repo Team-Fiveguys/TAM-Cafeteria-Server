@@ -2,16 +2,11 @@ package fiveguys.Tom.Cafeteria.Server.domain.diet.controller;
 
 
 import fiveguys.Tom.Cafeteria.Server.apiPayload.ApiResponse;
-import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
-import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.repository.CafeteriaRepository;
-import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.converter.DietConverter;
-import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.MenuDiet;
-import fiveguys.Tom.Cafeteria.Server.domain.diet.repository.DietRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.service.DietQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.converter.MenuConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
@@ -29,7 +24,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/diets")
 public class DietController {
     private final DietQueryService dietQueryService;
-    private final CafeteriaRepository cafeteriaRepository;
     @Value("${cloud.aws.s3.path.prefix}")
     private String prefixURI;
 
@@ -48,26 +42,21 @@ public class DietController {
         DietResponseDTO.DietQueryDTO dietQueryResponseDTO = DietConverter.toDietResponseDTO(prefixURI, diet, MenuConverter.toMenuResponseListDTO(menuList));
         return ApiResponse.onSuccess(dietQueryResponseDTO);
     }
-    @Operation(summary = "식당의 금주의 식단표 API", description = "식당id, 년/월/주차, 식때를 받아서 그 주차의 메뉴 리스트를 반환한다.")
-    @GetMapping("/weeks")
-    public ApiResponse<DietResponseDTO.WeekDietsResponseDTO> getWeekDiets(@RequestParam(name = "cafeteriaId")Long cafeteriaId,
-                                                                          @RequestParam(name = "year") int year,
-                                                                          @RequestParam(name = "month") int month,
-                                                                          @RequestParam(name = "weekNum") int weekNum,
-                                                                          @RequestParam(name = "meals") Meals meals) {
-        Cafeteria cafeteria = cafeteriaRepository.getReferenceById(cafeteriaId);
-        List<Diet> dietListOfWeek = dietQueryService
-                .getDietListOfWeek(cafeteria, year, month, weekNum, meals);
-        List<DietResponseDTO.DietQueryDTO> dietResponseDTOs = dietListOfWeek.stream()
+    @Operation(summary =  "특정 식당의 3주치의 식단표 조회 API", description = "식당id를 입력 받아 해당 식당의 3주치의 식단 정보 리스트를 반환한다. 날짜순 오름차순으로 반환한다.")
+    @GetMapping("/main")
+    public ApiResponse<List<DietResponseDTO.DietQueryDTO>> getWeekDietsTable(@RequestParam(name = "cafeteriaId") Long cafeteriaId) {
+        // 식당 id 조건으로 해서 3주치 식단 정보 가져오기
+        List<Diet> threeWeeksDiet = dietQueryService.getThreeWeeksDiet(cafeteriaId);
+        List<DietResponseDTO.DietQueryDTO> dietQueryDTOList = threeWeeksDiet.stream() // diet와 연관된 dietphoto, dietMenu 가져오기
                 .map(diet -> {
-                    List<MenuDiet> menuDietList = diet.getMenuDietList();
-                    List<MenuResponseDTO.MenuQueryDTO> menuList = menuDietList.stream()
+                    List<MenuResponseDTO.MenuQueryDTO> menuQueryDTOList = diet.getMenuDietList().stream()
                             .map(MenuDiet::getMenu)
                             .map(MenuConverter::toMenuQueryDTO)
                             .collect(Collectors.toList());
-                    return DietConverter.toDietResponseDTO(prefixURI, diet, MenuConverter.toMenuResponseListDTO(menuList));
+                    DietResponseDTO.DietQueryDTO dietQueryResponseDTO = DietConverter.toDietResponseDTO(prefixURI, diet, MenuConverter.toMenuResponseListDTO(menuQueryDTOList));
+                    return dietQueryResponseDTO;
                 })
                 .collect(Collectors.toList());
-        return ApiResponse.onSuccess(DietConverter.toWeekDietsResponseDTO(dietResponseDTOs));
+        return ApiResponse.onSuccess(dietQueryDTOList);
     }
 }

@@ -2,10 +2,7 @@ package fiveguys.Tom.Cafeteria.Server.domain.diet.dto;
 
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -34,13 +31,16 @@ public class DietResponseDTO {
         private MenuResponseDTO.MenuResponseListDTO menuResponseListDTO;
         private boolean soldOut;
         private boolean dayOff;
+        private Meals meals;
     }
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
-    public static class WeekDietsResponseDTO {
-        private List<DietResponseDTO.DietQueryDTO> dietResponseDTOList;
+    @Setter
+    public static class ThreeWeeksDietsResponseDTO {
+        private Long cafeteriaId;
+        private List<DietResponseDTO.DietQueryDTO> ThreeWeeksResponseDTO;
     }
 
     @Builder
@@ -57,4 +57,13 @@ public class DietResponseDTO {
     public static class SwitchDayOffResponseDTO {
         private boolean isDayOff;
     }
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class MainViewResponseDTO{
+        List<ThreeWeeksDietsResponseDTO> threeWeeksDietsResponseDTOS;
+    }
+
 }

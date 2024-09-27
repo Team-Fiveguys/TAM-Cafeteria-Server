@@ -1,12 +1,12 @@
 package fiveguys.Tom.Cafeteria.Server.domain.diet.converter;
 
 
+import fiveguys.Tom.Cafeteria.Server.domain.diet.dietPhoto.entity.DietPhoto;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietRequestDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.dto.MenuResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,19 +33,21 @@ public class DietConverter {
                 .dayOff(diet.isDayOff())
                 .soldOut(diet.isSoldOut())
                 .date(diet.getLocalDate())
+                .meals(diet.getMeals())
                 .build();
     }
-    public static DietResponseDTO.DietCreateDTO toDietCreateResponseDTO(Diet diet){
+    public static DietResponseDTO.DietCreateDTO toDietCreateResponseDTO(Diet diet, List<String> enrolledMenuList){
         return DietResponseDTO.DietCreateDTO.builder()
+                .menuNameList(enrolledMenuList)
                 .cafeteriaId(diet.getCafeteria().getId())
                 .date(diet.getLocalDate())
                 .meals(diet.getMeals())
                 .build();
     }
 
-    public static DietResponseDTO.WeekDietsResponseDTO toWeekDietsResponseDTO(List<DietResponseDTO.DietQueryDTO> dietResponseDTOList){
-        return DietResponseDTO.WeekDietsResponseDTO.builder()
-                .dietResponseDTOList(dietResponseDTOList)
+    public static DietResponseDTO.ThreeWeeksDietsResponseDTO toThreeWeeksDietsResponseDTO(List<DietResponseDTO.DietQueryDTO> dietResponseDTOList){
+        return DietResponseDTO.ThreeWeeksDietsResponseDTO.builder()
+                .ThreeWeeksResponseDTO(dietResponseDTOList)
                 .build();
     }
     public static DietResponseDTO.SwitchSoldOutResponseDTO toSwitchSoldOutResponseDTO(boolean isSoldOut){

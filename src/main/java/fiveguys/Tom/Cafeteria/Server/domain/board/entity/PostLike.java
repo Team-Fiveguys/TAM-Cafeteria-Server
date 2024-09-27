@@ -1,5 +1,6 @@
 package fiveguys.Tom.Cafeteria.Server.domain.board.entity;
 
+import fiveguys.Tom.Cafeteria.Server.domain.common.BaseEntity;
 import fiveguys.Tom.Cafeteria.Server.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @Setter
 @Entity
-public class PostLike {
+public class PostLike extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

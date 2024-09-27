@@ -1,49 +1,50 @@
 package fiveguys.Tom.Cafeteria.Server.domain.diet.service;
 
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.entity.Cafeteria;
+import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.repository.CafeteriaRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.cafeteria.service.CafeteriaQueryService;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.converter.DietConverter;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietRequestDTO;
-import fiveguys.Tom.Cafeteria.Server.domain.diet.dto.DietResponseDTO;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Diet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.Meals;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.entity.MenuDiet;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.repository.MenuDietRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.diet.repository.DietRepository;
 import fiveguys.Tom.Cafeteria.Server.domain.menu.entity.Menu;
-import fiveguys.Tom.Cafeteria.Server.domain.menu.service.MenuQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class DietCommandServiceImpl implements DietCommandService{
     private final DietRepository dietRepository;
     private final CafeteriaQueryService cafeteriaQueryService;
+    private final CafeteriaRepository cafeteriaRepository;
     private final DietQueryService dietQueryService;
     private final MenuDietRepository menuDietRepository;
 
     @Override
-    public Diet createDiet(Cafeteria cafeteria, DietRequestDTO.DietCreateDTO dietCreateDTO, List<Menu> menuList) {
+    @Transactional
+    public Diet createDiet(Long cafeteriaId, DietRequestDTO.DietCreateDTO dietCreateDTO, List<Menu> menuList) {
         Diet diet = DietConverter.toDiet(dietCreateDTO);
+        Cafeteria cafeteria = cafeteriaRepository.getReferenceById(cafeteriaId);
         menuList.stream()
                 .forEach( (menu) ->MenuDiet.createMenuDiet(menu, diet));
         diet.setCafeteria(cafeteria);
-        diet.setDateInfo();
         Diet savedDiet = dietRepository.save(diet);
         return savedDiet;
     }
 
     @Override
-    public Diet addMenu(Diet diet, Menu menu) {
-        diet.addMenu(menu);
-        return diet;
+    public void removeDiet(Long cafeteriaId, LocalDate date, Meals meals) {
+        Diet diet = dietQueryService.getDiet(cafeteriaId, date, meals);
+        dietRepository.delete(diet);
     }
 
     @Override
@@ -60,6 +61,7 @@ public class DietCommandServiceImpl implements DietCommandService{
     }
 
     @Override
+    @Transactional
     public Diet switchSoldOut(Diet diet) {
         diet.switchSoldOut();
         return diet;
@@ -79,7 +81,6 @@ public class DietCommandServiceImpl implements DietCommandService{
                     .dayOff(true)
                     .soldOut(false)
                     .build();
-            createdDiet.setDateInfo();
             return dietRepository.save(createdDiet);
         }
         else{ //해당 식당과 시간에 식단이 있다면
