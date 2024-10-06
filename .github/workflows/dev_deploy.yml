@@ -49,7 +49,7 @@ jobs:
       - name: Package and Upload to S3
         run: |
           mkdir -p deployment
-          cp build/libs/Tom-Cafeteria-Server-0.0.1-SNAPSHOT.jar deployment/
+          cp build/libs/Tom-Cafeteria-Server-0.0.1-SNAPSHOT.jar deployment/src/
           cp appspec.yml deployment/
           cd deployment
           zip -r ../deployment-package.zip .
