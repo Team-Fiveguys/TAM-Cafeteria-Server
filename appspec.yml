@@ -6,6 +6,6 @@ files:
 
 hooks:
   AfterInstall:
-    - location: /var/app/current/start_aplication.sh
+    - location: ../../../../../../var/app/current/start_aplication.sh
       timeout: 180
       runas: root
