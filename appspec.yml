@@ -4,3 +4,7 @@ files:
   - source: /
     destination: /var/app/current
 
+hooks:
+  AfterInstall:
+    - location: ./start_aplication.sh
+      timeout: 180
