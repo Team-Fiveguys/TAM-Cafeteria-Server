@@ -2,11 +2,13 @@ package fiveguys.Tom.Cafeteria.Server.domain.common;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -20,21 +22,30 @@ public class RedisService {
     }
 
     public void setValue(String key, String value){
-        ValueOperations<String, Object> values = redisTemplate.opsForValue();
-        values.set(key, value);
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, value);
     }
 
     public void setValue(String key, String value, Duration duration){
-        ValueOperations<String, Object> values = redisTemplate.opsForValue();
-        values.set(key, value, duration);
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, value, duration);
     }
 
     public String getValue(String key){
-        ValueOperations<String, Object> values = redisTemplate.opsForValue();
-        return (String) values.get(key);
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        return (String) valueOperations.get(key);
     }
 
     public void deleteValues(String key){
         redisTemplate.delete(key);
+    }
+
+    public void setList(String key, List list){
+        ListOperations<String, Object> listOperations = redisTemplate.opsForList();
+        listOperations.rightPushAll(key, list);
+    }
+    public void addList(String key, String value){
+        ListOperations<String, Object> listOperations = redisTemplate.opsForList();
+        listOperations.rightPush(key, value);
     }
 }
