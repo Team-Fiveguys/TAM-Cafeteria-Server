@@ -51,7 +51,7 @@ dependencies {
 	// Bcrypt 사용하기 위해 시큐리티 의존성 추가
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	// JAXB가 자바 9 이상부터는 JDK에 포함되지 않음
-	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
+	implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
 	// QueryDSL
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'

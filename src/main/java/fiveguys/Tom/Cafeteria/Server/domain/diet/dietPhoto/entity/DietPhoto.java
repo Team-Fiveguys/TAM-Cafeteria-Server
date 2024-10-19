@@ -23,4 +23,7 @@ public class DietPhoto extends BaseEntity {
     @JoinColumn(name = "diet_id")
     private Diet diet;
 
+    public void changeImageKey(String imageKey) {
+        this.imageKey = imageKey;
+    }
 }

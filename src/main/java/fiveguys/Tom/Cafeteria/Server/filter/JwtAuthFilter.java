@@ -29,7 +29,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             , "/token/validate", "/token/access-token" , "/message", "/enums", "/users/nickname", "/cafeterias", "/diets", "/version"};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("url ={}", request.getRequestURI());
+        log.info("url ={} method = {}", request.getRequestURI(), request.getMethod());
         // 지정된 Path는 건너뛰기
         String currentPath = request.getServletPath();
         for(String ignorePath: ignorePrefix){
