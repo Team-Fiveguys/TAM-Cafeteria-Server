@@ -79,8 +79,7 @@ public class DietPhotoServiceImpl implements DietPhotoService{
     public void deleteFile(String fileKey) {
         log.info("fileKey={}", fileKey);
         try {
-            throw new SdkClientException("delete 실패 테스트");
-            //amazonS3Client.deleteObject(bucket, path + "/" + fileKey);
+            amazonS3Client.deleteObject(bucket, path + "/" + fileKey);
         } catch (SdkClientException e) {
             // AWS SDK 클라이언트 자체에서 발생한 문제 (ex. 네트워크 연결 실패 등)
             log.error("SdkClientException: 네트워크 문제 등으로 AWS에 요청이 전달되지 못했습니다.");
